@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Right Solutions - Sales, Service & Software Solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <link rel="icon" type="image/png" href="rightsolutionslogo-com.png">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .hero-bg {
+            background: linear-gradient(to right, #1e40af, #60a5fa);
+        }
+        .section-bg {
+            background-color: #f8fafc;
+        }
+        .animate-pulse-slow {
+            animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .super-intro {
+            background: url('https://images.unsplash.com/photo-1516321310764-959200eb3b04?q=80&w=1920&auto=format&fit=crop') no-repeat center/cover;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .super-intro::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1;
+        }
+        .super-intro-content {
+            position: relative;
+            z-index: 2;
+        }
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #2563eb;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        #menu-toggle {
+            display: none;
+        }
+        @media (max-width: 768px) {
+            #menu-toggle {
+                display: block;
+            }
+            #nav-menu {
+                display: none;
+            }
+            #nav-menu.active {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 80px;
+                left: 0;
+                right: 0;
+                background: white;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Super Intro Section -->
+    <section class="super-intro">
+        <div class="super-intro-content" data-aos="zoom-in" data-aos-duration="1200">
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 animate-pulse-slow">Right Solutions</h1>
+            <p class="text-xl md:text-3xl mb-8 max-w-3xl mx-auto">Transforming industries with innovative machinery and AI-driven software solutions.</p>
+            <a href="#home" class="bg-blue-600 text-white px-8 py-4 rounded-full font-semibold hover:bg-blue-700 transition duration-300 shadow-lg">Discover More</a>
+        </div>
+    </section>
+
+    <!-- Header -->
+    <header class="bg-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="rightsolutionslogo-com.png" alt="Right Solutions Logo" class="h-14">
+                <span class="ml-4 text-2xl font-bold text-gray-900">Right Solutions</span>
+            </div>
+            <button id="menu-toggle" class="md:hidden text-gray-600 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+            <div id="nav-menu" class="space-x-8 md:flex items-center">
+                <a href="#home" class="text-gray-700 nav-link hover:text-blue-600 font-medium">Home</a>
+                <a href="#about" class="text-gray-700 nav-link hover:text-blue-600 font-medium">About</a>
+                <a href="#services" class="text-gray-700 nav-link hover:text-blue-600 font-medium">Services</a>
+                <a href="#software" class="text-gray-700 nav-link hover:text-blue-600 font-medium">Software Solutions</a>
+                <a href="#contact" class="text-gray-700 nav-link hover:text-blue-600 font-medium">Contact</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-bg text-white py-24" data-aos="fade-up" data-aos-duration="1000">
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-6">Welcome to Right Solutions</h1>
+            <p class="text-lg md:text-xl mb-8 max-w-2xl mx-auto">Your trusted partner for machinery sales, service, and cutting-edge AI software solutions.</p>
+            <a href="#contact" class="bg-white text-blue-600 px-8 py-4 rounded-full font-semibold hover:bg-blue-100 transition duration-300 shadow-md">Get in Touch</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 section-bg" data-aos="fade-right" data-aos-duration="1000">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center text-gray-900 mb-10">About Us</h2>
+            <p class="text-gray-600 text-lg text-center max-w-4xl mx-auto leading-relaxed">
+                Based in Alappuzha, Kerala, Right Solutions is a premier provider of sales and service for machinery, including computers, water purifiers, inverters, batteries, and solar power solutions. Our subdivision, Right Solutions A.I, excels in delivering innovative software solutions, such as dynamic websites, web applications, and AI-powered software. Our flagship project, Niyamashakthi, is an AI lawyer powered by a proprietary 185-parameter model trained in over 177 languages.
+            </p>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20" data-aos="fade-up" data-aos-duration="1000">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center text-gray-900 mb-10">Our Services</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:scale-105 transition duration-300" data-aos="zoom-in" data-aos-delay="100">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Machinery Sales</h3>
+                    <p class="text-gray-600">High-quality computers, water purifiers, and power solutions tailored to your needs.</p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:scale-105 transition duration-300" data-aos="zoom-in" data-aos-delay="200">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Service & Maintenance</h3>
+                    <p class="text-gray-600">Expert repair and maintenance services to ensure product longevity and performance.</p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:scale-105 transition duration-300" data-aos="zoom-in" data-aos-delay="300">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Power Solutions</h3>
+                    <p class="text-gray-600">Reliable inverters, batteries, and solar solutions for uninterrupted power supply.</p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:scale-105 transition duration-300" data-aos="zoom-in" data-aos-delay="400">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Water Solutions</h3>
+                    <p class="text-gray-600">Sales and service for advanced water purifiers to ensure clean and safe water.</p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:scale-105 transition duration-300" data-aos="zoom-in" data-aos-delay="500">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Security Devices</h3>
+                    <p class="text-gray-600">Sales, service, and installation of security devices like CCTV and DVR systems.</p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:scale-105 transition duration-300" data-aos="zoom-in" data-aos-delay="600">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Automated Gates</h3>
+                    <p class="text-gray-600">Professional service and installation of automated gate systems.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Software Solutions Section -->
+    <section id="software" class="py-20 section-bg" data-aos="fade-left" data-aos-duration="1000">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center text-gray-900 mb-10">Right Solutions A.I</h2>
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-8 md:mb-0" data-aos="fade-right" data-aos-delay="100">
+                    <img src="niyamashakthi-right.png" alt="Niyamashakthi AI Logo" class="rounded-xl shadow-lg max-w-full h-auto">
+                </div>
+                <div class="md:w-1/2 md:pl-10" data-aos="fade-left" data-aos-delay="100">
+                    <h3 class="text-2xl font-semibold text-gray-900 mb-4">Software & AI Solutions</h3>
+                    <p class="text-gray-600 mb-6 leading-relaxed">
+                        Right Solutions A.I specializes in crafting professional websites, web applications, and advanced AI software. Our flagship project, <strong>Niyamashakthi</strong>, is an AI-powered lawyer built on a 185-parameter model, trained in over 177 languages, delivering unparalleled legal assistance.
+                    </p>
+                    <a href="https://play.google.com/store/apps/details?id=com.rightsolution.niyamashakthi" target="_blank" class="bg-blue-600 text-white px-8 py-4 rounded-full font-semibold hover:bg-blue-700 transition duration-300 shadow-md">Download Niyamashakthi on Play Store</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20" data-aos="fade-up" data-aos-duration="1000">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center text-gray-900 mb-10">Contact Us</h2>
+            <div class="flex flex-col md:flex-row justify-center gap-8">
+                <div class="md:w-1/2 bg-white p-8 rounded-xl shadow-lg" data-aos="fade-right" data-aos-delay="100">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-6">Get in Touch</h3>
+                    <p class="text-gray-600 mb-4"><strong>Address:</strong> Right Solutions, Alappuzha, Kerala, PIN-688538</p>
+                    <p class="text-gray-600 mb-4"><strong>Email:</strong> rightsolutionsalpy@gmail.com</p>
+                    <p class="text-gray-600 mb-4"><strong>Phone:</strong> +91 9447088525, +91 9495988525</p>
+                </div>
+                <div class="md:w-1/2 bg-white p-8 rounded-xl shadow-lg" data-aos="fade-left" data-aos-delay="100">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-6">Send a Message</h3>
+                    <div id="contact-form">
+                        <input type="text" id="name" placeholder="Your Name" class="w-full p-4 mb-4 border rounded-lg focus:ring-2 focus:ring-blue-600 focus:outline-none">
+                        <input type="email" id="email" placeholder="Your Email" class="w-full p-4 mb-4 border rounded-lg focus:ring-2 focus:ring-blue-600 focus:outline-none">
+                        <textarea id="message" placeholder="Your Message" class="w-full p-4 mb-4 border rounded-lg focus:ring-2 focus:ring-blue-600 focus:outline-none" rows="5"></textarea>
+                        <button onclick="validateForm()" class="bg-blue-600 text-white px-8 py-4 rounded-full font-semibold hover:bg-blue-700 transition duration-300 w-full">Submit</button>
+                        <p id="form-error" class="text-red-500 mt-2 hidden">Please fill in all fields correctly.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-10">
+        <div class="container mx-auto px-6 text-center">
+            <img src="rightsolutionslogo-com.png" alt="Right Solutions Logo" class="h-12 mx-auto mb-4">
+            <p class="text-gray-400">© 2025 Right Solutions. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Initialize AOS for animations
+        AOS.init({ once: true });
+
+        // Mobile menu toggle
+        const menuToggle = document.getElementById('menu-toggle');
+        const navMenu = document.getElementById('nav-menu');
+        menuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        // Contact form validation
+        function validateForm() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+            const error = document.getElementById('form-error');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!name || !email || !message || !emailRegex.test(email)) {
+                error.classList.remove('hidden');
+                return;
+            }
+
+            error.classList.add('hidden');
+            alert('Form submitted successfully!');
+            document.getElementById('contact-form').reset();
+        }
+
+        // Placeholder for Tweak Sought Editor integration
+        console.log("Tweak Sought Editor integration placeholder");
+    </script>
+</body>
+</html>
