@@ -3,384 +3,634 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Right Solutions - Sales, Service & Software Solutions</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <meta name="google-adsense-account" content="ca-pub-5943459272378204">
-    <link rel="icon" type="image/png" href="rightsolutionslogo-com.png">
+    <title>Right Solutions - Canvas Edition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         body {
+            margin: 0;
             font-family: 'Inter', sans-serif;
-        }
-        .hero-bg {
-            background: linear-gradient(to right, #1e40af, #60a5fa);
-        }
-        .section-bg {
             background-color: #f8fafc;
+            /* Disable text selection on the page since all text is drawn on canvas */
+            user-select: none; 
+            -webkit-user-select: none;
+            -ms-user-select: none;
         }
-        .animate-pulse-slow {
-            animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-        .super-intro {
-            background: url('https://images.unsplash.com/photo-1516321310764-959200eb3b04?q=80&w=1920&auto=format&fit=crop') no-repeat center/cover;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
-        .super-intro::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 1;
-        }
-        .super-intro-content {
-            position: relative;
-            z-index: 2;
-        }
-        .nav-link {
-            position: relative;
-        }
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -2px;
-            left: 0;
-            background-color: #2563eb;
-            transition: width 0.3s ease;
-        }
-        .nav-link:hover::after {
+        canvas {
+            display: block;
             width: 100%;
+            background-color: #ffffff;
         }
-        #menu-toggle {
-            display: none;
+        #super-intro-canvas {
+            height: 100vh;
         }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
+        .canvas-container {
             width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-content {
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            max-width: 500px;
-            width: 90%;
-            text-align: center;
-        }
-        .project-card {
-            position: relative;
-            overflow: hidden;
-            border-radius: 8px;
-        }
-        .project-image {
-            transition: opacity 0.3s ease;
-        }
-        .project-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 1rem;
-            color: white;
-        }
-        .project-card:hover .project-image {
-            opacity: 0.3;
-        }
-        .project-card:hover .project-overlay {
-            opacity: 1;
-        }
-        @media (max-width: 768px) {
-            #menu-toggle {
-                display: block;
-            }
-            #nav-menu {
-                display: none;
-            }
-            #nav-menu.active {
-                display: flex;
-                flex-direction: column;
-                position: absolute;
-                top: 80px;
-                left: 0;
-                right: 0;
-                background: white;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                padding: 1rem;
-            }
+            margin: 0;
         }
     </style>
 </head>
-<body class="bg-gray-50">
-    <!-- Super Intro Section -->
-    <section class="super-intro">
-        <div class="super-intro-content" data-aos="zoom-in" data-aos-duration="1200">
-            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 animate-pulse-slow">Right Solutions</h1>
-            <p class="text-xl md:text-3xl mb-8 max-w-3xl mx-auto">Transforming industries with innovative machinery and AI-driven software solutions.</p>
-            <a href="#home" class="bg-blue-600 text-white px-8 py-4 rounded-full font-semibold hover:bg-blue-700 transition duration-300 shadow-lg">Discover More</a>
-        </div>
-    </section>
+<body>
 
-    <!-- Header -->
-    <header class="bg-white shadow-lg sticky top-0 z-50">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center">
-                <img src="rightsolutionslogo-com.png" alt="Right Solutions Logo" class="h-14">
-                <span class="ml-4 text-2xl font-bold text-gray-900">Right Solutions</span>
-            </div>
-            <button id="menu-toggle" class="md:hidden text-gray-600 focus:outline-none">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                </svg>
-            </button>
-            <div id="nav-menu" class="space-x-8 md:flex items-center">
-                <a href="#home" class="text-gray-700 nav-link hover:text-blue-600 font-medium">Home</a>
-                <a href="#about" class="text-gray-700 nav-link hover:text-blue-600 font-medium">About</a>
-                <a href="#services" class="text-gray-700 nav-link hover:text-blue-600 font-medium">Services</a>
-                <a href="#software" class="text-gray-700 nav-link hover:text-blue-600 font-medium">Software Solutions</a>
-                <a href="#contact" class="text-gray-700 nav-link hover:text-blue-600 font-medium">Contact</a>
-            </div>
-        </nav>
-    </header>
-
-    <!-- Hero Section -->
-    <section id="home" class="hero-bg text-white py-24" data-aos="fade-up" data-aos-duration="1000">
-        <div class="container mx-auto px-6 text-center">
-            <h1 class="text-4xl md:text-5xl font-bold mb-6">Welcome to Right Solutions</h1>
-            <p class="text-lg md:text-xl mb-8 max-w-2xl mx-auto">Your trusted partner for machinery sales, service, and cutting-edge AI software solutions.</p>
-            <a href="#contact" class="bg-white text-blue-600 px-8 py-4 rounded-full font-semibold hover:bg-blue-100 transition duration-300 shadow-md">Get in Touch</a>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="py-20 section-bg" data-aos="fade-right" data-aos-duration="1000">
-        <div class="container mx-auto px-6">
-            <h2 class="text-4xl font-bold text-center text-gray-900 mb-10">About Us</h2>
-            <p class="text-gray-600 text-lg text-center max-w-4xl mx-auto leading-relaxed">
-                Based in Alappuzha, Kerala, Right Solutions is a premier provider of sales and service for machinery, including computers, water purifiers, inverters, batteries, and solar power solutions. Our subdivision, Right Solutions A.I, excels in delivering innovative software solutions, such as dynamic websites, web applications, and AI-powered software. Our flagship project, Niyamashakthi, is an AI lawyer powered by a proprietary 185-parameter model trained in over 177 languages.
-            </p>
-        </div>
-    </section>
-
-    <!-- Services Section -->
-    <section id="services" class="py-20" data-aos="fade-up" data-aos-duration="1000">
-        <div class="container mx-auto px-6">
-            <h2 class="text-4xl font-bold text-center text-gray-900 mb-10">Our Services</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="bg-white p-8 rounded-xl shadow-lg hover:scale-105 transition duration-300" data-aos="zoom-in" data-aos-delay="100">
-                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Machinery Sales</h3>
-                    <p class="text-gray-600 mb-4">High-quality computers, water purifiers, and power solutions tailored to your needs.</p>
-                    <button onclick="showBookingModal('Machinery Sales', 'https://docs.google.com/forms/d/e/1FAIpQLSd0SqzoMlPt-hA6Pc0LlaYI0SIFrbDnqVk_r7mA5IQCtZXJzg/viewform?usp=dialog')" class="bg-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-700 transition duration-300">Book Now</button>
-                </div>
-                <div class="bg-white p-8 rounded-xl shadow-lg hover:scale-105 transition duration-300" data-aos="zoom-in" data-aos-delay="200">
-                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Service & Maintenance</h3>
-                    <p class="text-gray-600 mb-4">Expert repair and maintenance services to ensure product longevity and performance.</p>
-                    <button onclick="showBookingModal('Service & Maintenance', 'https://docs.google.com/forms/d/e/1FAIpQLSd0SqzoMlPt-hA6Pc0LlaYI0SIFrbDnqVk_r7mA5IQCtZXJzg/viewform?usp=dialog')" class="bg-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-700 transition duration-300">Book Now</button>
-                </div>
-                <div class="bg-white p-8 rounded-xl shadow-lg hover:scale-105 transition duration-300" data-aos="zoom-in" data-aos-delay="300">
-                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Power Solutions</h3>
-                    <p class="text-gray-600 mb-4">Reliable inverters, batteries, and solar solutions for uninterrupted power supply.</p>
-                    <button onclick="showBookingModal('Power Solutions', 'https://docs.google.com/forms/d/e/1FAIpQLSd0SqzoMlPt-hA6Pc0LlaYI0SIFrbDnqVk_r7mA5IQCtZXJzg/viewform?usp=dialog')" class="bg-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-700 transition duration-300">Book Now</button>
-                </div>
-                <div class="bg-white p-8 rounded-xl shadow-lg hover:scale-105 transition duration-300" data-aos="zoom-in" data-aos-delay="400">
-                    <h3 class="text shadow-lg hover:scale-105 transition duration-300" data-aos="zoom-in" data-aos-delay="400">
-                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Water Solutions</h3>
-                    <p class="text-gray-600 mb-4">Sales and service for advanced water purifiers to ensure clean and safe water.</p>
-                    <button onclick="showBookingModal('Water Solutions', 'https://docs.google.com/forms/d/e/1FAIpQLSd0SqzoMlPt-hA6Pc0LlaYI0SIFrbDnqVk_r7mA5IQCtZXJzg/viewform?usp=dialog')" class="bg-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-700 transition duration-300">Book Now</button>
-                </div>
-                <div class="bg-white p-8 rounded-xl shadow-lg hover:scale-105 transition duration-300" data-aos="zoom-in" data-aos-delay="500">
-                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Security Devices</h3>
-                    <p class="text-gray-600 mb-4">Sales, service, and installation of security devices like CCTV and DVR systems.</p>
-                    <button onclick="showBookingModal('Security Devices', 'https://docs.google.com/forms/d/e/1FAIpQLSd0SqzoMlPt-hA6Pc0LlaYI0SIFrbDnqVk_r7mA5IQCtZXJzg/viewform?usp=dialog')" class="bg-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-700 transition duration-300">Book Now</button>
-                </div>
-                <div class="bg-white p-8 rounded-xl shadow-lg hover:scale-105 transition duration-300" data-aos="zoom-in" data-aos-delay="600">
-                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Automated Gates</h3>
-                    <p class="text-gray-600 mb-4">Professional service and installation of automated gate systems.</p>
-                    <button onclick="showBookingModal('Automated Gates', 'https://docs.google.com/forms/d/e/1FAIpQLSd0SqzoMlPt-hA6Pc0LlaYI0SIFrbDnqVk_r7mA5IQCtZXJzg/viewform?usp=dialog')" class="bg-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-700 transition duration-300">Book Now</button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Software Solutions Section -->
-    <section id="software" class="py-20 section-bg" data-aos="fade-left" data-aos-duration="1000">
-        <div class="container mx-auto px-6">
-            <h2 class="text-4xl font-bold text-center text-gray-900 mb-10">Right Solutions A.I</h2>
-            <div class="flex flex-col md:flex-row items-center">
-                <div class="md:w-1/2 mb-8 md:mb-0" data-aos="fade-right" data-aos-delay="100">
-                    <img src="niyamashakthi-right.png" alt="Niyamashakthi AI Logo" class="rounded-xl shadow-lg max-w-full h-auto">
-                </div>
-                <div class="md:w-1/2 md:pl-10" data-aos="fade-left" data-aos-delay="100">
-                    <h3 class="text-2xl font-semibold text-gray-900 mb-4">Software & AI Solutions</h3>
-                    <p class="text-gray-600 mb-6 leading-relaxed">
-                        Right Solutions A.I specializes in crafting professional websites, web applications, and advanced AI software. Our flagship project, <strong>Niyamashakthi</strong>, is an AI-powered lawyer built on a 185-parameter model, trained in over 177 languages, delivering unparalleled legal assistance.
-                    </p>
-                    <a href="https://play.google.com/store/apps/details?id=com.rightsolution.niyamashakthi" target="_blank" class="bg-blue-600 text-white px-8 py-4 rounded-full font-semibold hover:bg-blue-700 transition duration-300 shadow-md">Download Niyamashakthi on Play Store</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Gallery Section -->
-    <section id="gallery" class="py-20" data-aos="fade-up" data-aos-duration="1000">
-        <div class="container mx-auto px-6">
-            <h2 class="text-4xl font-bold text-center text-gray-900 mb-10">Our Software Projects</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="project-card bg-white rounded-xl shadow-lg" data-aos="zoom-in" data-aos-delay="100">
-                    <img src="niyamashakthi-right.png" alt="Niyamashakthi Project" class="project-image w-full h-64 object-contain rounded-t-xl">
-                    <div class="project-overlay">
-                        <h3 class="text-xl font-semibold mb-2">Niyamashakthi</h3>
-                        <p class="text-sm mb-4 text-center">An AI Indian lawyer assistant designed to help normal people with legal questions, resolve doubts, and solve complications. It can draft legal documents in seconds and generate images.</p>
-                        <a href="https://play.google.com/store/apps/details?id=com.rightsolution.niyamashakthi" target="_blank" class="bg-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-700 transition duration-300">Download on Play Store</a>
-                    </div>
-                </div>
-                <div class="project-card bg-white rounded-xl shadow-lg" data-aos="zoom-in" data-aos-delay="200">
-                    <img src="s1.png" alt="Right Law v1 Project" class="project-image w-full h-64 object-cover rounded-t-xl">
-                    <div class="project-overlay">
-                        <h3 class="text-xl font-semibold mb-2">Right Law v1</h3>
-                        <p class="text-sm mb-4 text-center">A platform for lawyers to create client workspaces with case details, powered by Niyamashakthi AI for research. Features include case scheduling, AI prioritizer, outcome predictor, legal document generator, and PDF editor.</p>
-                    </div>
-                </div>
-                <div class="project-card bg-white rounded-xl shadow-lg" data-aos="zoom-in" data-aos-delay="300">
-                    <img src="s2.png" alt="Agnideva AI Project" class="project-image w-full h-64 object-cover rounded-t-xl">
-                    <div class="project-overlay">
-                        <h3 class="text-xl font-semibold mb-2">Agnideva AI</h3>
-                        <p class="text-sm mb-4 text-center">An AI trained to analyze fire accidents using drone/camera images, powered by Sahasrashakthi AI. Generates initial reports with strategy, situation details, and gas content analysis. Currently developing underwater AI vision tech.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="py-20" data-aos="fade-up" data-aos-duration="1000">
-        <div class="container mx-auto px-6">
-            <h2 class="text-4xl font-bold text-center text-gray-900 mb-10">Contact Us</h2>
-            <div class="flex flex-col md:flex-row justify-center gap-8">
-                <div class="md:w-1/2 bg-white p-8 rounded-xl shadow-lg" data-aos="fade-right" data-aos-delay="100">
-                    <h3 class="text-xl font-semibold text-gray-900 mb-6">Get in Touch</h3>
-                    <p class="text-gray-600 mb-4"><strong>Address:</strong> Right Solutions, Alappuzha, Kerala, PIN-688538</p>
-                    <p class="text-gray-600 mb-4"><strong>Email:</strong> rightsolutionsalpy@gmail.com</p>
-                    <p class="text-gray-600 mb-4"><strong>Phone:</strong> +91 9447088525, +91 9495988525</p>
-                </div>
-                <div class="md:w-1/2 bg-white p-8 rounded-xl shadow-lg" data-aos="fade-left" data-aos-delay="100">
-                    <h3 class="text-xl font-semibold text-gray-900 mb-6">Send a Message</h3>
-                    <div id="contact-form">
-                        <input type="text" id="name" placeholder="Your Name" class="w-full p-4 mb-4 border rounded-lg focus:ring-2 focus:ring-blue-600 focus:outline-none">
-                        <input type="email" id="email" placeholder="Your Email" class="w-full p-4 mb-4 border rounded-lg focus:ring-2 focus:ring-blue-600 focus:outline-none">
-                        <textarea id="message" placeholder="Your Message" class="w-full p-4 mb-4 border rounded-lg focus:ring-2 focus:ring-blue-600 focus:outline-none" rows="5"></textarea>
-                        <button onclick="validateForm()" class="bg-blue-600 text-white px-8 py-4 rounded-full font-semibold hover:bg-blue-700 transition duration-300 w-full">Submit</button>
-                        <p id="form-error" class="text-red-500 mt-2 hidden">Please fill in all fields correctly.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Booking Modal -->
-    <div id="booking-modal" class="modal">
-        <div class="modal-content">
-            <h3 id="modal-title" class="text-xl font-semibold text-gray-900 mb-4"></h3>
-            <p class="text-gray-600 mb-6">You are about to book this service. Click "Confirm" to proceed to the booking form.</p>
-            <div class="flex justify-center gap-4">
-                <button onclick="confirmBooking()" class="bg-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-700 transition duration-300">Confirm</button>
-                <button onclick="closeModal()" class="bg-gray-300 text-gray-900 px-6 py-3 rounded-full font-semibold hover:bg-gray-400 transition duration-300">Cancel</button>
-            </div>
-        </div>
+    <div class="canvas-container">
+        <canvas id="super-intro-canvas"></canvas>
+        <canvas id="header-canvas"></canvas>
+        <canvas id="hero-canvas"></canvas>
+        <canvas id="about-canvas"></canvas>
+        <canvas id="services-canvas"></canvas>
+        <canvas id="software-canvas"></canvas>
+        <canvas id="gallery-canvas"></canvas>
+        <canvas id="contact-canvas"></canvas>
+        <canvas id="footer-canvas"></canvas>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-10">
-        <div class="container mx-auto px-6 text-center">
-            <img src="rightsolutionslogo-com.png" alt="Right Solutions Logo" class="h-12 mx-auto mb-4">
-            <p class="text-gray-400">© 2025 Right Solutions. All rights reserved.</p>
-        </div>
-    </footer>
-
-    <!-- Scripts -->
     <script>
-        // Initialize AOS for animations
-        AOS.init({ once: true });
+        // --- PRELOAD ASSETS ---
+        // Preload all images to ensure they are available before drawing
+        const images = {};
+        const imageSources = {
+            logo: 'https://raw.githubusercontent.com/user-attachments/assets/9583c272-b5f7-4395-9273-fa349692c814/rightsolutionslogo-com.png',
+            superIntroBg: 'https://images.unsplash.com/photo-1516321310764-959200eb3b04?q=80&w=1920&auto=format&fit=crop',
+            niyamashakthi: 'https://raw.githubusercontent.com/user-attachments/assets/668a04b1-840e-4375-9e6e-2195dfb4a92c/niyamashakthi-right.png',
+            rightLaw: 'https://raw.githubusercontent.com/user-attachments/assets/1fffc41c-2290-48e0-9e64-44ed548f0808/s1.png',
+            agnideva: 'https://raw.githubusercontent.com/user-attachments/assets/9f380753-2705-4c6e-8123-2895f5c3a388/s2.png'
+        };
+        let imagesLoaded = 0;
+        const totalImages = Object.keys(imageSources).length;
 
-        // Mobile menu toggle
-        const menuToggle = document.getElementById('menu-toggle');
-        const navMenu = document.getElementById('nav-menu');
-        menuToggle.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-        });
-
-        // Contact form validation
-        function validateForm() {
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const message = document.getElementById('message').value;
-            const error = document.getElementById('form-error');
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-            if (!name || !email || !message || !emailRegex.test(email)) {
-                error.classList.remove('hidden');
-                return;
+        for (const key in imageSources) {
+            images[key] = new Image();
+            images[key].src = imageSources[key];
+            images[key].onload = () => {
+                imagesLoaded++;
+                if (imagesLoaded === totalImages) {
+                    // All images are loaded, now we can initialize and draw everything
+                    initializeApp();
+                }
+            };
+            images[key].onerror = () => {
+                 console.error(`Failed to load image: ${key}`);
+                 imagesLoaded++; // Still increment to not block the app
+                 if (imagesLoaded === totalImages) {
+                    initializeApp();
+                 }
             }
-
-            error.classList.add('hidden');
-            alert('Form submitted successfully!');
-            document.getElementById('contact-form').reset();
         }
 
-        // Booking modal functions
-        let bookingUrl = '';
+        // --- GLOBAL VARIABLES & HELPERS ---
+        const clickableRegions = {};
 
-        function showBookingModal(serviceName, url) {
-            bookingUrl = url;
-            document.getElementById('modal-title').textContent = `Book ${serviceName}`;
-            document.getElementById('booking-modal').style.display = 'flex';
-        }
+        // Helper to draw text that wraps to a new line
+        function drawWrappedText(context, text, x, y, maxWidth, lineHeight) {
+            const words = text.split(' ');
+            let line = '';
+            let currentY = y;
 
-        function confirmBooking() {
-            window.open(bookingUrl, '_blank');
-            closeModal();
-        }
-
-        function closeModal() {
-            document.getElementById('booking-modal').style.display = 'none';
-            bookingUrl = '';
-        }
-
-        // Close modal when clicking outside
-        document.getElementById('booking-modal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('booking-modal')) {
-                closeModal();
+            for (let n = 0; n < words.length; n++) {
+                const testLine = line + words[n] + ' ';
+                const metrics = context.measureText(testLine);
+                const testWidth = metrics.width;
+                if (testWidth > maxWidth && n > 0) {
+                    context.fillText(line, x, currentY);
+                    line = words[n] + ' ';
+                    currentY += lineHeight;
+                } else {
+                    line = testLine;
+                }
             }
-        });
+            context.fillText(line, x, currentY);
+            return currentY + lineHeight; // Return the Y position after the last line
+        }
+        
+        // Helper to draw a rounded rectangle
+        function drawRoundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+            ctx.fill();
+        }
 
-        // Placeholder for Tweak Sought Editor integration
-        console.log("Tweak Sought Editor integration placeholder");
+        // --- DRAWING FUNCTIONS ---
+
+        function drawSuperIntro() {
+            const canvas = document.getElementById('super-intro-canvas');
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width = window.innerWidth;
+            const h = canvas.height = window.innerHeight;
+            
+            // Draw background image
+            ctx.drawImage(images.superIntroBg, 0, 0, w, h);
+
+            // Draw dark overlay
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+            ctx.fillRect(0, 0, w, h);
+            
+            // Draw text
+            ctx.textAlign = 'center';
+            ctx.fillStyle = 'white';
+
+            ctx.font = 'bold 72px Inter';
+            ctx.fillText('Right Solutions', w / 2, h / 2 - 60);
+
+            ctx.font = '30px Inter';
+            drawWrappedText(ctx, 'Transforming industries with innovative machinery and AI-driven software solutions.', w/2, h / 2, w * 0.6, 40);
+            
+            // Draw button and define clickable region
+            const button = { x: w/2 - 120, y: h/2 + 100, width: 240, height: 60 };
+            ctx.fillStyle = '#2563eb'; // blue-600
+            drawRoundRect(ctx, button.x, button.y, button.width, button.height, 30);
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 18px Inter';
+            ctx.fillText('Discover More', w / 2, h / 2 + 138);
+            clickableRegions['superIntroButton'] = { canvas, rect: button, action: () => document.getElementById('hero-canvas').scrollIntoView({ behavior: 'smooth' }) };
+        }
+
+        function drawHeader() {
+            const canvas = document.getElementById('header-canvas');
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width = window.innerWidth;
+            const h = canvas.height = 80;
+            clickableRegions['header'] = { canvas, rects: [] };
+
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, w, h);
+            ctx.shadowColor = 'rgba(0,0,0,0.1)';
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetY = 2;
+            ctx.fillRect(0,0,w,h);
+            ctx.shadowColor = 'transparent';
+
+
+            // Logo and Title
+            ctx.drawImage(images.logo, 40, 10, 60, 60);
+            ctx.fillStyle = '#111827'; // gray-900
+            ctx.font = 'bold 24px Inter';
+            ctx.textAlign = 'left';
+            ctx.fillText('Right Solutions', 110, h / 2 + 8);
+            
+            // Nav links
+            const links = ['Home', 'About', 'Services', 'Software', 'Contact'];
+            const targets = ['#home', '#about', '#services', '#software', '#contact'];
+            ctx.font = '500 16px Inter';
+            ctx.textAlign = 'center';
+            let startX = w - (links.length * 120);
+
+            links.forEach((link, i) => {
+                const rect = { x: startX + (i * 120) - 50, y: 0, width: 100, height: h };
+                ctx.fillStyle = '#374151'; // gray-700
+                ctx.fillText(link, startX + (i * 120), h/2 + 5);
+                clickableRegions.header.rects.push({
+                    rect,
+                    action: () => {
+                        const targetId = targets[i].substring(1) + '-canvas';
+                        document.getElementById(targetId).scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+        }
+        
+        function drawHero() {
+            const canvas = document.getElementById('hero-canvas');
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width = window.innerWidth;
+            const h = canvas.height = 300;
+            
+            // Gradient Background
+            const grad = ctx.createLinearGradient(0, 0, w, 0);
+            grad.addColorStop(0, '#1e40af');
+            grad.addColorStop(1, '#60a5fa');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, w, h);
+
+            // Text
+            ctx.fillStyle = 'white';
+            ctx.textAlign = 'center';
+            ctx.font = 'bold 48px Inter';
+            ctx.fillText('Welcome to Right Solutions', w/2, h/2 - 30);
+            ctx.font = '20px Inter';
+            drawWrappedText(ctx, 'Your trusted partner for machinery sales, service, and cutting-edge AI software solutions.', w/2, h/2 + 20, w * 0.7, 30);
+
+            // Button
+            const button = { x: w/2 - 100, y: h/2 + 80, width: 200, height: 55 };
+            ctx.fillStyle = 'white';
+            drawRoundRect(ctx, button.x, button.y, button.width, button.height, 28);
+            ctx.fillStyle = '#2563eb';
+            ctx.font = 'bold 16px Inter';
+            ctx.fillText('Get in Touch', w / 2, h / 2 + 113);
+            clickableRegions['heroButton'] = { canvas, rect: button, action: () => document.getElementById('contact-canvas').scrollIntoView({ behavior: 'smooth' }) };
+        }
+        
+        function drawAbout() {
+            const canvas = document.getElementById('about-canvas');
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width = window.innerWidth;
+            
+            ctx.fillStyle = '#f8fafc'; // section-bg
+            ctx.fillRect(0, 0, w, 500); // Set a large height, it will be trimmed later
+
+            // Title
+            ctx.fillStyle = '#111827';
+            ctx.font = 'bold 40px Inter';
+            ctx.textAlign = 'center';
+            ctx.fillText('About Us', w/2, 80);
+
+            // Content
+            ctx.font = '18px Inter';
+            ctx.fillStyle = '#4b5563'; // gray-600
+            const text = "Based in Alappuzha, Kerala, Right Solutions is a premier provider of sales and service for machinery, including computers, water purifiers, inverters, batteries, and solar power solutions. Our subdivision, Right Solutions A.I, excels in delivering innovative software solutions, such as dynamic websites, web applications, and AI-powered software. Our flagship project, Niyamashakthi, is an AI lawyer powered by a proprietary 185-parameter model trained in over 177 languages.";
+            const finalY = drawWrappedText(ctx, text, w/2, 140, w * 0.7, 30);
+            
+            // Adjust canvas height to fit content
+            canvas.height = finalY + 80; 
+        }
+
+        function drawServices() {
+            const canvas = document.getElementById('services-canvas');
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width = window.innerWidth;
+            const h = canvas.height = 700;
+            clickableRegions['services'] = { canvas, rects: [] };
+
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, w, h);
+            
+            // Title
+            ctx.fillStyle = '#111827';
+            ctx.font = 'bold 40px Inter';
+            ctx.textAlign = 'center';
+            ctx.fillText('Our Services', w/2, 80);
+            
+            // Service Cards
+            const services = [
+                { title: 'Machinery Sales', desc: 'High-quality computers, water purifiers, and power solutions.' },
+                { title: 'Service & Maintenance', desc: 'Expert repair and maintenance services for product longevity.' },
+                { title: 'Power Solutions', desc: 'Reliable inverters, batteries, and solar solutions.' },
+                { title: 'Water Solutions', desc: 'Sales and service for advanced water purifiers.' },
+                { title: 'Security Devices', desc: 'Sales, service, and installation of CCTV and DVR systems.' },
+                { title: 'Automated Gates', desc: 'Professional service and installation of automated gate systems.' }
+            ];
+
+            const cardWidth = 350;
+            const cardHeight = 250;
+            const gap = 40;
+            const containerWidth = (cardWidth * 3) + (gap * 2);
+            let startX = (w - containerWidth) / 2;
+            let startY = 150;
+            
+            services.forEach((service, i) => {
+                const col = i % 3;
+                const row = Math.floor(i / 3);
+                const x = startX + col * (cardWidth + gap);
+                const y = startY + row * (cardHeight + 50);
+
+                // Draw card
+                ctx.fillStyle = 'white';
+                ctx.shadowColor = 'rgba(0,0,0,0.1)';
+                ctx.shadowBlur = 15;
+                drawRoundRect(ctx, x, y, cardWidth, cardHeight, 12);
+                ctx.shadowColor = 'transparent';
+
+                // Draw text
+                ctx.fillStyle = '#111827';
+                ctx.font = '600 20px Inter';
+                ctx.textAlign = 'left';
+                ctx.fillText(service.title, x + 30, y + 50);
+
+                ctx.fillStyle = '#4b5563';
+                ctx.font = '16px Inter';
+                drawWrappedText(ctx, service.desc, x + 30, y + 80, cardWidth - 60, 24);
+
+                // Draw Button
+                const button = { x: x + 30, y: y + 180, width: 140, height: 45 };
+                ctx.fillStyle = '#2563eb';
+                drawRoundRect(ctx, button.x, button.y, button.width, button.height, 22.5);
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 16px Inter';
+                ctx.textAlign = 'center';
+                ctx.fillText('Book Now', button.x + 70, button.y + 28);
+                
+                clickableRegions.services.rects.push({
+                    rect: button,
+                    action: () => window.open('https://docs.google.com/forms/d/e/1FAIpQLSd0SqzoMlPt-hA6Pc0LlaYI0SIFrbDnqVk_r7mA5IQCtZXJzg/viewform?usp=dialog', '_blank')
+                });
+            });
+            canvas.height = startY + Math.ceil(services.length / 3) * (cardHeight + 50);
+        }
+
+        function drawSoftware() {
+             const canvas = document.getElementById('software-canvas');
+             const ctx = canvas.getContext('2d');
+             const w = canvas.width = window.innerWidth;
+             const h = canvas.height = 550;
+             ctx.fillStyle = '#f8fafc'; // section-bg
+             ctx.fillRect(0,0,w,h);
+
+             // Title
+            ctx.fillStyle = '#111827';
+            ctx.font = 'bold 40px Inter';
+            ctx.textAlign = 'center';
+            ctx.fillText('Right Solutions A.I', w/2, 80);
+
+            // Layout
+            const imgX = w * 0.15;
+            const imgY = 150;
+            const imgWidth = w * 0.3;
+            const imgHeight = imgWidth * (images.niyamashakthi.height / images.niyamashakthi.width);
+
+            const textX = w * 0.5;
+            const textY = 180;
+            const textWidth = w * 0.4;
+            
+            // Image
+            ctx.shadowColor = 'rgba(0,0,0,0.1)';
+            ctx.shadowBlur = 15;
+            ctx.shadowOffsetY = 5;
+            ctx.drawImage(images.niyamashakthi, imgX, imgY, imgWidth, imgHeight);
+            ctx.shadowColor = 'transparent';
+
+            // Text content
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#111827';
+            ctx.font = '600 24px Inter';
+            ctx.fillText('Software & AI Solutions', textX, textY);
+
+            ctx.fillStyle = '#4b5563';
+            ctx.font = '18px Inter';
+            const text = "Right Solutions A.I specializes in crafting professional websites, web applications, and advanced AI software. Our flagship project, Niyamashakthi, is an AI-powered lawyer built on a 185-parameter model, trained in over 177 languages, delivering unparalleled legal assistance.";
+            drawWrappedText(ctx, text, textX, textY + 40, textWidth, 30);
+            
+            // Button
+            const button = { x: textX, y: textY + 200, width: 320, height: 60 };
+            ctx.fillStyle = '#2563eb';
+            drawRoundRect(ctx, button.x, button.y, button.width, button.height, 30);
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 16px Inter';
+            ctx.textAlign = 'center';
+            ctx.fillText('Download Niyamashakthi on Play Store', button.x + 160, button.y + 38);
+            clickableRegions['softwareButton'] = { canvas, rect: button, action: () => window.open('https://play.google.com/store/apps/details?id=com.rightsolution.niyamashakthi', '_blank') };
+            
+             // Dynamic "Visit our Platform" button
+             const platformButton = { x: textX, y: textY + 280, width: 280, height: 60 };
+             ctx.fillStyle = '#4f46e5'; // indigo-600
+             drawRoundRect(ctx, platformButton.x, platformButton.y, platformButton.width, platformButton.height, 30);
+             ctx.fillStyle = 'white';
+             ctx.font = 'bold 16px Inter';
+             ctx.fillText('Visit Our Software Platform', platformButton.x + 140, platformButton.y + 38);
+             clickableRegions['platformButton'] = { canvas, rect: platformButton, action: () => window.open('https://niyamashakthiv1.vercel.app', '_blank') };
+
+        }
+
+        function drawGallery() {
+            const canvas = document.getElementById('gallery-canvas');
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width = window.innerWidth;
+            const h = canvas.height = 600;
+            clickableRegions['gallery'] = { canvas, rects: [] };
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, w, h);
+
+            // Title
+            ctx.fillStyle = '#111827';
+            ctx.font = 'bold 40px Inter';
+            ctx.textAlign = 'center';
+            ctx.fillText('Our Software Projects', w / 2, 80);
+
+            const projects = [
+                {
+                    img: images.niyamashakthi,
+                    title: 'Niyamashakthi',
+                    desc: 'An AI Indian lawyer assistant for legal questions, drafting, and analysis.',
+                    url: 'https://play.google.com/store/apps/details?id=com.rightsolution.niyamashakthi',
+                    buttonText: 'Download on Play Store'
+                },
+                {
+                    img: images.rightLaw,
+                    title: 'Right Law v1',
+                    desc: 'A platform for lawyers with case management, AI research, scheduling, and more.',
+                    url: 'https://niyamashakthiv1.vercel.app',
+                    buttonText: 'Visit Platform'
+                },
+                {
+                    img: images.agnideva,
+                    title: 'Agnideva AI',
+                    desc: 'AI that analyzes fire accidents from images to generate initial reports and strategies.',
+                    url: '#', // No link provided
+                    buttonText: 'Coming Soon'
+                }
+            ];
+
+            const cardWidth = 380;
+            const cardHeight = 400;
+            const gap = 40;
+            const containerWidth = (cardWidth * 3) + (gap * 2);
+            let startX = (w - containerWidth) / 2;
+            let startY = 150;
+
+            projects.forEach((project, i) => {
+                const x = startX + i * (cardWidth + gap);
+
+                // Card background
+                ctx.fillStyle = 'white';
+                ctx.shadowColor = 'rgba(0,0,0,0.1)';
+                ctx.shadowBlur = 15;
+                drawRoundRect(ctx, x, startY, cardWidth, cardHeight, 12);
+                ctx.shadowColor = 'transparent';
+
+                // Image
+                ctx.drawImage(project.img, x, startY, cardWidth, 200);
+
+                // Text
+                ctx.fillStyle = '#111827';
+                ctx.font = 'bold 22px Inter';
+                ctx.textAlign = 'center';
+                ctx.fillText(project.title, x + cardWidth / 2, startY + 240);
+                
+                ctx.fillStyle = '#4b5563';
+                ctx.font = '15px Inter';
+                drawWrappedText(ctx, project.desc, x + cardWidth / 2, startY + 270, cardWidth - 40, 22);
+
+                // Button
+                if(project.url !== '#') {
+                    const button = { x: x + (cardWidth/2) - 110, y: startY + 340, width: 220, height: 45 };
+                    ctx.fillStyle = '#2563eb';
+                    drawRoundRect(ctx, button.x, button.y, button.width, button.height, 22.5);
+                    ctx.fillStyle = 'white';
+                    ctx.font = 'bold 15px Inter';
+                    ctx.fillText(project.buttonText, button.x + 110, button.y + 28);
+                    clickableRegions.gallery.rects.push({
+                        rect: button,
+                        action: () => window.open(project.url, '_blank')
+                    });
+                } else {
+                    ctx.fillStyle = '#9ca3af'; // gray-400
+                    ctx.font = 'bold 15px Inter';
+                    ctx.fillText(project.buttonText, x + cardWidth/2, startY + 360);
+                }
+            });
+        }
+        
+        function drawContact() {
+            const canvas = document.getElementById('contact-canvas');
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width = window.innerWidth;
+            const h = canvas.height = 500;
+            
+            ctx.fillStyle = '#f8fafc'; // section-bg
+            ctx.fillRect(0, 0, w, h);
+            
+            // Title
+            ctx.fillStyle = '#111827';
+            ctx.font = 'bold 40px Inter';
+            ctx.textAlign = 'center';
+            ctx.fillText('Contact Us', w/2, 80);
+            
+            const boxWidth = w * 0.4;
+            const boxHeight = 300;
+            const startX1 = w * 0.08;
+            const startX2 = w * 0.52;
+            const startY = 150;
+
+            // Box 1: Get in Touch
+            ctx.fillStyle = 'white';
+            ctx.shadowColor = 'rgba(0,0,0,0.1)';
+            ctx.shadowBlur = 15;
+            drawRoundRect(ctx, startX1, startY, boxWidth, boxHeight, 12);
+            ctx.shadowColor = 'transparent';
+            
+            ctx.fillStyle = '#111827';
+            ctx.font = 'bold 20px Inter';
+            ctx.textAlign = 'left';
+            ctx.fillText('Get in Touch', startX1 + 40, startY + 60);
+
+            ctx.fillStyle = '#4b5563';
+            ctx.font = '16px Inter';
+            ctx.fillText('Address: Right Solutions, Alappuzha, Kerala, PIN-688538', startX1 + 40, startY + 120);
+            ctx.fillText('Email: rightsolutionsalpy@gmail.com', startX1 + 40, startY + 160);
+            ctx.fillText('Phone: +91 9447088525, +91 9495988525', startX1 + 40, startY + 200);
+
+            // Box 2: Send a Message (visual only)
+            ctx.fillStyle = 'white';
+            ctx.shadowColor = 'rgba(0,0,0,0.1)';
+            ctx.shadowBlur = 15;
+            drawRoundRect(ctx, startX2, startY, boxWidth, boxHeight, 12);
+            ctx.shadowColor = 'transparent';
+            
+            ctx.fillStyle = '#111827';
+            ctx.font = 'bold 20px Inter';
+            ctx.textAlign = 'left';
+            ctx.fillText('Send a Message', startX2 + 40, startY + 60);
+
+            // Fake form fields
+            ctx.strokeStyle = '#d1d5db'; // gray-300
+            ctx.lineWidth = 1;
+            ctx.strokeRect(startX2 + 40, startY + 90, boxWidth - 80, 40);
+            ctx.strokeRect(startX2 + 40, startY + 140, boxWidth - 80, 40);
+            ctx.strokeRect(startX2 + 40, startY + 190, boxWidth - 80, 40);
+
+            // Fake button
+            const button = { x: startX2 + 40, y: startY + 240, width: boxWidth - 80, height: 50 };
+            ctx.fillStyle = '#2563eb';
+            drawRoundRect(ctx, button.x, button.y, button.width, button.height, 25);
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 16px Inter';
+            ctx.textAlign = 'center';
+            ctx.fillText('Submit', button.x + (boxWidth - 80) / 2, button.y + 32);
+            clickableRegions['contactSubmit'] = { canvas, rect: button, action: () => alert('This form is for demonstration only!') };
+        }
+
+        function drawFooter() {
+            const canvas = document.getElementById('footer-canvas');
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width = window.innerWidth;
+            const h = canvas.height = 150;
+
+            ctx.fillStyle = '#111827'; // gray-900
+            ctx.fillRect(0, 0, w, h);
+
+            // Logo
+            ctx.drawImage(images.logo, w/2 - 25, 20, 50, 50);
+
+            // Copyright text
+            ctx.fillStyle = '#9ca3af'; // gray-400
+            ctx.font = '16px Inter';
+            ctx.textAlign = 'center';
+            ctx.fillText('© 2025 Right Solutions. All rights reserved.', w / 2, 110);
+        }
+
+
+        // --- INITIALIZATION & EVENT HANDLING ---
+
+        function initializeApp() {
+            // Draw all sections
+            drawSuperIntro();
+            drawHeader();
+            drawHero();
+            drawAbout();
+            drawServices();
+            drawSoftware();
+            drawGallery();
+            drawContact();
+            drawFooter();
+
+            // Set up a single click listener for all canvases
+            document.addEventListener('click', (e) => {
+                for (const key in clickableRegions) {
+                    const region = clickableRegions[key];
+                    const canvas = region.canvas;
+                    const rect = canvas.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    const scaleX = canvas.width / rect.width;
+                    const scaleY = canvas.height / rect.height;
+
+                    const canvasX = x * scaleX;
+                    const canvasY = y * scaleY;
+                    
+                    // Handle single region
+                    if (region.rect) {
+                        if (canvasX > region.rect.x && canvasX < region.rect.x + region.rect.width &&
+                            canvasY > region.rect.y && canvasY < region.rect.y + region.rect.height) {
+                            region.action();
+                            return; // Stop after first match
+                        }
+                    }
+
+                    // Handle multiple regions (like services, gallery)
+                    if (region.rects) {
+                         for(const item of region.rects) {
+                             if (canvasX > item.rect.x && canvasX < item.rect.x + item.rect.width &&
+                                 canvasY > item.rect.y && canvasY < item.rect.y + item.rect.height) {
+                                 item.action();
+                                 return; // Stop after first match
+                             }
+                         }
+                    }
+                }
+            });
+
+            // Redraw on resize
+            window.addEventListener('resize', () => {
+                drawSuperIntro();
+                drawHeader();
+                drawHero();
+                drawAbout();
+                drawServices();
+                drawSoftware();
+                drawGallery();
+                drawContact();
+                drawFooter();
+            });
+        }
     </script>
 </body>
 </html>
