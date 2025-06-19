@@ -11,9 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/user-attachments/assets/9583c272-b5f7-4395-9273-fa349692c814/rightsolutionslogo-com.png">
-    
-    <style>
+    <link rel="icon" type="image/png" href="rightsolutionslogo-com.png"> <style>
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc; /* gray-50 */
@@ -41,7 +39,7 @@
         }
 
         .tab-content.active {
-            display: block;
+            display: flex; /* Changed to flex for better alignment */
         }
     </style>
 </head>
@@ -50,7 +48,7 @@
     <header id="header" class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
             <a href="#" class="flex items-center space-x-3">
-                <img src="https://raw.githubusercontent.com/user-attachments/assets/9583c272-b5f7-4395-9273-fa349692c814/rightsolutionslogo-com.png" alt="Right Solutions Logo" class="h-12 w-12">
+                <img src="rightsolutionslogo-com.png" alt="Right Solutions Logo" class="h-12 w-12">
                 <span class="text-2xl font-bold text-gray-900">Right Solutions</span>
             </a>
             
@@ -92,7 +90,7 @@
                     </div>
                 </div>
                 <div class="md:w-1/2 mt-12 md:mt-0 flex justify-center">
-                    <img src="https://raw.githubusercontent.com/user-attachments/assets/668a04b1-840e-4375-9e6e-2195dfb4a92c/niyamashakthi-right.png" alt="AI Technology" class="w-2/3 md:w-full max-w-md animate-pulse-slow">
+                    <img src="niyamashakthi-right.png" alt="AI Technology" class="w-2/3 md:w-full max-w-md animate-pulse-slow">
                 </div>
             </div>
         </section>
@@ -164,44 +162,37 @@
                 </div>
 
                 <div class="max-w-4xl mx-auto">
-                    <div id="tab-niyamashakthi" class="tab-content active">
-                        <div class="bg-white rounded-2xl shadow-xl overflow-hidden md:flex">
-                           <div class="md:w-1/3">
-                                <img src="https://raw.githubusercontent.com/user-attachments/assets/668a04b1-840e-4375-9e6e-2195dfb4a92c/niyamashakthi-right.png" class="h-full w-full object-contain p-4 bg-indigo-50" alt="Niyamashakthi">
-                           </div>
-                           <div class="p-8 md:p-10 md:w-2/3">
-                               <h3 class="text-2xl font-bold text-gray-900">Niyamashakthi: Your AI Legal Assistant</h3>
-                               <p class="mt-4 text-gray-600">An AI Indian lawyer assistant designed to help everyday people with legal questions, resolve doubts, and solve complications. It can draft legal documents in seconds and even generate contextual images.</p>
-                               <a href="https://play.google.com/store/apps/details?id=com.rightsolution.niyamashakthi" target="_blank" class="mt-6 inline-block bg-blue-600 text-white font-semibold px-6 py-3 rounded-full hover:bg-blue-700 transition-transform duration-300 hover:scale-105 shadow-md">Download on Google Play</a>
-                           </div>
+                    <div id="tab-niyamashakthi" class="tab-content active bg-white rounded-2xl shadow-xl overflow-hidden md:flex">
+                        <div class="md:w-1/3">
+                            <img src="niyamashakthi-right.png" class="h-full w-full object-contain p-4 bg-indigo-50" alt="Niyamashakthi">
+                        </div>
+                        <div class="p-8 md:p-10 md:w-2/3">
+                            <h3 class="text-2xl font-bold text-gray-900">Niyamashakthi: Your AI Legal Assistant</h3>
+                            <p class="mt-4 text-gray-600">An AI Indian lawyer assistant designed to help everyday people with legal questions, resolve doubts, and solve complications. It can draft legal documents in seconds and even generate contextual images.</p>
+                            <a href="https://play.google.com/store/apps/details?id=com.rightsolution.niyamashakthi" target="_blank" class="mt-6 inline-block bg-blue-600 text-white font-semibold px-6 py-3 rounded-full hover:bg-blue-700 transition-transform duration-300 hover:scale-105 shadow-md">Download on Google Play</a>
                         </div>
                     </div>
-                    <div id="tab-right-law" class="tab-content">
-                         <div class="bg-white rounded-2xl shadow-xl overflow-hidden md:flex">
-                           <div class="md:w-1/3">
-                                <img src="https://raw.githubusercontent.com/user-attachments/assets/1fffc41c-2290-48e0-9e64-44ed548f0808/s1.png" class="h-full w-full object-cover" alt="Right Law v1">
-                           </div>
-                           <div class="p-8 md:p-10 md:w-2/3">
-                               <h3 class="text-2xl font-bold text-gray-900">Right Law v1: The Modern Lawyer's Workspace</h3>
-                               <p class="mt-4 text-gray-600">A dedicated platform for lawyers to manage clients and cases. Powered by Niyamashakthi AI for research, it features case scheduling, an AI prioritizer, outcome predictors, and a legal document generator.</p>
-                               <a href="https://niyamashakthiv1.vercel.app" target="_blank" class="mt-6 inline-block bg-indigo-600 text-white font-semibold px-6 py-3 rounded-full hover:bg-indigo-700 transition-transform duration-300 hover:scale-105 shadow-md">Visit the Platform</a>
-                           </div>
+                    <div id="tab-right-law" class="tab-content bg-white rounded-2xl shadow-xl overflow-hidden md:flex">
+                        <div class="md:w-1/3 bg-gray-900 flex items-center justify-center p-8">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-32 w-32 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5M5.625 1.5H9a2.25 2.25 0 012.25 2.25v1.5M15 1.5h-2.25a2.25 2.25 0 00-2.25 2.25v1.5m3 13.5H9A2.25 2.25 0 016.75 18v-1.5M15 22.5h-2.25a2.25 2.25 0 01-2.25-2.25v-1.5M8.25 6.75h7.5M8.25 12h7.5m-7.5 5.25h7.5" /></svg>
+                        </div>
+                        <div class="p-8 md:p-10 md:w-2/3">
+                            <h3 class="text-2xl font-bold text-gray-900">Right Law v1: The Modern Lawyer's Workspace</h3>
+                            <p class="mt-4 text-gray-600">A dedicated platform for lawyers to manage clients and cases. Powered by Niyamashakthi AI for research, it features case scheduling, an AI prioritizer, outcome predictors, and a legal document generator.</p>
+                            <a href="https://niyamashakthiv1.vercel.app" target="_blank" class="mt-6 inline-block bg-indigo-600 text-white font-semibold px-6 py-3 rounded-full hover:bg-indigo-700 transition-transform duration-300 hover:scale-105 shadow-md">Visit the Platform</a>
                         </div>
                     </div>
-                    <div id="tab-agnideva" class="tab-content">
-                         <div class="bg-white rounded-2xl shadow-xl overflow-hidden md:flex">
-                           <div class="md:w-1/3">
-                                <img src="https://raw.githubusercontent.com/user-attachments/assets/9f380753-2705-4c6e-8123-2895f5c3a388/s2.png" class="h-full w-full object-cover" alt="Agnideva AI">
-                           </div>
-                           <div class="p-8 md:p-10 md:w-2/3">
-                               <h3 class="text-2xl font-bold text-gray-900">Agnideva AI: Fire & Rescue Intelligence</h3>
-                               <p class="mt-4 text-gray-600">An advanced AI that analyzes fire accidents from drone or camera images. It generates instant initial reports, suggests response strategies, and analyzes gas content to aid first responders. Underwater AI vision is in development.</p>
-                               <span class="mt-6 inline-block bg-gray-400 text-white font-semibold px-6 py-3 rounded-full cursor-not-allowed">Coming Soon</span>
-                           </div>
+                    <div id="tab-agnideva" class="tab-content bg-white rounded-2xl shadow-xl overflow-hidden md:flex">
+                        <div class="md:w-1/3 bg-rose-900/90 flex items-center justify-center p-8">
+                             <svg xmlns="http://www.w3.org/2000/svg" class="h-32 w-32 text-rose-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.362 5.214A8.25 8.25 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.62a8.983 8.983 0 013.362-3.797A8.333 8.333 0 0112 5.25c1.153 0 2.243.235 3.226.664a8.287 8.287 0 00-2.862-1.7z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546A3.75 3.75 0 0012 18z" /></svg>
+                        </div>
+                        <div class="p-8 md:p-10 md:w-2/3">
+                            <h3 class="text-2xl font-bold text-gray-900">Agnideva AI: Fire & Rescue Intelligence</h3>
+                            <p class="mt-4 text-gray-600">An advanced AI that analyzes fire accidents from drone or camera images. It generates instant initial reports, suggests response strategies, and analyzes gas content to aid first responders. Underwater AI vision is in development.</p>
+                            <span class="mt-6 inline-block bg-gray-400 text-white font-semibold px-6 py-3 rounded-full cursor-not-allowed">Coming Soon</span>
                         </div>
                     </div>
                 </div>
-
             </div>
         </section>
 
@@ -245,7 +236,7 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div class="col-span-1 md:col-span-2">
                      <a href="#" class="flex items-center space-x-3 mb-4">
-                        <img src="https://raw.githubusercontent.com/user-attachments/assets/9583c272-b5f7-4395-9273-fa349692c814/rightsolutionslogo-com.png" alt="Right Solutions Logo" class="h-10 w-10">
+                        <img src="rightsolutionslogo-com.png" alt="Right Solutions Logo" class="h-10 w-10">
                         <span class="text-xl font-bold">Right Solutions</span>
                     </a>
                     <p class="text-gray-400">Your trusted partner for sales, service, and innovative AI software solutions based in Alappuzha, Kerala.</p>
