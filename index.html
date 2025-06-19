@@ -17,18 +17,17 @@
     
     <style>
         :root {
-            --bg-dark: #1A1D24;      /* Forged Charcoal */
-            --bg-light: #F1F5F9;     /* Slate 100 */
-            --text-dark: #334155;    /* Slate 700 */
-            --text-light: #E2E8F0;   /* Slate 200 */
-            --accent: #00F5A0;       /* Cyber Teal */
+            --bg-dark: #1A1D24;
+            --bg-light: #F1F5F9;
+            --text-dark: #334155;
+            --text-light: #E2E8F0;
+            --accent: #00F5A0;
             --accent-dark: #00C483;
         }
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-light); color: var(--text-dark); }
         h1, h2, h3, h4, h5, h6 { font-family: 'Space Grotesk', sans-serif; }
 
         @keyframes blueprint-scroll { from { background-position: 0 0; } to { background-position: -100px -100px; } }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes rotate-globe { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
         @keyframes ping { 0%, 100% { transform: scale(1); opacity: 0.7; } 50% { transform: scale(1.5); opacity: 0; } }
 
@@ -99,9 +98,9 @@
                 <a href="#platform" class="font-medium text-gray-600 hover:text-black transition-colors">Platform</a>
                 <a href="#contact" class="button-primary px-6 py-2 rounded-full">Start a Project</a>
             </div>
-            <button id="menu-button" class="md:hidden text-gray-700"> </button>
+            <button id="menu-button" class="md:hidden text-gray-700"></button>
         </nav>
-        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 space-y-2"> </div>
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 space-y-2"></div>
     </header>
 
     <main>
@@ -174,7 +173,7 @@
                     </div>
                 </div>
 
-                 <div class="grid md:grid-cols-2 gap-12 items-center" data-aos="fade-right">
+                <div class="grid md:grid-cols-2 gap-12 items-center" data-aos="fade-right">
                     <div class="p-8 glass-card">
                         <h3 class="text-3xl font-bold">Agnideva AI</h3>
                         <p class="mt-4 text-lg font-semibold text-slate-300">Actionable Intelligence for First Responders.</p>
@@ -191,7 +190,7 @@
             <div class="container mx-auto px-6 text-center" data-aos="fade-up">
                  <h2 class="text-4xl font-bold text-gray-900">The Forge: Our Development Platform</h2>
                  <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">This is where your vision meets our code. A collaborative, transparent environment where we transform your ideas into powerful, market-ready software. Partner with us and watch your project evolve from concept to reality.</p>
-                 <a href="https://niyamashakthi-gamma.vercel.app" target="_blank" rel="noopener noreferrer" class="button-primary px-10 py-4 rounded-full text-lg mt-8 inline-block">Explore The Platform</a>
+                 <a href="cloud.html" class="button-primary px-10 py-4 rounded-full text-lg mt-8 inline-block">Explore The Platform</a>
             </div>
         </section>
 
@@ -258,6 +257,16 @@
         
         particlesJS('particles-js', {"particles":{"number":{"value":60,"density":{"enable":true,"value_area":800}},"color":{"value":"#00F5A0"},"shape":{"type":"circle"},"opacity":{"value":0.5,"random":true,"anim":{"enable":true,"speed":1,"opacity_min":0.1,"sync":false}},"size":{"value":3,"random":true,"anim":{"enable":false}},"line_linked":{"enable":true,"distance":150,"color":"#E2E8F0","opacity":0.2,"width":1},"move":{"enable":true,"speed":1,"direction":"none","random":false,"straight":false,"out_mode":"out","bounce":false}},"interactivity":{"detect_on":"canvas","events":{"onhover":{"enable":true,"mode":"grab"},"onclick":{"enable":true,"mode":"push"},"resize":true},"modes":{"grab":{"distance":140,"line_linked":{"opacity":0.5}},"push":{"particles_nb":4}}},"retina_detect":true});
 
+        // --- NEW: Platform Button Intro Trigger ---
+        const platformButton = document.querySelector('#platform a');
+        if (platformButton) {
+            platformButton.addEventListener('click', function(event) {
+                event.preventDefault(); // Stop default link navigation
+                localStorage.setItem('playCloudIntro', 'true'); // Set flag for cloud.html
+                window.location.href = this.href; // Navigate to cloud.html
+            });
+        }
+        
         const form = document.getElementById('contact-form');
         const contactFormContainer = document.getElementById('contact-form-container');
         const successMessage = document.getElementById('success-message');
