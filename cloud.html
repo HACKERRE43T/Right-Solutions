@@ -47,16 +47,21 @@
         /* Spinner for loading buttons */
         .spinner { border: 2px solid rgba(255, 255, 255, 0.3); border-top-color: #ffffff; border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Mobile Sidebar */
+        @media (max-width: 767px) {
+            #sidebar.hidden-mobile { transform: translateX(-100%); }
+        }
     </style>
 </head>
 <body>
 
-    <div id="auth-container" class="hidden-view min-h-screen w-full flex flex-col items-center justify-center p-4 bg-slate-100 dark:bg-slate-900">
+    <div id="auth-container" class="hidden-view min-h-screen w-full flex flex-col items-center justify-center p-4 bg-slate-100 dark:bg-slate-900 transition-all-modern">
         </div>
     
     <div id="app-container" class="flex h-screen w-full hidden-view">
         <aside id="sidebar" class="glass-sidebar w-64 flex-shrink-0 border-r dark:border-slate-800 fixed inset-y-0 left-0 z-40 transform md:relative md:translate-x-0 hidden-mobile transition-all-modern">
-             <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center space-x-3">
+            <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center space-x-3">
                 <svg class="h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM10 17l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
                 <span class="text-xl font-bold text-slate-900 dark:text-white">Right Solutions</span>
             </div>
@@ -103,8 +108,8 @@
         </div>
     </div>
     
-    <div id="modal-container"></div>
-    <div id="notification-container"></div>
+    <div id="modal-container" class="fixed inset-0 z-50 transition-all-modern"></div>
+    <div id="notification-container" class="fixed bottom-5 right-5 z-50"></div>
     <textarea id="copy-helper" class="absolute -left-full"></textarea>
     
     <template id="api-key-template">
@@ -113,13 +118,13 @@
             <td class="whitespace-nowrap px-3 py-4 text-sm text-slate-500 dark:text-slate-400 font-mono key-display"></td>
             <td class="whitespace-nowrap px-3 py-4 text-sm text-slate-500 dark:text-slate-400 key-created"></td>
             <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                <button data-action="prompt-revoke-key" class="text-red-500 hover:text-red-400">Revoke</button>
+                <button data-action="revoke-key" class="text-red-500 hover:text-red-400">Revoke</button>
             </td>
         </tr>
     </template>
     
     <script>
-    // --- FINAL COMPREHENSIVE SCRIPT ---
+    // --- FINAL COMPREHENSIVE SCRIPT (ENHANCED) ---
     document.addEventListener('DOMContentLoaded', () => {
 
         // --- GLOBAL CONSTANTS & CONFIGURATION ---
@@ -131,11 +136,12 @@
                 { id: 'dashboard', label: 'Dashboard', icon: '<svg class="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" /></svg>' },
                 { id: 'dev-platform', label: 'Developer Platform', icon: '<svg class="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414l-3 3a1 1 0 01-1.414-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>' },
                 { id: 'marketplace', label: 'Marketplace', icon: '<svg class="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H4.792L4.25 1H3z" /><path d="M16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" /></svg>' }
-            ]
+            ],
+            themeIcons: {
+                dark: `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>`,
+                light: `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>`
+            }
         };
-        
-        // --- STATE MANAGEMENT ---
-        const AppState = {};
 
         // --- DOM REFERENCES ---
         const DOM = {
@@ -145,22 +151,354 @@
             mainContent: document.getElementById('main-content'),
             mainNav: document.getElementById('main-nav'),
             userMenu: document.getElementById('user-menu'),
-            get(id) { return document.getElementById(id); }
+            sidebar: document.getElementById('sidebar'),
+            modalContainer: document.getElementById('modal-container'),
+            notificationContainer: document.getElementById('notification-container'),
+            get: (id) => document.getElementById(id)
+        };
+        
+        // --- MOCK API: Simulates server interactions ---
+        const API = {
+            _simulateDelay: (ms = 500) => new Promise(res => setTimeout(res, ms)),
+
+            async createApiKey(name) {
+                await this._simulateDelay();
+                const newKey = {
+                    id: `rs_sk_${Date.now()}${Math.random().toString(36).substr(2, 9)}`,
+                    name: name,
+                    created: new Date().toISOString()
+                };
+                State.addApiKey(newKey);
+                return newKey;
+            },
+
+            async revokeApiKey(keyId) {
+                await this._simulateDelay();
+                State.removeApiKey(keyId);
+                return { success: true };
+            }
         };
 
-        // --- UTILITY FUNCTIONS ---
-        const Utils = {
+        // --- STATE MANAGEMENT: The single source of truth ---
+        const State = {
+            _data: {},
+            
+            init() {
+                const user = Auth.getCurrentUser();
+                if (!user) return;
+
+                const userStateKey = `appState_${user.email}`;
+                const savedState = localStorage.getItem(userStateKey);
+                const defaultState = {
+                    credits: CONFIG.initialCredits,
+                    apiKeys: [],
+                    projects: [...CONFIG.defaultProjects],
+                    activeProject: CONFIG.defaultProjects[0],
+                    activeNav: CONFIG.navItems[0].id
+                };
+                this._data = Object.assign(defaultState, savedState ? JSON.parse(savedState) : {});
+            },
+            
+            save() {
+                const user = Auth.getCurrentUser();
+                if (!user) return;
+                const userStateKey = `appState_${user.email}`;
+                localStorage.setItem(userStateKey, JSON.stringify(this._data));
+            },
+            
+            get(key) { return this._data[key]; },
+            set(key, value) { this._data[key] = value; this.save(); },
+            
+            addApiKey(key) { this._data.apiKeys.push(key); this.save(); },
+            removeApiKey(keyId) { this._data.apiKeys = this._data.apiKeys.filter(k => k.id !== keyId); this.save(); }
+        };
+
+        // --- AUTHENTICATION & SESSION ---
+        const Auth = {
+            _currentUser: null,
+
+            init() {
+                const user = sessionStorage.getItem('currentUser');
+                if (user) {
+                    this._currentUser = JSON.parse(user);
+                }
+            },
+
+            getCurrentUser: () => Auth._currentUser,
+            isAuthenticated: () => !!Auth._currentUser,
+
+            login(email, password) {
+                // WARNING: This is an insecure method for demonstration only.
+                // NEVER store passwords in plaintext in a real application.
+                const users = JSON.parse(localStorage.getItem('rightSolutionsUsers')) || [];
+                const user = users.find(u => u.email === email && u.password === password);
+                
+                if (user) {
+                    this._currentUser = { email: user.email };
+                    sessionStorage.setItem('currentUser', JSON.stringify(this._currentUser));
+                    return true;
+                }
+                return false;
+            },
+            
+            register(email, password) {
+                const users = JSON.parse(localStorage.getItem('rightSolutionsUsers')) || [];
+                if (users.some(u => u.email === email)) {
+                    throw new Error('An account with this email already exists.');
+                }
+                users.push({ email, password });
+                localStorage.setItem('rightSolutionsUsers', JSON.stringify(users));
+            },
+            
+            logout() {
+                State.save(); // Save user state before logging out
+                this._currentUser = null;
+                sessionStorage.removeItem('currentUser');
+            }
+        };
+
+        // --- UI & RENDER FUNCTIONS ---
+        const UI = {
+            init() {
+                if (Auth.isAuthenticated()) {
+                    this.showApp();
+                } else {
+                    this.showAuth();
+                }
+                this.initTheme();
+                this.bindGlobalEvents();
+            },
+            
+            // --- View Switching ---
+            showAuth() {
+                DOM.authContainer.innerHTML = this.renderAuthForm();
+                DOM.authContainer.classList.replace('hidden-view', 'visible-view');
+                DOM.appContainer.classList.replace('visible-view', 'hidden-view');
+            },
+
+            showApp() {
+                DOM.authContainer.classList.replace('visible-view', 'hidden-view');
+                DOM.appContainer.classList.replace('hidden-view', 'visible-view');
+                this.buildAppShell();
+                this.renderPage();
+            },
+
+            // --- App Shell & Page Rendering ---
+            buildAppShell() {
+                const user = Auth.getCurrentUser();
+                DOM.mainNav.innerHTML = CONFIG.navItems.map(item => `
+                    <a href="#${item.id}" data-action="navigate" data-page="${item.id}" class="nav-link flex items-center px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 border-l-4 border-transparent transition-all-modern">
+                        ${item.icon} ${item.label}
+                    </a>
+                `).join('');
+
+                DOM.get('user-menu-email').textContent = user.email;
+                DOM.get('user-avatar').src = `https://i.pravatar.cc/40?u=${user.email}`;
+                DOM.get('credit-amount').textContent = State.get('credits');
+            },
+            
+            renderPage() {
+                const pageId = State.get('activeNav');
+                let content = '';
+
+                switch (pageId) {
+                    case 'dashboard': content = this.renderDashboard(); break;
+                    case 'dev-platform': content = this.renderDevPlatform(); break;
+                    case 'marketplace': content = this.renderMarketplace(); break;
+                    default: content = this.renderDashboard();
+                }
+                
+                DOM.mainContent.innerHTML = content;
+                this.updateActiveNav();
+                this.initObservers();
+            },
+
+            updateActiveNav() {
+                const pageId = State.get('activeNav');
+                const page = CONFIG.navItems.find(p => p.id === pageId);
+                
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                const activeLink = document.querySelector(`.nav-link[data-page="${pageId}"]`);
+                if(activeLink) activeLink.classList.add('active');
+
+                DOM.get('header-title').textContent = page?.label || 'Dashboard';
+            },
+
+            // --- Page Content Renderers ---
+            renderDashboard() {
+                const user = Auth.getCurrentUser();
+                return `
+                    <div class="space-y-8">
+                        <div class="section-observer">
+                            <h2 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Welcome back, ${user.email.split('@')[0]}!</h2>
+                            <p class="mt-2 text-lg text-slate-600 dark:text-slate-400">Here's a snapshot of your account activity.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                           ${this.renderStatCard('Credits Remaining', `₹${State.get('credits')}`, 'text-green-500', 'M5 13l4 4L19 7')}
+                           ${this.renderStatCard('API Keys', State.get('apiKeys').length, 'text-blue-500', 'M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z')}
+                           ${this.renderStatCard('Active Projects', State.get('projects').length, 'text-indigo-500', 'M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.19a1.5 1.5 0 00-1.06-.44z')}
+                        </div>
+                    </div>
+                `;
+            },
+            
+            renderStatCard(title, value, color, svgPath) {
+                return `
+                <div class="section-observer interactive-card bg-white dark:bg-slate-800/50 rounded-xl shadow-md p-6 transition-all-modern">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500 dark:text-slate-400">${title}</p>
+                            <p class="text-3xl font-bold text-slate-900 dark:text-white mt-1">${value}</p>
+                        </div>
+                        <div class="w-12 h-12 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-900 ${color}">
+                            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="${svgPath}"></path></svg>
+                        </div>
+                    </div>
+                </div>`;
+            },
+            
+            renderDevPlatform() {
+                const keys = State.get('apiKeys');
+                const keysTable = keys.length > 0 ? `
+                    <table class="min-w-full divide-y divide-slate-300 dark:divide-slate-700">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-slate-900 dark:text-white sm:pl-0">Name</th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-slate-900 dark:text-white">API Key</th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-slate-900 dark:text-white">Created</th>
+                                <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0"><span class="sr-only">Actions</span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="api-keys-list" class="divide-y divide-slate-200 dark:divide-slate-800">
+                            ${keys.map(key => this.renderApiKeyRow(key)).join('')}
+                        </tbody>
+                    </table>
+                ` : `
+                    <div class="text-center py-12 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-lg">
+                        <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z"></path></svg>
+                        <h3 class="mt-2 text-sm font-medium text-slate-900 dark:text-white">No API keys</h3>
+                        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Get started by creating a new API key.</p>
+                    </div>
+                `;
+
+                return `
+                    <div class="space-y-8">
+                        <div class="sm:flex sm:items-center section-observer">
+                            <div class="sm:flex-auto">
+                                <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">API Keys</h2>
+                                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Manage your API keys to use the Right Solutions A.I. services.</p>
+                            </div>
+                            <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+                                <button type="button" data-action="create-key" class="btn-gradient inline-flex items-center justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all-modern">
+                                    Create New Key
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mt-8 flow-root section-observer">
+                            <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                                <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                                    ${keysTable}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            },
+            
+            renderApiKeyRow(key) {
+                const template = DOM.get('api-key-template').content.cloneNode(true);
+                const row = template.querySelector('tr');
+                row.dataset.keyId = key.id;
+                row.querySelector('.key-name').textContent = key.name;
+                row.querySelector('.key-display').textContent = `${key.id.substring(0, 10)}...${key.id.slice(-4)}`;
+                row.querySelector('.key-created').textContent = new Date(key.created).toLocaleDateString();
+                
+                // Add staggered animation effect
+                setTimeout(() => row.classList.remove('opacity-0', 'translate-y-2'), 50);
+                
+                return row.outerHTML;
+            },
+
+            renderMarketplace() {
+                return `
+                    <div class="text-center section-observer">
+                        <svg class="mx-auto h-24 w-24 text-blue-300 dark:text-blue-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" /></svg>
+                        <h2 class="mt-6 text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Marketplace Coming Soon</h2>
+                        <p class="mt-4 text-lg text-slate-600 dark:text-slate-400">Discover pre-built A.I. models and integrations.</p>
+                    </div>
+                `;
+            },
+            
+            renderAuthForm() {
+                return `
+                    <div class="w-full max-w-md space-y-8">
+                        <div class="text-center">
+                            <svg class="mx-auto h-12 w-auto text-blue-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM10 17l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+                            <h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-slate-900 dark:text-white">${CONFIG.appName}</h2>
+                            <p class="mt-2 text-center text-sm text-slate-600 dark:text-slate-400">Your intelligent solutions partner</p>
+                        </div>
+                        
+                        <div id="login-form-container" class="">
+                            <form id="login-form" class="space-y-6 bg-white dark:bg-slate-800/50 p-8 rounded-xl shadow-lg" novalidate>
+                                <input type="hidden" name="remember" value="true">
+                                <div class="space-y-4 rounded-md">
+                                    <div>
+                                        <label for="login-email" class="sr-only">Email address</label>
+                                        <input id="login-email" name="email" type="email" autocomplete="email" required class="relative block w-full appearance-none rounded-md border border-slate-300 dark:border-slate-700 px-3 py-2 text-slate-900 dark:text-white dark:bg-slate-900 placeholder-slate-500 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm" placeholder="Email address">
+                                    </div>
+                                    <div>
+                                        <label for="login-password" class="sr-only">Password</label>
+                                        <input id="login-password" name="password" type="password" autocomplete="current-password" required class="relative block w-full appearance-none rounded-md border border-slate-300 dark:border-slate-700 px-3 py-2 text-slate-900 dark:text-white dark:bg-slate-900 placeholder-slate-500 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm" placeholder="Password">
+                                    </div>
+                                </div>
+                                <div>
+                                    <button type="submit" class="btn-gradient group relative flex w-full justify-center rounded-md border border-transparent py-2 px-4 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all-modern">Sign in</button>
+                                </div>
+                                <p class="text-center text-sm">
+                                    <a href="#" id="show-register" class="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">Don't have an account? Register</a>
+                                </p>
+                            </form>
+                        </div>
+
+                        <div id="register-form-container" class="hidden">
+                             <form id="register-form" class="space-y-6 bg-white dark:bg-slate-800/50 p-8 rounded-xl shadow-lg" novalidate>
+                                <div class="space-y-4 rounded-md">
+                                    <div>
+                                        <label for="register-email" class="sr-only">Email address</label>
+                                        <input id="register-email" name="email" type="email" required class="relative block w-full appearance-none rounded-md border border-slate-300 dark:border-slate-700 px-3 py-2 text-slate-900 dark:text-white dark:bg-slate-900 placeholder-slate-500 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm" placeholder="Email address">
+                                    </div>
+                                    <div>
+                                        <label for="register-password" class="sr-only">Password</label>
+                                        <input id="register-password" name="password" type="password" required class="relative block w-full appearance-none rounded-md border border-slate-300 dark:border-slate-700 px-3 py-2 text-slate-900 dark:text-white dark:bg-slate-900 placeholder-slate-500 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm" placeholder="Password (min. 8 characters)">
+                                    </div>
+                                     <div>
+                                        <label for="register-password-confirm" class="sr-only">Confirm Password</label>
+                                        <input id="register-password-confirm" name="password-confirm" type="password" required class="relative block w-full appearance-none rounded-md border border-slate-300 dark:border-slate-700 px-3 py-2 text-slate-900 dark:text-white dark:bg-slate-900 placeholder-slate-500 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm" placeholder="Confirm Password">
+                                    </div>
+                                </div>
+                                <div>
+                                    <button type="submit" class="btn-gradient group relative flex w-full justify-center rounded-md border border-transparent py-2 px-4 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all-modern">Create Account</button>
+                                </div>
+                                <p class="text-center text-sm">
+                                    <a href="#" id="show-login" class="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">Already have an account? Sign In</a>
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+                `;
+            },
+
+            // --- UI Components & Utilities ---
             showNotification(message, type = 'success', duration = 3000) {
                 const colors = {
                     success: 'bg-green-500 dark:bg-green-600',
                     error: 'bg-red-500 dark:bg-red-600',
                     info: 'bg-blue-500 dark:bg-blue-600'
                 };
-                const container = DOM.get('notification-container');
                 const notif = document.createElement('div');
-                notif.className = `fixed bottom-5 right-5 text-white py-3 px-5 rounded-lg shadow-xl transition-all-modern transform translate-y-10 opacity-0 z-50 ${colors[type]}`;
+                notif.className = `text-white py-3 px-5 rounded-lg shadow-xl transition-all-modern transform translate-y-10 opacity-0 ${colors[type]}`;
                 notif.innerHTML = `<p>${message}</p>`;
-                container.appendChild(notif);
+                DOM.notificationContainer.appendChild(notif);
                 
                 setTimeout(() => notif.classList.remove('translate-y-10', 'opacity-0'), 10);
                 setTimeout(() => {
@@ -168,7 +506,55 @@
                     notif.addEventListener('transitionend', () => notif.remove());
                 }, duration);
             },
-            createModal(id, title, content, actions) { /* ... implementation ... */ },
+
+            async createModal({ title, content, confirmText = 'Confirm', cancelText = 'Cancel', isDestructive = false }) {
+                return new Promise((resolve) => {
+                    const confirmClass = isDestructive 
+                        ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500' 
+                        : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500';
+
+                    const modalHTML = `
+                        <div class="fixed inset-0 bg-black/50 transition-opacity" aria-hidden="true"></div>
+                        <div class="fixed inset-0 z-10 overflow-y-auto">
+                            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                                <div id="modal-panel" class="relative transform overflow-hidden rounded-lg bg-white dark:bg-slate-800 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg opacity-0 scale-95">
+                                    <div class="bg-white dark:bg-slate-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                        <div class="sm:flex sm:items-start">
+                                            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                                                <h3 class="text-lg font-medium leading-6 text-slate-900 dark:text-white" id="modal-title">${title}</h3>
+                                                <div class="mt-2">
+                                                    <div class="text-sm text-slate-500 dark:text-slate-400">${content}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="bg-slate-50 dark:bg-slate-800/50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                                        <button type="button" id="modal-confirm" class="inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm ${confirmClass}">${confirmText}</button>
+                                        <button type="button" id="modal-cancel" class="mt-3 inline-flex w-full justify-center rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-4 py-2 text-base font-medium text-slate-700 dark:text-slate-200 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm">
+                                            ${cancelText}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                    
+                    DOM.modalContainer.innerHTML = modalHTML;
+                    const modalPanel = DOM.get('modal-panel');
+                    setTimeout(() => modalPanel.classList.remove('opacity-0', 'scale-95'), 10);
+                    
+                    const closeModal = (value) => {
+                        modalPanel.classList.add('opacity-0', 'scale-95');
+                        modalPanel.addEventListener('transitionend', () => {
+                            DOM.modalContainer.innerHTML = '';
+                            resolve(value);
+                        }, { once: true });
+                    };
+
+                    DOM.get('modal-confirm').onclick = () => closeModal(true);
+                    DOM.get('modal-cancel').onclick = () => closeModal(false);
+                });
+            },
+
             toggleButtonLoading(button, isLoading) {
                 if (isLoading) {
                     button.dataset.originalContent = button.innerHTML;
@@ -179,213 +565,205 @@
                     button.disabled = false;
                 }
             },
-            getGreeting() {
-                const hour = new Date().getHours();
-                if (hour < 12) return 'Good morning';
-                if (hour < 18) return 'Good afternoon';
-                return 'Good evening';
-            }
-        };
-
-        // --- MAIN APPLICATION OBJECT ---
-        const App = {
-            init() {
-                this.initTheme();
-                this.buildAuthUI();
-                this.bindGlobalEvents();
-                this.checkAuthStatus();
-            },
             
-            // --- AUTHENTICATION & SESSION ---
-            checkAuthStatus() {
-                const user = sessionStorage.getItem('currentUser');
-                if (user) {
-                    AppState.isAuthenticated = true;
-                    AppState.currentUser = JSON.parse(user);
-                    this.initializeAppUI();
-                } else {
-                    this.showAuthUI();
-                }
-            },
-
-            showAuthUI() {
-                DOM.authContainer.classList.replace('hidden-view', 'visible-view');
-                DOM.appContainer.classList.replace('visible-view', 'hidden-view');
-            },
-
-            initializeAppUI() {
-                DOM.authContainer.classList.replace('visible-view', 'hidden-view');
-                DOM.appContainer.classList.replace('hidden-view', 'visible-view');
-                
-                this.loadUserState();
-                this.buildAppShell();
-                this.renderAll();
-                this.initObservers();
-            },
-
-            handleLogin(email, password) {
-                const users = JSON.parse(localStorage.getItem('rightSolutionsUsers')) || [];
-                const user = users.find(u => u.email === email && u.password === password); // NOTE: Insecure, for demo only
-                
-                if (user) {
-                    Utils.showNotification('Login successful!', 'success');
-                    AppState.isAuthenticated = true;
-                    AppState.currentUser = { email: user.email };
-                    sessionStorage.setItem('currentUser', JSON.stringify(AppState.currentUser));
-                    this.initializeAppUI();
-                } else {
-                    Utils.showNotification('Invalid email or password.', 'error');
-                }
-            },
-            
-            handleRegister(email, password, passwordConfirm) {
-                if (password.length < 8) { Utils.showNotification('Password must be at least 8 characters.', 'error'); return; }
-                if (password !== passwordConfirm) { Utils.showNotification('Passwords do not match.', 'error'); return; }
-                
-                const users = JSON.parse(localStorage.getItem('rightSolutionsUsers')) || [];
-                if (users.some(u => u.email === email)) { Utils.showNotification('An account with this email already exists.', 'error'); return; }
-                
-                users.push({ email, password });
-                localStorage.setItem('rightSolutionsUsers', JSON.stringify(users));
-                
-                Utils.showNotification('Registration successful! Please log in.', 'success');
-                DOM.get('login-form-container').classList.remove('hidden');
-                DOM.get('register-form-container').classList.add('hidden');
-                DOM.get('login-email').value = email;
-                DOM.get('login-password').focus();
-            },
-
-            handleLogout() {
-                this.saveUserState();
-                sessionStorage.removeItem('currentUser');
-                AppState.isAuthenticated = false;
-                AppState.currentUser = null;
-                this.showAuthUI();
-            },
-            
-            // --- USER-SPECIFIC STATE ---
-            loadUserState() {
-                const userStateKey = `appState_${AppState.currentUser.email}`;
-                const savedState = localStorage.getItem(userStateKey);
-                const defaultState = {
-                    credits: CONFIG.initialCredits, apiKeys: [], projects: [...CONFIG.defaultProjects],
-                    activeProject: CONFIG.defaultProjects[0], billingActive: false, playgroundUnlocked: false
-                };
-                Object.assign(AppState, defaultState, savedState ? JSON.parse(savedState) : {});
-            },
-
-            saveUserState() {
-                if (!AppState.currentUser) return;
-                const userStateKey = `appState_${AppState.currentUser.email}`;
-                const stateToSave = {
-                    credits: AppState.credits, apiKeys: AppState.apiKeys, projects: AppState.projects,
-                    activeProject: AppState.activeProject, billingActive: AppState.billingActive,
-                    playgroundUnlocked: AppState.playgroundUnlocked
-                };
-                localStorage.setItem(userStateKey, JSON.stringify(stateToSave));
-            },
-
-            // --- UI BUILDERS ---
-            buildAuthUI() { /* Already in HTML */ },
-
-            buildAppShell() {
-                // Build Sidebar
-                DOM.mainNav.innerHTML = CONFIG.navItems.map(item => `
-                    <a href="#${item.id}" data-action="navigate" class="nav-link flex items-center px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 border-l-4 border-transparent transition-all-modern">
-                        ${item.icon} ${item.label}
-                    </a>
-                `).join('');
-                DOM.mainNav.querySelector('.nav-link').classList.add('active');
-
-                // Set user-specific elements
-                DOM.get('user-menu-email').textContent = AppState.currentUser.email;
-                DOM.get('user-avatar').src = `https://i.pravatar.cc/40?u=${AppState.currentUser.email}`;
-                DOM.get('header-title').textContent = 'Dashboard';
-            },
-            
-            renderAll() {
-                // This is the main render function that updates the entire UI based on the current state.
-                // In a real framework this would be more efficient (virtual DOM), but for this demo it's fine.
-                // The actual content of each section would be generated here.
-                console.log("Rendering UI for user:", AppState.currentUser.email);
-                DOM.get('credit-amount').textContent = AppState.credits;
-                // ... and so on for every dynamic piece of the UI
-            },
-            
-            initObservers() { /* ... implementation ... */ },
-
-            // --- EVENT HANDLING ---
-            bindGlobalEvents() {
-                // Auth form events
-                DOM.get('auth-container').addEventListener('submit', e => {
-                    e.preventDefault();
-                    const form = e.target;
-                    const email = form.querySelector('input[type="email"]').value.toLowerCase();
-                    const password = form.querySelector('input[type="password"]').value;
-                    if (form.id === 'login-form') {
-                        this.handleLogin(email, password);
-                    } else if (form.id === 'register-form') {
-                        const passwordConfirm = form.querySelector('#register-password-confirm').value;
-                        this.handleRegister(email, password, passwordConfirm);
-                    }
-                });
-
-                DOM.get('auth-container').addEventListener('click', e => {
-                    const action = e.target.id;
-                    if (action === 'show-register' || action === 'show-login') {
-                        e.preventDefault();
-                        DOM.get('login-form-container').classList.toggle('hidden');
-                        DOM.get('register-form-container').classList.toggle('hidden');
-                    }
-                });
-
-                // App-wide events
-                DOM.get('theme-toggle').addEventListener('click', () => this.toggleTheme());
-                
-                DOM.appContainer.addEventListener('click', e => {
-                    const target = e.target;
-                    const actionTarget = target.closest('[data-action]');
-                    if (!actionTarget) {
-                        // Close user menu if clicking outside
-                        if (!target.closest('#user-profile-btn') && !DOM.userMenu.classList.contains('hidden')) {
-                           this.toggleUserMenu(false);
-                        }
-                        return;
-                    }
-
-                    const action = actionTarget.dataset.action;
-                    switch(action) {
-                        case 'toggle-theme': this.toggleTheme(); break;
-                        case 'toggle-user-menu': this.toggleUserMenu(); break;
-                        case 'logout': this.handleLogout(); break;
-                        case 'toggle-sidebar': DOM.get('sidebar').classList.toggle('hidden-mobile'); break;
-                        case 'navigate': 
-                            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                            actionTarget.classList.add('active');
-                            DOM.get('header-title').textContent = actionTarget.textContent.trim();
-                            // Logic to show the correct section would go here
-                            break;
-                        // ... all other app actions would be handled here
-                    }
-                });
-            },
-
             toggleUserMenu(forceState) {
                 const menu = DOM.userMenu;
-                const shouldBeHidden = forceState !== undefined ? !forceState : menu.classList.contains('hidden');
+                const isHidden = menu.classList.contains('hidden');
                 
-                if (shouldBeHidden) {
+                if (forceState === true || (forceState === undefined && isHidden)) { // Show
                     menu.classList.remove('hidden');
                     setTimeout(() => menu.classList.remove('scale-95', 'opacity-0'), 1);
-                } else {
+                } else { // Hide
                     menu.classList.add('scale-95', 'opacity-0');
                     menu.addEventListener('transitionend', () => menu.classList.add('hidden'), { once: true });
                 }
             },
+
+            // --- Observers & Theme ---
+            initObservers() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-visible');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.1 });
+
+                document.querySelectorAll('.section-observer').forEach(el => observer.observe(el));
+            },
             
-            // --- THEME MANAGEMENT ---
-            initTheme() { /* ... implementation ... */ },
-            toggleTheme() { /* ... implementation ... */ }
+            initTheme() {
+                const isDark = DOM.root.classList.contains('dark');
+                DOM.get('theme-toggle').innerHTML = isDark ? CONFIG.themeIcons.dark : CONFIG.themeIcons.light;
+            },
+
+            toggleTheme() {
+                DOM.root.classList.toggle('dark');
+                const isDark = DOM.root.classList.contains('dark');
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                this.initTheme();
+            },
+            
+            // --- Event Binding ---
+            bindGlobalEvents() {
+                DOM.authContainer.addEventListener('click', App.handleAuthEvents);
+                DOM.authContainer.addEventListener('submit', App.handleAuthEvents);
+                DOM.appContainer.addEventListener('click', App.handleAppEvents);
+                DOM.mainContent.addEventListener('click', App.handlePageSpecificEvents);
+            }
+        };
+        
+        // --- MAIN APPLICATION OBJECT: Orchestrates everything ---
+        const App = {
+            init() {
+                Auth.init();
+                State.init();
+                UI.init();
+            },
+
+            // --- Event Handlers ---
+            handleAuthEvents(e) {
+                const targetId = e.target.id;
+                
+                // Form submission
+                if (e.type === 'submit') {
+                    e.preventDefault();
+                    const form = e.target;
+                    const email = form.querySelector('input[type="email"]').value.trim().toLowerCase();
+                    const password = form.querySelector('input[type="password"]').value;
+                    
+                    if (form.id === 'login-form') {
+                        App.handleLogin(email, password);
+                    } else if (form.id === 'register-form') {
+                        const passwordConfirm = form.querySelector('#register-password-confirm').value;
+                        App.handleRegister(email, password, passwordConfirm);
+                    }
+                }
+                
+                // Link clicks for switching forms
+                if (e.type === 'click' && (targetId === 'show-register' || targetId === 'show-login')) {
+                    e.preventDefault();
+                    DOM.get('login-form-container').classList.toggle('hidden');
+                    DOM.get('register-form-container').classList.toggle('hidden');
+                }
+            },
+            
+            handleAppEvents(e) {
+                const actionTarget = e.target.closest('[data-action]');
+                if (!actionTarget) {
+                    if (!e.target.closest('[data-action="toggle-user-menu"]')) {
+                        UI.toggleUserMenu(false);
+                    }
+                    return;
+                }
+
+                const action = actionTarget.dataset.action;
+                switch(action) {
+                    case 'toggle-theme': UI.toggleTheme(); break;
+                    case 'toggle-user-menu': UI.toggleUserMenu(); break;
+                    case 'logout': App.handleLogout(); break;
+                    case 'toggle-sidebar': DOM.sidebar.classList.toggle('hidden-mobile'); break;
+                    case 'navigate': 
+                        State.set('activeNav', actionTarget.dataset.page);
+                        UI.renderPage();
+                        if (window.innerWidth < 768) { // Close sidebar on mobile nav
+                            DOM.sidebar.classList.add('hidden-mobile');
+                        }
+                        break;
+                }
+            },
+
+            async handlePageSpecificEvents(e) {
+                const actionTarget = e.target.closest('[data-action]');
+                if (!actionTarget) return;
+
+                const action = actionTarget.dataset.action;
+                const button = actionTarget;
+
+                switch(action) {
+                    case 'create-key':
+                        const confirmed = await UI.createModal({
+                            title: 'Create New API Key',
+                            content: `
+                                <label for="key-name" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Key Name</label>
+                                <input type="text" name="key-name" id="key-name" class="mt-1 block w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="e.g., My Test Server">
+                            `,
+                            confirmText: 'Create Key'
+                        });
+
+                        if (confirmed) {
+                            const keyName = DOM.get('key-name').value.trim();
+                            if (!keyName) {
+                                UI.showNotification('Key name cannot be empty.', 'error');
+                                return;
+                            }
+                            UI.toggleButtonLoading(button, true);
+                            try {
+                                await API.createApiKey(keyName);
+                                UI.showNotification('API Key created successfully!', 'success');
+                                UI.renderPage(); // Re-render the dev platform page
+                            } catch (err) {
+                                UI.showNotification(err.message, 'error');
+                            } finally {
+                                UI.toggleButtonLoading(button, false);
+                            }
+                        }
+                        break;
+                        
+                    case 'revoke-key':
+                        const keyRow = e.target.closest('tr');
+                        const keyId = keyRow.dataset.keyId;
+                        const keyDisplay = keyRow.querySelector('.key-display').textContent;
+                        
+                        const shouldRevoke = await UI.createModal({
+                            title: 'Revoke API Key',
+                            content: `Are you sure you want to revoke the key <strong>${keyDisplay}</strong>? This action cannot be undone.`,
+                            confirmText: 'Revoke Key',
+                            isDestructive: true
+                        });
+
+                        if (shouldRevoke) {
+                            keyRow.style.opacity = '0.5';
+                            await API.revokeApiKey(keyId);
+                            UI.showNotification('API Key successfully revoked.', 'success');
+                            UI.renderPage();
+                        }
+                        break;
+                }
+            },
+            
+            // --- Core Logic Methods ---
+            handleLogin(email, password) {
+                if (Auth.login(email, password)) {
+                    UI.showNotification('Login successful!', 'success');
+                    State.init();
+                    UI.showApp();
+                } else {
+                    UI.showNotification('Invalid email or password.', 'error');
+                }
+            },
+            
+            handleRegister(email, password, passwordConfirm) {
+                if (password.length < 8) { UI.showNotification('Password must be at least 8 characters.', 'error'); return; }
+                if (password !== passwordConfirm) { UI.showNotification('Passwords do not match.', 'error'); return; }
+                
+                try {
+                    Auth.register(email, password);
+                    UI.showNotification('Registration successful! Please log in.', 'success');
+                    DOM.get('login-form-container').classList.remove('hidden');
+                    DOM.get('register-form-container').classList.add('hidden');
+                    DOM.get('login-email').value = email;
+                    DOM.get('login-password').focus();
+                } catch (err) {
+                    UI.showNotification(err.message, 'error');
+                }
+            },
+
+            handleLogout() {
+                Auth.logout();
+                UI.showAuth();
+            }
         };
 
         // --- START THE APPLICATION ---
