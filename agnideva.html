@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agnideva.AI - Command Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #0a0a0a; color: #f0f0f0; }
+        .hero-gradient-text { 
+            background: linear-gradient(90deg, #FF8C00, #FF4500); 
+            -webkit-background-clip: text; 
+            background-clip: text;
+            -webkit-text-fill-color: transparent; 
+        }
+        .modal-backdrop { background-color: rgba(0,0,0,0.6); backdrop-filter: blur(5px); }
+        .hidden { display: none; }
+        .status-active { background-color: #ef4444; }
+        .status-closed { background-color: #6b7280; }
+        .skeleton { background-color: #1f2937; border-radius: 0.5rem; }
+        .skeleton-text { height: 1em; width: 75%; margin-top: 0.5rem; }
+        .animate-pulse-intense { animation: pulse-intense 1s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse-intense { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+    </style>
+</head>
+<body>
+
+    <!-- Main Container -->
+    <div id="app-container">
+
+        <!-- Login Screen -->
+        <div id="login-screen" class="w-full h-screen flex flex-col items-center justify-center bg-gray-900 text-white">
+            <div class="text-center mb-8">
+                <h1 class="text-5xl font-bold hero-gradient-text">Agnideva.AI</h1>
+                <p class="text-gray-400">Kerala Fire & Rescue Services Command Platform</p>
+            </div>
+            <form id="login-form" class="bg-black/50 p-8 rounded-lg w-full max-w-sm">
+                <h2 class="text-2xl font-bold mb-6 text-center">Unit Registration</h2>
+                <div class="mb-4">
+                    <label class="block text-sm font-bold mb-2">Select District</label>
+                    <select id="district-select" class="w-full bg-gray-700 p-3 rounded-md"></select>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-bold mb-2">Station Name / Unit ID</label>
+                    <input type="text" id="station-input" placeholder="e.g., Central Station, EKM-FRV01" class="w-full bg-gray-700 p-3 rounded-md" />
+                </div>
+                <button type="submit" class="w-full p-3 bg-orange-600 rounded-md font-bold hover:bg-orange-500 transition">Enter Command Center</button>
+            </form>
+        </div>
+
+        <!-- Dashboard Screen -->
+        <div id="dashboard-screen" class="p-8 hidden">
+             <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h1 class="text-3xl font-bold">Incidents Dashboard</h1>
+                    <p class="text-gray-400" id="dashboard-context"></p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div id="weather-widget-container"></div>
+                    <button id="create-incident-btn" class="px-4 py-2 bg-orange-600 rounded-md font-bold hover:bg-orange-500 transition">Create New Incident</button>
+                </div>
+            </div>
+            <div id="incidents-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Incident cards will be injected here -->
+            </div>
+        </div>
+
+        <!-- Incident Screen -->
+        <div id="incident-screen" class="hidden h-screen flex flex-col">
+            <div id="critical-alert-banner" class="hidden"></div>
+            <header class="p-6 pb-0 flex justify-between items-start">
+                 <div>
+                    <h1 id="incident-title" class="text-3xl font-bold"></h1>
+                    <p id="incident-subtitle" class="text-gray-400"></p>
+                 </div>
+                 <div class="flex items-center gap-4">
+                    <div id="incident-timer" class="text-xl font-mono bg-gray-800 px-3 py-1 rounded-md"></div>
+                    <button id="close-incident-btn" class="px-4 py-2 bg-yellow-600 rounded-md text-sm font-bold hover:bg-yellow-500">Close Incident</button>
+                    <button id="exit-incident-btn" class="px-4 py-2 bg-gray-700 rounded-md text-sm hover:bg-gray-600">Back to Dashboard</button>
+                 </div>
+            </header>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 p-6 pt-2 flex-1 min-h-0">
+                <div class="bg-black/50 rounded-lg p-4 flex flex-col">
+                    <div id="ai-tabs-container" class="flex border-b border-gray-700 mb-4 overflow-x-auto"></div>
+                    <div id="ai-content-container" class="flex-1 overflow-y-auto"></div>
+                </div>
+                <div class="flex flex-col gap-6">
+                    <div id="resource-tracker-container"></div>
+                    <div id="incident-log-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="modal-container"></div>
+
+    <!-- Firebase and App Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getFirestore, collection, onSnapshot, doc, updateDoc, addDoc, deleteDoc, query, getDocs, orderBy, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+        // --- Configuration & State ---
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { apiKey: "AIza...", authDomain: "...", projectId: "..." };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        const API_KEY = "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";
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'agnideva-ai-demo';
+
+        const KERALA_DISTRICTS = ["Alappuzha", "Ernakulam", "Idukki", "Kannur", "Kasaragod", "Kollam", "Kottayam", "Kozhikode", "Malappuram", "Palakkad", "Pathanamthitta", "Thiruvananthapuram", "Thrissur", "Wayanad"];
+        const INCIDENT_TYPES = ["Structure Fire", "Wildfire", "Vehicle Accident / Rescue", "Medical Emergency", "HAZMAT Spill", "Water Rescue", "Collapsed Structure"];
+        
+        let userContext = null;
+        let activeIncident = null;
+        let incidentsUnsubscribe = null;
+        let unitsUnsubscribe = null;
+        let logsUnsubscribe = null;
+        let logsCache = [];
+        let incidentTimerInterval = null;
+
+        const screens = {
+            login: document.getElementById('login-screen'),
+            dashboard: document.getElementById('dashboard-screen'),
+            incident: document.getElementById('incident-screen'),
+        };
+        const iconMap = {
+            image: `<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline>`,
+            rescue: `<path d="M18 8L22 12L18 16"/><path d="M2 12H22"/><path d="M6 8L2 12L6 16"/>`,
+            drone: `<path d="M12 18.5L6.5 15.5V8.5L12 5.5L17.5 8.5V15.5L12 18.5Z"/><path d="M12 11.5L17.5 8.5"/><path d="M12 11.5L6.5 8.5"/><path d="M12 11.5V18.5"/><path d="M5 17.5L3.5 16.5V7.5L5 6.5"/><path d="M19 17.5L20.5 16.5V7.5L19 6.5"/>`,
+            thermal: `<path d="M12 12a1.5 1.5 0 0 0-3 0V15a3 3 0 0 0 6 0V12a1.5 1.5 0 0 0-3 0Z"/><path d="M12 6a1.5 1.5 0 0 1-3 0V3a3 3 0 0 1 6 0V6a1.5 1.5 0 0 1-3 0Z"/><path d="M12 18a1.5 1.5 0 0 0-3 0v3a3 3 0 0 0 6 0v-3a1.5 1.5 0 0 0-3 0Z"/><path d="M16 6a1.5 1.5 0 0 0-3 0V3a3 3 0 0 0 6 0V6a1.5 1.5 0 0 0-3 0Z"/><path d="M8 18a1.5 1.5 0 0 1-3 0v-3a3 3 0 0 1 6 0v3a1.5 1.5 0 0 1-3 0Z"/>`,
+            wind: `<path d="M17.7 7.7C16.5 6.5 15 6 12 6s-4.5.5-5.7 1.7A5.2 5.2 0 0 0 5 12c0 2.2 1.8 4 4 4h6c2.2 0 4-1.8 4-4 0-1.5-.8-2.8-2-3.6z"/>`,
+            chat: `<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>`,
+            strategy: `<path d="M18 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="M12 16v-4"/><path d="M12 8h.01"/>`,
+            structure: `<path d="M2 22v-6"/><path d="M2 16h20"/><path d="M11.23 16a3 3 0 0 1 5.54 0"/><path d="M14 16.5v-13"/><path d="M14 3.5h-4v13h4"/>`
+        };
+        const getIconPath = (iconName) => iconMap[iconName] || '';
+
+        // --- UI Rendering ---
+        const render = () => {
+            Object.values(screens).forEach(s => s.classList.add('hidden'));
+            if (activeIncident) {
+                screens.incident.classList.remove('hidden');
+                renderIncidentScreen();
+            } else if (userContext) {
+                screens.dashboard.classList.remove('hidden');
+                renderDashboardScreen();
+            } else {
+                screens.login.classList.remove('hidden');
+            }
+        };
+        
+        const renderDashboardScreen = () => {
+            document.getElementById('dashboard-context').innerText = `${userContext.district} District | ${userContext.station} Station`;
+            renderWeatherWidget();
+            if(incidentsUnsubscribe) incidentsUnsubscribe();
+            const incidentsCollectionRef = collection(db, `artifacts/${appId}/public/data/districts`, userContext.district, 'incidents');
+            const q = query(incidentsCollectionRef, orderBy('createdAt', 'desc'));
+            const grid = document.getElementById('incidents-grid');
+            grid.innerHTML = Array(4).fill(IncidentCardSkeletonHTML()).join(''); // Skeleton loader
+
+            incidentsUnsubscribe = onSnapshot(q, snapshot => {
+                grid.innerHTML = '';
+                if(snapshot.empty) {
+                    grid.innerHTML = `<p class="text-gray-500 col-span-full text-center">No incidents found for ${userContext.district}. Create the first one!</p>`;
+                }
+                snapshot.docs.forEach(doc => {
+                    const incident = { id: doc.id, ...doc.data() };
+                    const card = document.createElement('div');
+                    card.className = 'bg-gray-800 p-4 rounded-lg flex flex-col justify-between';
+                    card.innerHTML = IncidentCardHTML(incident);
+                    grid.appendChild(card);
+                });
+            });
+        };
+
+        const renderIncidentScreen = () => {
+            document.getElementById('incident-title').innerText = activeIncident.title;
+            document.getElementById('incident-subtitle').innerText = `${activeIncident.type} | Incident #${activeIncident.id.slice(0,5)}`;
+            renderResourceTracker();
+            renderIncidentLog();
+            renderAITabs();
+            startIncidentTimer();
+        };
+
+        const renderAITabs = () => {
+             const tabs = [
+                { id: 'strategy', label: 'Strategy', icon: 'strategy' },
+                { id: 'structure', label: 'Structure', icon: 'structure' },
+                { id: 'rescue', label: 'Rescue', icon: 'rescue' },
+                { id: 'drone', label: 'Drone', icon: 'drone' },
+                { id: 'plume', label: 'Plume', icon: 'wind' },
+                { id: 'copilot', label: 'Copilot', icon: 'chat' }
+            ];
+            const container = document.getElementById('ai-tabs-container');
+            container.innerHTML = '';
+            tabs.forEach(tab => {
+                const button = document.createElement('button');
+                button.className = `ai-tab-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold rounded-t-md transition-colors text-gray-400 hover:text-white hover:bg-gray-800/50`;
+                button.dataset.tabId = tab.id;
+                button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${getIconPath(tab.icon)}</svg> ${tab.label}`;
+                container.appendChild(button);
+            });
+            switchTab('strategy'); // Activate first tab by default
+        };
+        
+        function switchTab(tabId) {
+            document.querySelectorAll('.ai-tab-btn').forEach(btn => {
+                btn.classList.toggle('bg-gray-800', btn.dataset.tabId === tabId);
+                btn.classList.toggle('text-white', btn.dataset.tabId === tabId);
+            });
+            const contentContainer = document.getElementById('ai-content-container');
+            
+            switch(tabId) {
+                case 'strategy': renderAIStrategyTool(contentContainer); break;
+                case 'structure': renderAIAnalysisComponent(contentContainer, 'Building', 'You are an AI specializing in structural engineering and fire science for the Kerala Fire and Rescue Services. Analyze this image of a building. Identify: 1. Construction Type (e.g., RCC, load-bearing brick, steel frame). 2. Key Structural Elements (beams, columns, trusses). 3. Potential Collapse Zones under fire conditions. 4. Specific vulnerabilities (e.g., large unsupported spans, signs of disrepair).'); break;
+                case 'rescue': renderAIAnalysisComponent(contentContainer, 'Rescue Scene', 'You are a technical rescue specialist for the Kerala Fire and Rescue Services. Analyze this image of a vehicle accident or collapsed structure. Provide an immediate action plan focusing on: 1. Scene Safety & Stabilization. 2. Potential Victim Locations & Triage. 3. Recommended Extrication/Entry Points. 4. Required Specialized Equipment.'); break;
+                case 'drone': renderAIAnalysisComponent(contentContainer, 'Drone', "You are an expert fire ground strategist analyzing this aerial drone image. Provide a concise, tactical summary. Focus on fire spread patterns, roof conditions, access/egress routes, and potential hotspots not visible from the ground."); break;
+                case 'plume': renderPlumeModeler(contentContainer); break;
+                case 'copilot': renderAiCopilotChat(contentContainer); break;
+            }
+        }
+        
+        // --- Event Delegation ---
+        document.addEventListener('click', async e => {
+            // Modals & Navigation
+            if (e.target.matches('#create-incident-btn')) showModal('create-incident-modal', CreateIncidentModalHTML());
+            if (e.target.matches('#add-resource-btn')) showModal('add-resource-modal', AddResourceModalHTML());
+            if (e.target.matches('#summarize-log-btn')) {
+                showModal('log-summary-modal', LogSummaryModalHTML());
+                generateLogSummary();
+            }
+            if (e.target.matches('.modal-close-btn')) {
+                const modal = e.target.closest('.modal-container');
+                if (modal) modal.remove();
+            }
+            
+            if (e.target.matches('.enter-workspace-btn')) {
+                activeIncident = JSON.parse(e.target.dataset.incidentId);
+                render();
+            }
+            if (e.target.matches('#exit-incident-btn')) {
+                activeIncident = null;
+                if(unitsUnsubscribe) unitsUnsubscribe();
+                if(logsUnsubscribe) logsUnsubscribe();
+                if(incidentTimerInterval) clearInterval(incidentTimerInterval);
+                render();
+            }
+            if (e.target.closest('.ai-tab-btn')) {
+                switchTab(e.target.closest('.ai-tab-btn').dataset.tabId);
+            }
+            if (e.target.closest('.delete-incident-btn')) {
+                const incident = JSON.parse(e.target.closest('.delete-incident-btn').dataset.incident);
+                if (confirm(`Are you sure you want to delete incident "${incident.title}"? This cannot be undone.`)) {
+                    deleteIncident(incident.id);
+                }
+            }
+            if (e.target.matches('#close-incident-btn')) {
+                if (confirm(`Are you sure you want to close this incident?`)) {
+                    const incidentDocRef = doc(db, `artifacts/${appId}/public/data/districts`, userContext.district, 'incidents', activeIncident.id);
+                    await updateDoc(incidentDocRef, { status: 'Closed' });
+                    document.getElementById('exit-incident-btn').click();
+                }
+            }
+
+            // Forms
+            if (e.target.matches('#create-incident-submit')) {
+                e.preventDefault();
+                const title = document.getElementById('new-incident-title').value;
+                const type = document.getElementById('new-incident-type').value;
+                if (!title.trim()) return;
+                const newIncident = { title, type, status: 'Active', createdAt: new Date() };
+                const incidentsCollectionRef = collection(db, `artifacts/${appId}/public/data/districts`, userContext.district, 'incidents');
+                const docRef = await addDoc(incidentsCollectionRef, newIncident);
+                activeIncident = { id: docRef.id, ...newIncident };
+                document.getElementById('create-incident-modal')?.remove();
+                render();
+            }
+            if (e.target.matches('#add-resource-submit')) {
+                e.preventDefault();
+                const name = document.getElementById('new-resource-name').value;
+                const location = document.getElementById('new-resource-location').value;
+                if (name.trim() === '') return;
+                const newUnit = { name, location, status: 'En Route', type: 'Generic' };
+                const unitsCollectionRef = collection(db, `artifacts/${appId}/public/data/districts`, userContext.district, 'incidents', activeIncident.id, 'units');
+                await addDoc(unitsCollectionRef, newUnit);
+                document.getElementById('add-resource-modal')?.remove();
+            }
+
+            // Actions
+            if (e.target.matches('#add-log-btn')) {
+                const input = document.getElementById('new-log-input');
+                if (input.value.trim() === '') return;
+                const logsCollectionRef = collection(db, `artifacts/${appId}/public/data/districts`, userContext.district, 'incidents', activeIncident.id, 'logs');
+                await addDoc(logsCollectionRef, { text: input.value, timestamp: new Date() });
+                input.value = '';
+            }
+            if (e.target.closest('.delete-unit-btn')) {
+                const unitId = e.target.closest('.delete-unit-btn').dataset.unitId;
+                if (confirm("Are you sure you want to delete this unit?")) {
+                    const unitDocRef = doc(db, `artifacts/${appId}/public/data/districts`, userContext.district, 'incidents', activeIncident.id, 'units', unitId);
+                    await deleteDoc(unitDocRef);
+                }
+            }
+        });
+
+        document.addEventListener('change', async e => {
+            if (e.target.matches('.unit-status-select')) {
+                 const unitId = e.target.dataset.unitId;
+                 const newStatus = e.target.value;
+                 const unitDocRef = doc(db, `artifacts/${appId}/public/data/districts`, userContext.district, 'incidents', activeIncident.id, 'units', unitId);
+                 await updateDoc(unitDocRef, { status: newStatus });
+            }
+            if (e.target.matches('#new-incident-type')) {
+                const type = e.target.value;
+                const recommendationDiv = document.getElementById('ai-resource-recommendation');
+                if (recommendationDiv) {
+                     recommendationDiv.innerText = getResourceRecommendation(type);
+                }
+            }
+        });
+
+        // --- Initialization ---
+        const init = async () => {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) await signInWithCustomToken(auth, __initial_auth_token);
+                else await signInAnonymously(auth);
+            } catch(error) { console.error("Authentication failed:", error); }
+            
+            const districtSelect = document.getElementById('district-select');
+            KERALA_DISTRICTS.forEach(d => {
+                const option = document.createElement('option');
+                option.value = d;
+                option.innerText = d;
+                districtSelect.appendChild(option);
+            });
+
+            document.getElementById('login-form').addEventListener('submit', e => {
+                e.preventDefault();
+                const station = document.getElementById('station-input').value;
+                if(station.trim()){
+                    userContext = { district: districtSelect.value, station: station.trim() };
+                    render();
+                } else { alert('Please enter a station name.'); }
+            });
+            render();
+        };
+
+        init();
+        
+        // --- Component HTML Generators ---
+        const showModal = (id, content) => {
+            const container = document.getElementById('modal-container');
+            const modal = document.createElement('div');
+            modal.id = id;
+            modal.className = 'modal-container fixed inset-0 modal-backdrop flex items-center justify-center z-50';
+            modal.innerHTML = content;
+            container.appendChild(modal);
+             if (id === 'create-incident-modal') {
+                document.getElementById('new-incident-type').dispatchEvent(new Event('change'));
+            }
+        };
+        const IncidentCardSkeletonHTML = () => `<div class="bg-gray-800 p-4 rounded-lg animate-pulse"><div class="skeleton h-4 w-1/4"></div><div class="skeleton h-6 w-3/4 mt-2"></div><div class="skeleton h-4 w-1/2 mt-2"></div><div class="skeleton h-10 w-full mt-4"></div></div>`;
+        const CreateIncidentModalHTML = () => `<div class="bg-gray-800 p-6 rounded-lg w-full max-w-md"><h3 class="text-xl font-bold mb-4">Create New Incident Workspace</h3><form id="create-incident-form"><div class="mb-4"><label class="block text-sm mb-1">Incident Title / Address</label><input type="text" id="new-incident-title" class="w-full bg-gray-700 p-2 rounded-md" required /></div><div class="mb-4"><label class="block text-sm mb-1">Incident Type</label><select id="new-incident-type" class="w-full bg-gray-700 p-2 rounded-md">${INCIDENT_TYPES.map(t => `<option value="${t}">${t}</option>`).join('')}</select></div><div id="ai-resource-recommendation" class="text-sm text-gray-400 p-3 bg-gray-900/50 rounded-md mb-4"></div><div class="flex justify-end gap-4"><button type="button" class="modal-close-btn px-4 py-2 bg-gray-600 rounded-md">Cancel</button><button type="submit" id="create-incident-submit" class="px-4 py-2 bg-orange-600 rounded-md">Create & Enter</button></div></form></div>`;
+        const AddResourceModalHTML = () => `<div class="bg-gray-800 p-6 rounded-lg w-full max-w-sm"><h3 class="text-xl font-bold mb-4">Add New Resource</h3><form id="add-resource-form"><div class="mb-4"><label class="block text-sm mb-1">Unit Name (e.g., K05-DCP)</label><input type="text" id="new-resource-name" class="w-full bg-gray-700 p-2 rounded-md" required /></div><div class="mb-4"><label class="block text-sm mb-1">Initial Assignment</label><input type="text" id="new-resource-location" class="w-full bg-gray-700 p-2 rounded-md" /></div><div class="flex justify-end gap-4"><button type="button" class="modal-close-btn px-4 py-2 bg-gray-600 rounded-md">Cancel</button><button type="submit" id="add-resource-submit" class="px-4 py-2 bg-orange-600 rounded-md">Add Unit</button></div></form></div>`;
+        const LogSummaryModalHTML = () => `<div class="bg-gray-800 p-6 rounded-lg w-full max-w-lg"><h3 class="text-xl font-bold mb-4">AI Incident Summary</h3><div id="summary-content" class="p-4 bg-gray-900 rounded-md min-h-[200px] whitespace-pre-wrap">Generating...</div><div class="flex justify-end mt-4"><button type="button" class="modal-close-btn px-4 py-2 bg-orange-600 rounded-md">Close</button></div></div>`;
+        const IncidentCardHTML = (incident) => `
+            <div>
+                 <div class="flex justify-between items-start">
+                    <span class="text-xs font-bold px-2 py-1 rounded-full ${incident.status === 'Active' ? 'bg-red-500/20 text-red-400' : 'bg-gray-500/20 text-gray-400'}">${incident.status}</span>
+                    <button class="delete-incident-btn text-gray-500 hover:text-red-500" data-incident='${JSON.stringify(incident)}'><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
+                </div>
+                <h3 class="text-xl font-bold mt-2">${incident.title}</h3>
+                <p class="text-sm text-gray-400">${incident.type}</p>
+            </div>
+            <button data-incident-id='${JSON.stringify(incident)}' class="enter-workspace-btn mt-4 w-full p-2 bg-blue-600 rounded-md text-sm font-bold hover:bg-blue-500 transition">Enter Workspace</button>
+        `;
+        
+        // --- Full Component Renderers ---
+        function renderResourceTracker() {
+            const container = document.getElementById('resource-tracker-container');
+            container.innerHTML = `<div class="bg-black/50 rounded-lg p-4 flex-1 flex flex-col min-h-[300px]"><div class="flex justify-between items-center mb-3"><h3 class="text-lg font-semibold text-white">Resource Tracker</h3><button id="add-resource-btn" class="text-xs bg-green-600 hover:bg-green-500 text-white font-bold py-1 px-2 rounded">+</button></div><div class="overflow-y-auto"><table class="w-full text-left text-sm"><thead><tr class="border-b border-gray-700"><th class="py-2">Unit</th><th class="py-2">Assignment</th><th class="py-2">Status</th><th class="py-2"></th></tr></thead><tbody id="units-tbody"></tbody></table></div></div>`;
+            
+            if(unitsUnsubscribe) unitsUnsubscribe();
+            const unitsCollectionRef = collection(db, `artifacts/${appId}/public/data/districts`, userContext.district, 'incidents', activeIncident.id, 'units');
+            const q = query(unitsCollectionRef);
+            unitsUnsubscribe = onSnapshot(q, snapshot => {
+                const tbody = document.getElementById('units-tbody');
+                if (!tbody) return;
+                tbody.innerHTML = '';
+                snapshot.docs.forEach(doc => {
+                    const unit = { id: doc.id, ...doc.data() };
+                    const tr = document.createElement('tr');
+                    tr.className = 'border-b border-gray-800 hover:bg-gray-800/50';
+                    tr.innerHTML = `
+                        <td class="py-2 font-bold">${unit.name}</td>
+                        <td class="py-2 text-gray-300">${unit.location}</td>
+                        <td class="py-2">
+                           <select data-unit-id="${unit.id}" class="unit-status-select px-2 py-1 rounded text-xs font-semibold border-none outline-none appearance-none bg-gray-700 text-white">
+                               <option>On Scene</option><option>En Route</option><option>Staging</option><option>Command</option><option>Returning</option>
+                           </select>
+                        </td>
+                        <td class="py-2 text-right"><button data-unit-id="${unit.id}" class="delete-unit-btn text-red-500 hover:text-red-400"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></td>
+                    `;
+                    tr.querySelector('select').value = unit.status; // Set current status
+                    tbody.appendChild(tr);
+                });
+            });
+        }
+
+        function renderIncidentLog() {
+             const container = document.getElementById('incident-log-container');
+             container.innerHTML = `<div class="bg-black/50 rounded-lg p-4 flex-1 flex flex-col min-h-0"><div class="flex justify-between items-center mb-3"><h3 class="text-lg font-semibold text-white">Live Incident Log</h3><button id="summarize-log-btn" class="text-xs bg-blue-600 hover:bg-blue-500 text-white font-bold py-1 px-2 rounded">AI Summary</button></div><div id="log-entries" class="flex-1 overflow-y-auto pr-2 mb-3"></div><div class="flex items-center gap-2"><input type="text" id="new-log-input" placeholder="Add manual log entry..." class="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:ring-1 focus:ring-orange-500"/><button id="add-log-btn" class="px-4 py-1.5 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-500 transition">Log</button></div></div>`;
+             
+             if(logsUnsubscribe) logsUnsubscribe();
+             const logsCollectionRef = collection(db, `artifacts/${appId}/public/data/districts`, userContext.district, 'incidents', activeIncident.id, 'logs');
+             const q = query(logsCollectionRef, orderBy("timestamp", "asc"));
+             logsUnsubscribe = onSnapshot(q, snapshot => {
+                const logEntries = document.getElementById('log-entries');
+                if(!logEntries) return;
+                logEntries.innerHTML = '';
+                logsCache = [];
+                snapshot.docs.forEach(doc => {
+                    const log = { ...doc.data(), time: doc.data().timestamp.toDate() };
+                    logsCache.push(log);
+                    const div = document.createElement('div');
+                    div.className = 'text-sm text-gray-300 mb-2 border-l-2 border-gray-700 pl-3';
+                    div.innerHTML = `<span class="text-gray-500 mr-2">${log.time.toLocaleTimeString()}</span>${log.text}`;
+                    logEntries.appendChild(div);
+                });
+                logEntries.scrollTop = logEntries.scrollHeight;
+             });
+        }
+        
+        async function generateLogSummary() {
+            const contentDiv = document.getElementById('summary-content');
+            if(!contentDiv || logsCache.length === 0) {
+                if(contentDiv) contentDiv.innerText = "No log entries to summarize.";
+                return;
+            }
+            
+            const logText = logsCache.map(l => `${l.time.toLocaleTimeString()}: ${l.text}`).join("\n");
+            const prompt = `Summarize the following incident log into a brief, bulleted list of key events.\n\nLOG:\n${logText}`;
+            const payload = { model: "gpt-4-turbo", messages: [{ role: "user", content: prompt }] };
+            try { 
+                const response = await fetch("https://api.openai.com/v1/chat/completions", { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${API_KEY}` }, body: JSON.stringify(payload) }); 
+                const result = await response.json(); 
+                contentDiv.innerText = result.choices?.[0]?.message?.content || "Error generating summary."; 
+            } catch (error) { 
+                contentDiv.innerText = "Failed to connect to AI.";
+            }
+        }
+        
+        function renderAIAnalysisComponent(container, title, prompt) {
+            container.innerHTML = `<div class="h-full flex flex-col">
+                <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 overflow-y-auto pr-2">
+                    <div class="flex flex-col">
+                        <div class="ai-image-dropzone flex-1 w-full bg-gray-900/50 rounded-md border-2 border-dashed border-gray-600 flex items-center justify-center text-center p-4 cursor-pointer hover:border-orange-500 transition">
+                            <p class="text-gray-400">Click to upload ${title} image</p>
+                            <img class="ai-image-preview hidden max-h-full max-w-full object-contain rounded-md" />
+                            <input type="file" class="ai-image-input hidden" accept="image/*" />
+                        </div>
+                         <button class="ai-analyze-btn mt-4 w-full px-6 py-2 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-500 disabled:bg-gray-600 disabled:cursor-not-allowed transition" disabled>Analyze ${title}</button>
+                    </div>
+                    <div class="bg-gray-900/50 rounded-md p-4 overflow-y-auto">
+                        <h4 class="font-semibold text-white mb-2">Tactical Analysis</h4>
+                        <div class="ai-analysis-output text-gray-300 text-sm whitespace-pre-wrap"></div>
+                    </div>
+                </div>
+            </div>`;
+
+            const dropzone = container.querySelector('.ai-image-dropzone');
+            const input = container.querySelector('.ai-image-input');
+            const preview = container.querySelector('.ai-image-preview');
+            const analyzeBtn = container.querySelector('.ai-analyze-btn');
+            const output = container.querySelector('.ai-analysis-output');
+            let imageDataUrl = null;
+
+            dropzone.addEventListener('click', () => input.click());
+            input.addEventListener('change', (e) => {
+                if (e.target.files[0]) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        imageDataUrl = reader.result;
+                        preview.src = imageDataUrl;
+                        preview.classList.remove('hidden');
+                        dropzone.querySelector('p').classList.add('hidden');
+                        analyzeBtn.disabled = false;
+                    };
+                    reader.readAsDataURL(e.target.files[0]);
+                }
+            });
+
+            analyzeBtn.addEventListener('click', async () => {
+                if (!imageDataUrl) return;
+                analyzeBtn.disabled = true;
+                analyzeBtn.innerText = 'Analyzing...';
+                output.innerText = 'AI is analyzing the image...';
+                
+                const payload = { model: "gpt-4-turbo", messages: [{ role: "user", content: [{ type: "text", text: prompt }, { type: "image_url", image_url: { url: imageDataUrl } }] }], max_tokens: 500 };
+                try {
+                    const response = await fetch("https://api.openai.com/v1/chat/completions", { method: "POST", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${API_KEY}` }, body: JSON.stringify(payload) });
+                    const result = await response.json();
+                    output.innerText = result.choices?.[0]?.message?.content || "Failed to get analysis.";
+                } catch (error) {
+                    output.innerText = "An error occurred while communicating with the AI.";
+                } finally {
+                    analyzeBtn.disabled = false;
+                    analyzeBtn.innerText = `Analyze ${title}`;
+                }
+            });
+        }
+
+        function renderPlumeModeler(container) {
+             container.innerHTML = `<div class="h-full flex flex-col">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-sm font-bold">Chemical Name</label>
+                            <input type="text" id="plume-chemical" placeholder="e.g., Chlorine, Ammonia" class="w-full mt-1 bg-gray-700 p-2 rounded-md text-white" />
+                        </div>
+                        <div>
+                            <label class="text-sm font-bold">Wind Speed (km/h)</label>
+                            <input type="number" id="plume-wind-speed" value="10" class="w-full mt-1 bg-gray-700 p-2 rounded-md text-white" />
+                        </div>
+                        <div>
+                            <label class="text-sm font-bold">Wind Direction (from)</label>
+                            <input type="range" id="plume-wind-direction" min="0" max="360" value="0" class="w-full mt-1" />
+                            <div class="text-center font-bold" id="plume-direction-label">0°</div>
+                        </div>
+                        <button id="plume-analyze-btn" class="w-full px-6 py-2 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-500 disabled:bg-gray-600 disabled:cursor-not-allowed transition">Model Plume</button>
+                    </div>
+                    <div class="bg-gray-900/50 rounded-md p-2 flex items-center justify-center">
+                        <div class="w-full h-full border border-dashed border-gray-600 relative">
+                             <svg width="100%" height="100%" viewBox="0 0 100 100"><text x="50" y="8" text-anchor="middle" fill="#6b7280" font-size="6">N</text><text x="92" y="52" text-anchor="middle" fill="#6b7280" font-size="6">E</text><text x="50" y="96" text-anchor="middle" fill="#6b7280" font-size="6">S</text><text x="8" y="52" text-anchor="middle" fill="#6b7280" font-size="6">W</text><polygon id="plume-polygon" points="50,50 30,10 70,10" fill="rgba(255, 87, 34, 0.5)" stroke="rgba(255, 87, 34, 1)" stroke-width="0.5" /><circle cx="50" cy="50" r="3" fill="red" /></svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-900/50 rounded-md p-4 mt-4 overflow-y-auto flex-1">
+                    <h4 class="font-semibold text-white mb-2">Tactical Advisory</h4>
+                    <div id="plume-output" class="text-gray-300 text-sm whitespace-pre-wrap"></div>
+                </div>
+            </div>`;
+
+            const directionSlider = container.querySelector('#plume-wind-direction');
+            const directionLabel = container.querySelector('#plume-direction-label');
+            const plumePolygon = container.querySelector('#plume-polygon');
+            const analyzeBtn = container.querySelector('#plume-analyze-btn');
+
+            directionSlider.addEventListener('input', () => {
+                directionLabel.innerText = `${directionSlider.value}°`;
+                plumePolygon.style.transform = `rotate(${directionSlider.value}deg)`;
+                plumePolygon.style.transformOrigin = `50% 50%`;
+            });
+
+            analyzeBtn.addEventListener('click', async () => {
+                 const chemical = container.querySelector('#plume-chemical').value;
+                 const windSpeed = container.querySelector('#plume-wind-speed').value;
+                 const windDirection = directionSlider.value;
+                 const output = container.querySelector('#plume-output');
+
+                 if(!chemical) { alert("Please enter a chemical name."); return; }
+                 analyzeBtn.disabled = true; analyzeBtn.innerText = 'Analyzing...';
+                 output.innerText = 'AI is analyzing the plume model...';
+
+                 const prompt = `A hazardous material spill of '${chemical}' has occurred. Wind is from ${windDirection}° at ${windSpeed} km/h. Provide a tactical advisory including: 1. Primary Hazards of this chemical. 2. Recommended immediate evacuation distance. 3. Recommended Personal Protective Equipment (PPE) level. 4. Downwind areas at highest risk. Be concise and use clear headings.`;
+                 const payload = { model: "gpt-4-turbo", messages: [{ role: "user", content: prompt }] };
+                 try {
+                     const response = await fetch("https://api.openai.com/v1/chat/completions", { method: "POST", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${API_KEY}` }, body: JSON.stringify(payload) });
+                     const result = await response.json();
+                     output.innerText = result.choices?.[0]?.message?.content || "Failed to get analysis.";
+                 } catch (error) { output.innerText = "An error occurred while communicating with the AI."; } 
+                 finally { analyzeBtn.disabled = false; analyzeBtn.innerText = 'Model Plume'; }
+            });
+        }
+        
+        function renderAiCopilotChat(container) {
+            container.innerHTML = `
+            <div class="flex flex-col h-full">
+                <div id="copilot-messages" class="flex-1 overflow-y-auto pr-2 space-y-4"></div>
+                <div class="mt-4 flex items-center gap-3">
+                    <input type="text" id="copilot-input" placeholder="Ask Agni-Copilot..." class="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-orange-500" />
+                    <button id="copilot-send-btn" class="p-3 bg-orange-600 text-white rounded-lg hover:bg-orange-500 disabled:bg-gray-500 transition"></button>
+                </div>
+            </div>`;
+            
+            const messagesDiv = container.querySelector('#copilot-messages');
+            const input = container.querySelector('#copilot-input');
+            const sendBtn = container.querySelector('#copilot-send-btn');
+            sendBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>`;
+            let messages = [{ role: 'assistant', text: "Agni-Copilot active. I'm monitoring all channels. How can I assist?" }];
+            let loading = false;
+            
+            const renderMessages = () => {
+                messagesDiv.innerHTML = '';
+                messages.forEach(msg => {
+                    const div = document.createElement('div');
+                    div.className = `flex items-start gap-3 ${msg.role === 'user' ? 'justify-end' : ''}`;
+                    div.innerHTML = `
+                        ${msg.role === 'assistant' ? `<div class="flex-shrink-0 w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hero-gradient-text">${getIconPath('bot')}</svg></div>` : ''}
+                        <div class="max-w-md p-3 rounded-lg ${msg.role === 'user' ? 'bg-blue-600 text-white' : 'bg-gray-800'}"><p class="text-sm">${msg.text}</p></div>
+                        ${msg.role === 'user' ? `<div class="flex-shrink-0 w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>` : ''}
+                    `;
+                    messagesDiv.appendChild(div);
+                });
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }
+            
+            const handleSend = async () => {
+                if (!input.value.trim() || loading) return;
+                loading = true;
+                sendBtn.disabled = true;
+                messages.push({ role: 'user', text: input.value });
+                renderMessages();
+                const currentInput = input.value;
+                input.value = '';
+                
+                const prompt = `You are Agni-Copilot, an AI assistant for a fire incident commander with Kerala Fire and Rescue Services. You are direct, concise, and provide actionable information for an active "${activeIncident.type}" incident. Respond to: "${currentInput}"`;
+                const payload = { model: "gpt-4-turbo", messages: [{ role: "user", content: prompt }] };
+                 try {
+                     const response = await fetch("https://api.openai.com/v1/chat/completions", { method: "POST", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${API_KEY}` }, body: JSON.stringify(payload) });
+                     const result = await response.json();
+                     messages.push({ role: 'assistant', text: result.choices?.[0]?.message?.content || "Failed to get analysis." });
+                 } catch (error) { 
+                     messages.push({ role: 'assistant', text: "Error connecting to AI service." });
+                 } finally { 
+                    loading = false; 
+                    sendBtn.disabled = false;
+                    renderMessages();
+                 }
+            };
+            
+            sendBtn.addEventListener('click', handleSend);
+            input.addEventListener('keypress', e => { if(e.key === 'Enter') handleSend(); });
+            
+            renderMessages();
+        }
+
+        function renderAIStrategyTool(container) {
+            container.innerHTML = `<div class="h-full flex flex-col p-2">
+                <h4 class="font-semibold text-white mb-2">Pre-Arrival AI Strategy</h4>
+                <p class="text-sm text-gray-400 mb-4">Enter dispatch information to get an initial tactical plan.</p>
+                <textarea id="strategy-input" class="w-full h-24 bg-gray-900/50 p-2 rounded-md mb-4" placeholder="e.g., 'Report of smoke from a textile shop, 2nd floor, Broadway Market. Unknown occupancy.'"></textarea>
+                <button id="strategy-generate-btn" class="w-full px-6 py-2 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-500 disabled:bg-gray-600 transition">Generate Initial Strategy</button>
+                <div class="bg-gray-900/50 rounded-md p-4 mt-4 overflow-y-auto flex-1">
+                    <h4 class="font-semibold text-white mb-2">AI Strategic Recommendations</h4>
+                    <div id="strategy-output" class="text-gray-300 text-sm whitespace-pre-wrap"></div>
+                </div>
+            </div>`;
+
+            const generateBtn = container.querySelector('#strategy-generate-btn');
+            generateBtn.addEventListener('click', async () => {
+                const input = container.querySelector('#strategy-input').value;
+                const output = container.querySelector('#strategy-output');
+                if (!input.trim()) {
+                    alert('Please enter dispatch information.');
+                    return;
+                }
+                generateBtn.disabled = true;
+                generateBtn.innerText = 'Generating...';
+                output.innerText = 'AI is formulating a plan...';
+
+                const prompt = `You are an experienced Incident Commander for Kerala Fire and Rescue Services. Based on the following dispatch information for a "${activeIncident.type}", provide an initial strategic plan. Include: 1. Tactical Priorities. 2. Initial Apparatus Positioning. 3. Key Safety Concerns. 4. First-in Crew Assignments.\n\nDispatch Info: ${input}`;
+                const payload = { model: "gpt-4-turbo", messages: [{ role: "user", content: prompt }] };
+                try {
+                     const response = await fetch("https://api.openai.com/v1/chat/completions", { method: "POST", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${API_KEY}` }, body: JSON.stringify(payload) });
+                     const result = await response.json();
+                     output.innerText = result.choices?.[0]?.message?.content || "Failed to generate strategy.";
+                } catch (error) { output.innerText = "An error occurred while communicating with the AI."; } 
+                finally { generateBtn.disabled = false; generateBtn.innerText = 'Generate Initial Strategy'; }
+            });
+        }
+        
+        function renderWeatherWidget() {
+            const container = document.getElementById('weather-widget-container');
+            container.innerHTML = `<div class="bg-gray-800 p-2 rounded-lg text-sm text-center animate-pulse"><div class="skeleton h-10 w-24"></div></div>`;
+            fetch("https://api.open-meteo.com/v1/forecast?latitude=9.93&longitude=76.27&current_weather=true")
+                .then(res => res.json())
+                .then(data => {
+                    const weather = data.current_weather;
+                    container.innerHTML = `<div class="bg-gray-800 p-2 rounded-lg text-sm text-center">
+                        <h4 class="font-bold text-white">Kochi Weather</h4>
+                        <p class="text-lg font-bold">${weather.temperature}°C</p>
+                        <p class="text-xs">Wind: ${weather.windspeed} km/h</p>
+                    </div>`;
+                    container.querySelector('div').classList.remove('animate-pulse');
+                }).catch(err => {
+                    container.innerHTML = `<div class="bg-gray-800 p-2 rounded-lg text-sm text-center text-red-400">Weather N/A</div>`
+                });
+        }
+        
+        function startIncidentTimer() {
+            if (incidentTimerInterval) clearInterval(incidentTimerInterval);
+            const timerDiv = document.getElementById('incident-timer');
+            let startTime;
+
+            if (activeIncident.createdAt && typeof activeIncident.createdAt.seconds === 'number') {
+                startTime = new Date(activeIncident.createdAt.seconds * 1000);
+            } else {
+                startTime = new Date(activeIncident.createdAt);
+            }
+            
+            const updateTimer = () => {
+                const now = new Date();
+                const diff = now - startTime;
+                const hours = String(Math.floor(diff / 3600000)).padStart(2, '0');
+                const minutes = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+                const seconds = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
+                timerDiv.innerText = `${hours}:${minutes}:${seconds}`;
+            };
+            
+            updateTimer();
+            incidentTimerInterval = setInterval(updateTimer, 1000);
+        }
+        
+        async function deleteIncident(incidentId) {
+            const batch = writeBatch(db);
+            
+            const unitsRef = collection(db, `artifacts/${appId}/public/data/districts`, userContext.district, 'incidents', incidentId, 'units');
+            const logsRef = collection(db, `artifacts/${appId}/public/data/districts`, userContext.district, 'incidents', incidentId, 'logs');
+            
+            const unitsSnap = await getDocs(unitsRef);
+            unitsSnap.forEach(doc => batch.delete(doc.ref));
+
+            const logsSnap = await getDocs(logsRef);
+            logsSnap.forEach(doc => batch.delete(doc.ref));
+
+            const incidentDocRef = doc(db, `artifacts/${appId}/public/data/districts`, userContext.district, 'incidents', incidentId);
+            batch.delete(incidentDocRef);
+
+            await batch.commit();
+        }
+
+        function getResourceRecommendation(type) {
+             const recommendations = {
+                "Structure Fire": "AI Recommends: 2x Water Tenders, 1x Aerial Ladder, 1x Rescue Vehicle, 1x District Officer.",
+                "Vehicle Accident / Rescue": "AI Recommends: 1x Rescue Vehicle, 1x Water Tender, 1x Ambulance.",
+                "HAZMAT Spill": "AI Recommends: 1x HAZMAT Unit, 1x Water Tender, 1x District Officer, 1x Ambulance.",
+                "Collapsed Structure": "AI Recommends: 1x Heavy Rescue, 1x Rescue Vehicle, 2x Water Tenders, 1x Ambulance, 1x District Officer.",
+                "default": "AI Recommends: 1x First Responder Vehicle, 1x Ambulance."
+             };
+             return recommendations[type] || recommendations['default'];
+        }
+
+    </script>
+</body>
+</html>
