@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download | Right Law Suite 2025</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* General Body Styling */
+        :root {
+            --primary-color: #0d2c54;
+            --secondary-color: #28a745;
+            --background-color: #f4f7f6;
+            --white-color: #ffffff;
+            --text-color: #333;
+            --light-text-color: #555;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color), #1a4a8a);
+            color: var(--white-color);
+            padding: 5rem 2rem;
+            text-align: center;
+            border-bottom-left-radius: 50px;
+            border-bottom-right-radius: 50px;
+        }
+
+        .hero h1 {
+            font-family: 'Lato', sans-serif;
+            font-weight: 900;
+            font-size: 3.5rem;
+            margin: 0;
+            color: var(--white-color);
+            letter-spacing: -1.5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 1rem auto 0;
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+        }
+
+        /* Content Section */
+        .content-section {
+            padding: 4rem 0;
+        }
+
+        /* Typography */
+        h2 {
+            font-family: 'Lato', sans-serif;
+            font-weight: 900;
+            color: var(--primary-color);
+            text-align: center;
+            font-size: 2.5rem;
+            margin-top: 0;
+            margin-bottom: 2rem;
+        }
+
+        /* Plans Table Styling */
+        .plans-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .plans-table th, .plans-table td {
+            border-bottom: 1px solid #e0e0e0;
+            padding: 20px;
+            text-align: center;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+        
+        .plans-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .plans-table th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 700;
+        }
+        
+        .plans-table td:first-child {
+            text-align: left;
+            font-weight: 500;
+            background-color: #f9f9fa;
+        }
+        
+        .plans-table tbody tr:hover td {
+            background-color: #f0f2f5;
+        }
+        
+        .highlight {
+            border: 3px solid var(--secondary-color);
+            transform: scale(1.02);
+        }
+        
+        .highlight th {
+            background-color: var(--secondary-color);
+        }
+
+        .check { color: #2ecc71; font-size: 1.5rem; font-weight: bold; }
+        .cross { color: #e74c3c; font-size: 1.5rem; font-weight: bold; }
+
+        /* Download Section */
+        .download-section {
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .download-btn {
+            background: linear-gradient(45deg, #28a745, #218838);
+            color: white;
+            padding: 18px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+            text-transform: uppercase;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(40, 167, 69, 0.6);
+        }
+
+        /* Authentication Modal */
+        .auth-modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
+            overflow: auto; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
+        }
+
+        .auth-content {
+            background-color: var(--white-color); margin: 15vh auto; padding: 40px;
+            width: 90%; max-width: 450px; border-radius: 10px; text-align: center;
+            animation: slideIn 0.5s ease-out; box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+        
+        @keyframes slideIn { from {transform: translateY(-50px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
+
+        .auth-content h3 { margin-top: 0; font-size: 1.8rem; color: var(--primary-color); }
+        .password-wrapper { position: relative; }
+        .auth-content input[type="password"] {
+            width: 100%; padding: 15px; box-sizing: border-box; margin: 20px 0;
+            border: 2px solid #ccc; border-radius: 8px; font-size: 1.1rem; transition: border-color 0.3s;
+        }
+        .auth-content input[type="password"]:focus { border-color: var(--primary-color); outline: none; }
+        #togglePassword {
+            position: absolute; top: 50%; right: 15px; transform: translateY(-50%);
+            cursor: pointer; color: #aaa;
+        }
+        .auth-content button {
+            background-color: var(--primary-color); color: white; padding: 15px 30px; border: none;
+            border-radius: 8px; cursor: pointer; font-size: 1.1rem; font-weight: 500; transition: background-color 0.3s;
+        }
+        .auth-content button:hover { background-color: #1a4a8a; }
+        #auth-error { color: #d9534f; display: none; margin-top: 15px; font-weight: 500; }
+
+        /* Download Link Section */
+        .download-link-section {
+            display: none; text-align: center; margin-top: 2rem; padding: 2rem;
+            background-color: #e8f5e9; border: 2px dashed #4caf50; border-radius: 10px;
+        }
+        .download-link-section code {
+            display: block; padding: 10px; background: #d0e8d2; border-radius: 5px;
+            font-size: 1.1rem; font-weight: bold; color: #333; margin-top: 10px; word-break: break-all;
+        }
+        #copyBtn {
+            background-color: var(--secondary-color); color: white; border: none; padding: 10px 20px;
+            border-radius: 5px; cursor: pointer; margin-top: 15px; transition: background-color 0.3s;
+        }
+        #copyBtn:hover { background-color: #218838; }
+
+        /* Advocate Trial Section */
+        .advocate-trial {
+            text-align: center; margin-top: 4rem; padding: 2.5rem;
+            background: #e3f2fd; border: 2px solid #bde0fe; border-radius: 15px;
+        }
+        .advocate-trial h3 { margin-top: 0; color: var(--primary-color); }
+        .advocate-trial a { color: var(--primary-color); font-weight: 700; text-decoration: none; font-size: 1.3rem; }
+
+        /* Animation on Scroll */
+        .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            h2 { font-size: 2rem; }
+            .plans-table th, .plans-table td { padding: 12px; font-size: 0.9rem; }
+            .highlight { transform: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="hero">
+        <div class="container">
+            <h1>Right Law Suite 2025</h1>
+            <p>The future of legal practice management. An all-in-one software solution to streamline your cases, research, and organization with unparalleled ease.</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="content-section">
+            <div class="reveal">
+                <h2>Choose Your Plan</h2>
+                <table class="plans-table">
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Basic</th>
+                            <th class="highlight">Professional</th>
+                            <th>Enterprise</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Case Management</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+                        <tr><td>Document Management</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+                        <tr><td>Legal Research Database</td><td class="cross">&times;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+                        <tr><td>Time Tracking & Billing</td><td class="cross">&times;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+                        <tr><td>Client Portal Access</td><td class="cross">&times;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+                        <tr><td>Advanced Analytics</td><td class="cross">&times;</td><td class="cross">&times;</td><td class="check">&#10003;</td></tr>
+                        <tr><td>Team Collaboration Tools</td><td class="cross">&times;</td><td class="cross">&times;</td><td class="check">&#10003;</td></tr>
+                        <tr><td>Dedicated Support</td><td class="cross">&times;</td><td class="cross">&times;</td><td class="check">&#10003;</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="download-section reveal">
+                <h2>Get Your Suite</h2>
+                <button class="download-btn" id="downloadBtn">Download Now</button>
+            </div>
+            
+            <div id="downloadLinkSection" class="download-link-section">
+                <h3>Authentication Successful!</h3>
+                <p>Your download link is ready. Click the button to copy.</p>
+                <code id="downloadLink">https://drive.google.com/file/d/1BxIrH8OTi3U62dbM8YpOEqOy47U5OgUv/view?usp=drive_link</code>
+                <button id="copyBtn">Copy Link</button>
+            </div>
+
+
+            <div class="advocate-trial reveal">
+                <h3>Are you an Advocate?</h3>
+                <p>Call us to activate your exclusive Trial and unlock premium features today!</p>
+                <p><strong>Call: <a href="tel:9447088525">9447088525</a></strong></p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Authentication Modal HTML -->
+    <div id="authModal" class="auth-modal">
+        <div class="auth-content">
+            <h3>Authentication Required</h3>
+            <p>Please enter the password to proceed.</p>
+            <div class="password-wrapper">
+                <input type="password" id="passwordInput" placeholder="Enter Password" autofocus>
+                <span id="togglePassword">👁️</span>
+            </div>
+            <button id="submitPass">Submit</button>
+            <p id="auth-error">Incorrect Password. Please try again.</p>
+        </div>
+    </div>
+
+    <script>
+        // Get elements from the DOM
+        const downloadBtn = document.getElementById('downloadBtn');
+        const authModal = document.getElementById('authModal');
+        const submitPassBtn = document.getElementById('submitPass');
+        const passwordInput = document.getElementById('passwordInput');
+        const authError = document.getElementById('auth-error');
+        const downloadLinkSection = document.getElementById('downloadLinkSection');
+        const copyBtn = document.getElementById('copyBtn');
+        const downloadLink = document.getElementById('downloadLink');
+        const togglePassword = document.getElementById('togglePassword');
+        const correctPassword = '88525';
+
+        // Event listener to open the modal
+        downloadBtn.addEventListener('click', () => {
+            authModal.style.display = 'block';
+            passwordInput.focus();
+        });
+
+        // Function to handle password submission
+        const handlePasswordSubmit = () => {
+            if (passwordInput.value === correctPassword) {
+                authModal.style.display = 'none';
+                downloadLinkSection.style.display = 'block';
+                downloadBtn.parentElement.style.display = 'none'; // Hide the download section
+            } else {
+                authError.style.display = 'block';
+                authModal.querySelector('.auth-content').style.animation = 'shake 0.5s';
+                setTimeout(() => {
+                    authModal.querySelector('.auth-content').style.animation = '';
+                }, 500);
+            }
+        };
+
+        submitPassBtn.addEventListener('click', handlePasswordSubmit);
+        passwordInput.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') handlePasswordSubmit();
+        });
+
+        // Close modal on outside click
+        window.addEventListener('click', (event) => {
+            if (event.target == authModal) {
+                authModal.style.display = "none";
+                authError.style.display = 'none';
+                passwordInput.value = '';
+            }
+        });
+        
+        // Toggle password visibility
+        togglePassword.addEventListener('click', () => {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            togglePassword.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+
+        // Copy to clipboard functionality
+        copyBtn.addEventListener('click', () => {
+            const tempInput = document.createElement('input');
+            tempInput.value = downloadLink.textContent;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            try {
+                document.execCommand('copy');
+                copyBtn.textContent = 'Copied!';
+                setTimeout(() => { copyBtn.textContent = 'Copy Link'; }, 2000);
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+            }
+            document.body.removeChild(tempInput);
+        });
+        
+        // Animation on scroll
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealOnScroll = () => {
+            const windowHeight = window.innerHeight;
+            revealElements.forEach(el => {
+                const elementTop = el.getBoundingClientRect().top;
+                if (elementTop < windowHeight - 100) {
+                    el.classList.add('visible');
+                }
+            });
+        };
+        
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll(); // Initial check
+
+    </script>
+    
+    <style>
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); } 75% { transform: translateX(-5px); }
+        }
+    </style>
+
+</body>
+</html>
