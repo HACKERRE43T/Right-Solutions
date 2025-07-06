@@ -1,774 +1,1543 @@
 <!DOCTYPE html>
-<html lang="en" class="">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Right Solutions A.I. Platform - Final Version</title>
+    <title>Right Cloud: Dominance Protocol</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script>
-        // Immediately set theme to prevent Flash of Unstyled Content (FOUC)
-        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-    </script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; color: #1e293b; }
-        .dark body { background-color: #020617; color: #e2e8f0; }
+        /* Custom styles for Inter font and general body styling */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d0d1a; /* Very dark background */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to top for better content flow */
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+            color: #e0e0e0; /* Light text color */
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1a2e;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #8a2be2; /* Electric purple */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6a0dad;
+        }
+        /* Modal styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.7); /* Darker overlay */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background-color: #1a1a2e; /* Dark modal background */
+            margin: auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.5); /* Purple glow */
+            width: 90%;
+            max-width: 900px; /* Wider for more info */
+            position: relative;
+            border: 1px solid #8a2be2; /* Purple border */
+        }
+        .close-button {
+            color: #e94560; /* Red for close */
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: #ff0000; /* Brighter red on hover */
+            text-decoration: none;
+            cursor: pointer;
+        }
+        /* Input and Button styles for villain theme */
+        input[type="text"], input[type="password"] {
+            background-color: #0f0f23 !important; /* Even darker input background */
+            border: 1px solid #8a2be2 !important; /* Purple border */
+            color: #e0e0e0 !important; /* Light text */
+            box-shadow: 0 0 5px rgba(138, 43, 226, 0.3); /* Subtle glow */
+        }
+        input[type="text"]::placeholder, input[type="password"]::placeholder {
+            color: #a0a0a0 !important; /* Lighter placeholder */
+        }
+        button {
+            background-color: #e94560 !important; /* Red button */
+            color: white !important;
+            box-shadow: 0 0 10px rgba(233, 69, 96, 0.5); /* Red glow */
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background-color: #ff0000 !important; /* Brighter red on hover */
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.7); /* Intense red glow */
+            transform: scale(1.02);
+        }
+        #login-btn {
+            background-color: #00f0ff !important; /* Cyan for login */
+            color: #0d0d1a !important; /* Dark text on cyan */
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+        #login-btn:hover {
+            background-color: #00e0ee !important;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.8);
+        }
+        #logout-btn {
+            background-color: #8a2be2 !important; /* Purple for logout */
+            box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+        }
+        #logout-btn:hover {
+            background-color: #6a0dad !important;
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.8);
+        }
+        #add-client-btn {
+            background-color: #e94560 !important; /* Red for add client */
+            box-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
+        }
+        #add-client-btn:hover {
+            background-color: #ff0000 !important;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
+        }
+        .copy-key-btn {
+            color: #00f0ff !important; /* Cyan for copy key */
+        }
+        .copy-key-btn:hover {
+            color: #00e0ee !important;
+        }
+        .bg-green-100 { background-color: rgba(0, 255, 0, 0.1) !important; } /* Subtle green for running */
+        .text-green-700 { color: #00ff00 !important; }
+        .bg-red-100 { background-color: rgba(255, 0, 0, 0.1) !important; } /* Subtle red for stopped */
+        .text-red-700 { color: #ff0000 !important; }
+        .bg-yellow-100 { background-color: rgba(255, 255, 0, 0.1) !important; } /* Subtle yellow for maintenance */
+        .text-yellow-700 { color: #ffff00 !important; }
+        .bg-orange-100 { background-color: rgba(255, 165, 0, 0.1) !important; } /* Subtle orange for degraded */
+        .text-orange-700 { color: #ffa500 !important; }
 
-        /* Modern Transitions & Animations */
-        .transition-all-modern { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .interactive-card:hover { transform: translateY(-6px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); }
-        .dark .interactive-card:hover { box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.3); }
-        
-        .section-observer { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
-        .section-observer.is-visible { opacity: 1; transform: translateY(0); }
+        /* Specific text colors for dashboard/sections */
+        .text-blue-600 { color: #00f0ff !important; } /* Cyan for headers */
+        .text-purple-700 { color: #8a2be2 !important; } /* Purple for login text */
+        .text-gray-800 { color: #e0e0e0 !important; } /* Light gray for general text */
+        .text-gray-700 { color: #c0c0c0 !important; }
+        .text-gray-600 { color: #a0a0a0 !important; }
+        .text-blue-900 { color: #00f0ff !important; } /* Cyan for counts */
+        .text-green-900 { color: #00ff00 !important; }
+        .text-red-900 { color: #ff0000 !important; }
+        .text-orange-900 { color: #ffa500 !important; }
+        .text-red-200 { color: #ff6666 !important; } /* Lighter red for error messages */
+        .text-yellow-200 { color: #ffff66 !important; } /* Lighter yellow for info messages */
+        .text-blue-200 { color: #66ffff !important; }
 
-        /* Component Styles */
-        .glass-header, .glass-sidebar { background-color: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); border-color: rgba(229, 231, 235, 0.8); }
-        .dark .glass-header, .dark .glass-sidebar { background-color: rgba(15, 23, 42, 0.7); border-color: rgba(51, 65, 85, 0.8); }
+        /* Backgrounds for content sections */
+        .bg-gray-50 {
+            background-color: #1a1a2e !important; /* Darker content background */
+            border: 1px solid #0f0f23; /* Subtle dark border */
+            box-shadow: 0 0 10px rgba(0,0,0,0.5); /* Darker shadow */
+        }
+        .bg-white {
+            background-color: #0f0f23 !important; /* Even darker for client list */
+            border: 1px solid #1a1a2e !important;
+        }
+        .bg-gray-200 {
+            background-color: #33334d !important; /* Darker for progress bars */
+        }
+        .bg-blue-600 {
+            background-color: #00f0ff !important; /* Cyan for progress bar fill */
+        }
+        .bg-gray-50 {
+            background-color: #1a1a2e !important;
+        }
+        .bg-gradient-to-br {
+            background-image: linear-gradient(to bottom right, #0f0f23, #1a1a2e) !important; /* Darker gradient for auth */
+        }
+        .bg-blue-100 { background-color: #1a1a2e !important; border: 1px solid #00f0ff; box-shadow: 0 0 8px rgba(0, 240, 255, 0.2); }
+        .bg-green-100 { background-color: #1a1a2e !important; border: 1px solid #00ff00; box-shadow: 0 0 8px rgba(0, 255, 0, 0.2); }
+        .bg-red-100 { background-color: #1a1a2e !important; border: 1px solid #ff0000; box-shadow: 0 0 8px rgba(255, 0, 0, 0.2); }
+        .bg-orange-100 { background-color: #1a1a2e !important; border: 1px solid #ffa500; box-shadow: 0 0 8px rgba(255, 165, 0, 0.2); }
 
-        .nav-link.active { background-color: #e0f2fe; color: #0369a1; font-weight: 600; border-left-color: #0ea5e9 !important; }
-        .dark .nav-link.active { background-color: #1e293b; color: #7dd3fc; }
+        /* Specific styles for server cards */
+        .p-4.rounded-lg.shadow-sm {
+            border: 1px solid #33334d; /* Darker border for cards */
+            box-shadow: 0 0 8px rgba(0,0,0,0.3);
+        }
+        .p-4.rounded-lg.shadow-sm:hover {
+            border-color: #8a2be2; /* Purple border on hover */
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.4); /* Purple glow on hover */
+        }
 
-        .btn-gradient { background-image: linear-gradient(to right, #2563eb, #3b82f6, #60a5fa); color: white; }
-        .btn-gradient:hover { filter: brightness(1.15); }
-        
-        /* State-based visibility for main containers */
-        .auth-container, .app-container { transition: opacity 0.5s ease-in-out, visibility 0.5s; }
-        .hidden-view { opacity: 0; visibility: hidden; position: absolute; pointer-events: none; }
-        .visible-view { opacity: 1; visibility: visible; position: relative; pointer-events: auto; }
+        /* Glitch effect for messages */
+        @keyframes glitch {
+            0% {
+                text-shadow: 0.05em 0 0 #00f0ff, -0.05em -0.025em 0 #ff0000, -0.025em 0.05em 0 #00ff00;
+            }
+            14% {
+                text-shadow: -0.05em -0.025em 0 #00f0ff, 0.025em 0.025em 0 #ff0000, -0.05em -0.05em 0 #00ff00;
+            }
+            15% {
+                text-shadow: 0.05em 0.025em 0 #00f0ff, -0.05em 0 0 #ff0000, 0.025em -0.05em 0 #00ff00;
+            }
+            49% {
+                text-shadow: 0.05em 0.025em 0 #00f0ff, -0.05em 0 0 #ff0000, 0.025em -0.05em 0 #00ff00;
+            }
+            50% {
+                text-shadow: -0.05em 0.05em 0 #00f0ff, 0.05em 0 0 #ff0000, -0.05em -0.025em 0 #00ff00;
+            }
+            99% {
+                text-shadow: -0.05em 0.05em 0 #00f0ff, 0.05em 0 0 #ff0000, -0.05em -0.025em 0 #00ff00;
+            }
+            100% {
+                text-shadow: 0.05em 0 0 #00f0ff, -0.05em -0.025em 0 #ff0000, -0.025em 0.05em 0 #00ff00;
+            }
+        }
+        .glitch-text {
+            animation: glitch 0.5s infinite alternate;
+        }
 
-        /* Spinner for loading buttons */
-        .spinner { border: 2px solid rgba(255, 255, 255, 0.3); border-top-color: #ffffff; border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Mobile Sidebar */
-        @media (max-width: 767px) {
-            #sidebar.hidden-mobile { transform: translateX(-100%); }
+        /* Toggle switch for maintenance mode */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #8a2be2; /* Purple when checked */
+        }
+        input:focus + .slider {
+            box-shadow: 0 0 1px #8a2be2;
+        }
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
         }
     </style>
 </head>
-<body>
-
-    <div id="auth-container" class="hidden-view min-h-screen w-full flex flex-col items-center justify-center p-4 bg-slate-100 dark:bg-slate-900 transition-all-modern">
-        </div>
-    
-    <div id="app-container" class="flex h-screen w-full hidden-view">
-        <aside id="sidebar" class="glass-sidebar w-64 flex-shrink-0 border-r dark:border-slate-800 fixed inset-y-0 left-0 z-40 transform md:relative md:translate-x-0 hidden-mobile transition-all-modern">
-            <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center space-x-3">
-                <svg class="h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM10 17l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
-                <span class="text-xl font-bold text-slate-900 dark:text-white">Right Solutions</span>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+    <div id="app" class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-6xl flex flex-col lg:flex-row gap-8">
+        <!-- Authentication Section -->
+        <div id="auth-section" class="w-full lg:w-1/3 p-6 bg-gradient-to-br from-blue-600 to-purple-700 text-white rounded-lg shadow-lg flex flex-col items-center justify-center text-center">
+            <h2 class="text-3xl font-bold mb-6 text-white tracking-wide">Right Cloud: Dominance Protocol</h2>
+            <div id="login-form" class="w-full">
+                <p class="text-lg mb-4 text-gray-300">Access the core systems.</p>
+                <input type="text" id="username" placeholder="Access Key" class="w-full p-3 mb-4 rounded-md bg-white bg-opacity-20 border border-white border-opacity-30 placeholder-white placeholder-opacity-70 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 transition duration-300">
+                <input type="password" id="password" placeholder="Authorization Code" class="w-full p-3 mb-6 rounded-md bg-white bg-opacity-20 border border-white border-opacity-30 placeholder-white placeholder-opacity-70 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 transition duration-300">
+                <button id="login-btn" class="w-full bg-white text-purple-700 font-semibold py-3 rounded-md shadow-md hover:bg-gray-100 hover:text-purple-800 transition duration-300 transform hover:scale-105">Engage Protocol</button>
+                <p id="auth-message" class="text-red-200 mt-4 text-sm"></p>
+                <div class="mt-4 text-sm">
+                    <a href="#" id="forgot-password" class="text-white text-opacity-80 hover:text-white underline">System Override?</a>
+                </div>
             </div>
-            <nav id="main-nav" class="py-4 space-y-1"></nav>
-        </aside>
+            <div id="user-info" class="hidden w-full text-center">
+                <p class="text-xl font-semibold mb-4 text-white">Directive: <span id="display-username"></span></p>
+                <button id="logout-btn" class="w-full bg-red-500 text-white font-semibold py-3 rounded-md shadow-md hover:bg-red-600 transition duration-300 transform hover:scale-105">Deactivate Protocol</button>
+            </div>
+        </div>
 
-        <div class="flex-1 flex flex-col overflow-y-auto">
-            <header class="glass-header shadow-sm sticky top-0 z-30 border-b dark:border-slate-800">
-                <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
-                    <div class="flex justify-between items-center h-16">
-                        <div class="flex items-center">
-                            <button data-action="toggle-sidebar" class="md:hidden p-2 rounded-md text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:hover:text-white dark:hover:bg-slate-800"><svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
-                            <h1 id="header-title" class="text-xl font-semibold ml-4 hidden sm:block">Dashboard</h1>
+        <!-- Main Content Area -->
+        <div class="w-full lg:w-2/3 flex flex-col gap-8">
+            <!-- Dashboard Overview (Visible to both admin and public) -->
+            <div id="dashboard-section" class="hidden bg-gray-50 p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                    <i class="fas fa-terminal mr-3 text-blue-600"></i> Command Center Overview
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="bg-blue-100 p-4 rounded-md shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-blue-700">Total Nodes</p>
+                            <p class="text-2xl font-bold text-blue-900" id="total-servers-count">15</p>
                         </div>
-                        <div class="flex items-center space-x-4">
-                            <button data-action="toggle-theme" id="theme-toggle" class="h-10 w-10 flex items-center justify-center rounded-full text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all-modern"></button>
-                            <div class="bg-blue-100 text-blue-800 text-sm font-semibold px-4 py-2 rounded-lg dark:bg-blue-900/50 dark:text-blue-200"><span>Credits: ₹</span><span id="credit-amount"></span></div>
-                            <div class="relative">
-                                <button data-action="toggle-user-menu" class="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center cursor-pointer ring-2 ring-offset-2 ring-offset-white dark:ring-offset-slate-900 ring-transparent hover:ring-blue-500 transition-all-modern">
-                                    <img id="user-avatar" src="" alt="User Avatar" class="rounded-full pointer-events-none">
-                                </button>
-                                <div id="user-menu" class="hidden absolute right-0 mt-2 w-56 bg-white dark:bg-slate-800 rounded-xl shadow-2xl border dark:border-slate-700 origin-top-right transition-all-modern scale-95 opacity-0">
-                                    <div class="p-4 border-b dark:border-slate-700">
-                                        <p class="text-sm font-semibold text-slate-800 dark:text-slate-200">Signed in as</p>
-                                        <p id="user-menu-email" class="text-sm truncate text-slate-600 dark:text-slate-400"></p>
-                                    </div>
-                                    <div class="p-2">
-                                        <a href="#" class="block px-4 py-2 text-sm rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">Account Settings</a>
-                                        <a href="#" class="block px-4 py-2 text-sm rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">Support</a>
-                                    </div>
-                                    <div class="p-2 border-t dark:border-slate-700">
-                                        <button data-action="logout" class="w-full text-left flex items-center gap-2 px-4 py-2 text-sm rounded-lg text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/40">
-                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3h12" /></svg>
-                                            Logout
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                        <i class="fas fa-network-wired text-blue-500 text-3xl"></i>
+                    </div>
+                    <div class="bg-green-100 p-4 rounded-md shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-green-700">Active Nodes</p>
+                            <p class="text-2xl font-bold text-green-900" id="running-servers-count">0</p>
                         </div>
+                        <i class="fas fa-play-circle text-green-500 text-3xl"></i>
+                    </div>
+                    <div class="bg-red-100 p-4 rounded-md shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-red-700">Deactivated Nodes</p>
+                            <p class="text-2xl font-bold text-red-900" id="stopped-servers-count">0</p>
+                        </div>
+                        <i class="fas fa-stop-circle text-red-500 text-3xl"></i>
+                    </div>
+                    <div class="bg-orange-100 p-4 rounded-md shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-orange-700">Critical Alerts</p>
+                            <p class="text-2xl font-bold text-orange-900" id="alerts-count">0</p>
+                        </div>
+                        <i class="fas fa-exclamation-triangle text-orange-500 text-3xl"></i>
                     </div>
                 </div>
-            </header>
-            <main id="main-content" class="flex-1 p-6 md:p-10"></main>
+            </div>
+
+            <!-- Server Management Simulation (Admin Only) -->
+            <div id="server-management-section" class="hidden bg-gray-50 p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                    <i class="fas fa-server mr-3 text-blue-500"></i> Node Operations
+                </h2>
+                <div id="server-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    <!-- Server cards will be injected here by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Public Capabilities Overview (Public Only) -->
+            <div id="public-capabilities-section" class="hidden bg-gray-50 p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                    <i class="fas fa-cloud-upload-alt mr-3 text-purple-500"></i> System Capabilities Overview
+                </h2>
+                <div class="text-gray-700 space-y-4">
+                    <p>Welcome, Observer. This interface provides a high-level overview of the Right Cloud infrastructure's capabilities.</p>
+                    <ul class="list-disc list-inside ml-4 space-y-2">
+                        <li><i class="fas fa-microchip text-blue-400 mr-2"></i> High-Performance Compute Nodes: Our network comprises 15 advanced processing nodes, capable of handling diverse computational demands.</li>
+                        <li><i class="fas fa-database text-green-400 mr-2"></i> Secure Data Storage: Redundant and encrypted data storage solutions ensure maximum data integrity and availability.</li>
+                        <li><i class="fas fa-shield-alt text-red-400 mr-2"></i> Robust Security Protocols: Multi-layered security measures, including advanced intrusion detection and real-time threat analysis, protect all system assets.</li>
+                        <li><i class="fas fa-globe-americas text-yellow-400 mr-2"></i> Global Network Reach: Optimized network infrastructure for low-latency data transmission across continents.</li>
+                        <li><i class="fas fa-cogs text-gray-400 mr-2"></i> Automated Resource Management: Dynamic resource allocation ensures optimal performance and efficiency for all deployed protocols.</li>
+                    </ul>
+                    <p class="mt-4 text-sm text-gray-600">For detailed operational metrics or client authorization, please use an authorized access key.</p>
+                </div>
+            </div>
+
+
+            <!-- Client Management & Key Generation Section (Admin Only) -->
+            <div id="client-key-section" class="hidden bg-gray-50 p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                    <i class="fas fa-fingerprint mr-3 text-green-500"></i> Client Authorization & Key Generation
+                </h2>
+                <div class="mb-6" id="client-add-section">
+                    <label for="client-name" class="block text-gray-700 text-sm font-semibold mb-2">Client Identifier:</label>
+                    <input type="text" id="client-name" placeholder="Enter client identifier" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300">
+                    <button id="add-client-btn" class="mt-4 w-full bg-green-600 text-white font-semibold py-3 rounded-md shadow-md hover:bg-green-700 transition duration-300 transform hover:scale-105">
+                        Authorize Client & Generate Key
+                    </button>
+                    <p id="key-gen-message" class="text-red-500 mt-2 text-sm"></p>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Authorized Clients:</h3>
+                    <div id="clients-list" class="bg-white p-4 rounded-md border border-gray-200 h-64 overflow-y-auto">
+                        <!-- Client list will be injected here by JavaScript -->
+                        <p class="text-gray-500 text-center" id="no-clients-message">No clients authorized yet.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    
-    <div id="modal-container" class="fixed inset-0 z-50 transition-all-modern"></div>
-    <div id="notification-container" class="fixed bottom-5 right-5 z-50"></div>
-    <textarea id="copy-helper" class="absolute -left-full"></textarea>
-    
-    <template id="api-key-template">
-        <tr class="transition-all-modern opacity-0 translate-y-2">
-            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-slate-900 dark:text-white sm:pl-0 key-name"></td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-slate-500 dark:text-slate-400 font-mono key-display"></td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-slate-500 dark:text-slate-400 key-created"></td>
-            <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                <button data-action="revoke-key" class="text-red-500 hover:text-red-400">Revoke</button>
-            </td>
-        </tr>
-    </template>
-    
+
+    <!-- Server Details Modal -->
+    <div id="server-details-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3 class="text-2xl font-bold text-gray-800 mb-4" id="modal-server-name"></h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-gray-700">
+                <p><strong>Status:</strong> <span id="modal-server-status"></span></p>
+                <p><strong>IP Address:</strong> <span id="modal-server-ip"></span></p>
+                <p><strong>CPU Load:</strong> <span id="modal-server-cpu"></span></p>
+                <p><strong>Memory Usage:</strong> <span id="modal-server-ram"></span></p>
+                <p><strong>Disk I/O:</strong> <span id="modal-server-disk-io"></span></p>
+                <p><strong>Network Latency:</strong> <span id="modal-server-latency"></span></p>
+                <p><strong>Error Rate:</strong> <span id="modal-server-error-rate"></span></p>
+                <p><strong>Last Reboot:</strong> <span id="modal-server-uptime"></span></p>
+                <p><strong>OS Version:</strong> <span id="modal-server-os"></span></p>
+                <p><strong>Kernel:</strong> <span id="modal-server-kernel"></span></p>
+                <p><strong>Security Patch:</strong> <span id="modal-server-security-patch"></span></p>
+                <p><strong>Connected Users:</strong> <span id="modal-connected-users"></span></p> <!-- New -->
+                <p><strong>Active Processes:</strong> <span id="modal-active-processes"></span></p> <!-- New -->
+                <p><strong>Network Throughput:</strong> <span id="modal-network-throughput"></span></p> <!-- New -->
+            </div>
+            <div class="mt-6">
+                <h4 class="text-xl font-semibold text-gray-800 mb-3 flex items-center"><i class="fas fa-chart-line mr-2 text-blue-600"></i>Traffic Visualization:</h4>
+                <canvas id="traffic-chart" class="bg-gray-200 rounded-md p-2" width="600" height="150"></canvas>
+            </div>
+            <div class="mt-6">
+                <h4 class="text-xl font-semibold text-gray-800 mb-3 flex items-center"><i class="fas fa-file-alt mr-2 text-yellow-600"></i>Recent Logs:</h4>
+                <div id="server-logs" class="bg-gray-200 text-gray-700 p-4 rounded-md h-40 overflow-y-auto text-sm">
+                    <!-- Logs will be injected here -->
+                </div>
+            </div>
+            <div id="maintenance-toggle-row" class="mt-6 flex items-center justify-between">
+                <label for="maintenance-mode" class="text-lg font-semibold text-gray-800">Initiate Maintenance Protocol:</label>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="maintenance-mode">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="mt-6 flex flex-wrap justify-end gap-4" id="server-actions-container">
+                <button id="modal-restart-btn" class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300">Initiate Reboot</button>
+                <button id="modal-stop-btn" class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition duration-300">Terminate Node</button>
+                <button id="modal-deploy-btn" class="bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition duration-300">Deploy Update</button>
+                <button id="modal-rollback-btn" class="bg-orange-600 text-white py-2 px-4 rounded-md hover:bg-orange-700 transition duration-300">Rollback Version</button>
+                <button id="modal-isolate-btn" class="bg-gray-700 text-white py-2 px-4 rounded-md hover:bg-gray-800 transition duration-300">Isolate Node</button> <!-- New -->
+                <button id="modal-purge-logs-btn" class="bg-yellow-700 text-white py-2 px-4 rounded-md hover:bg-yellow-800 transition duration-300">Purge Logs</button> <!-- New -->
+                <button id="modal-scale-resources-btn" class="bg-teal-600 text-white py-2 px-4 rounded-md hover:bg-teal-700 transition duration-300">Scale Resources</button> <!-- New -->
+                <button id="modal-force-sync-btn" class="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-300">Force Sync</button> <!-- New -->
+            </div>
+            <p id="modal-action-message" class="text-sm mt-4 text-center text-gray-600"></p>
+        </div>
+    </div>
+
     <script>
-    // --- FINAL COMPREHENSIVE SCRIPT (ENHANCED) ---
-    document.addEventListener('DOMContentLoaded', () => {
+        // --- Configuration ---
+        const ADMIN_USERNAME = 'right';
+        const ADMIN_PASSWORD = '88525';
+        const PUBLIC_USERNAME = 'public';
+        const PUBLIC_PASSWORD = 'right';
 
-        // --- GLOBAL CONSTANTS & CONFIGURATION ---
-        const CONFIG = {
-            appName: 'Right Solutions A.I.',
-            initialCredits: 500,
-            defaultProjects: ['Default Project'],
-            navItems: [
-                { id: 'dashboard', label: 'Dashboard', icon: '<svg class="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" /></svg>' },
-                { id: 'dev-platform', label: 'Developer Platform', icon: '<svg class="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414l-3 3a1 1 0 01-1.414-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>' },
-                { id: 'marketplace', label: 'Marketplace', icon: '<svg class="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H4.792L4.25 1H3z" /><path d="M16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" /></svg>' }
-            ],
-            themeIcons: {
-                dark: `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>`,
-                light: `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>`
+        // Initial list of serial keys provided by the user
+        const initialSerialKeys = [
+            'RSAI1-8ZK4Y-JG2ML-T9VQD-C3XNB', 'RSAI1-MZ7QD-4TPFX-K8E2L-YWCMR',
+            'RSAI1-KN9VG-ECZ42-MY7QF-TL8DW', 'RSAI1-BVXW4-QTMC3-DRK9Y-JG72L',
+            'RSAI1-PT9KD-XFML7-BQ82C-GYNVW', 'RSAI1-HF7ZP-M2CVQ-WXDK9-TRBLY',
+            'RSAI1-YCML9-RGFTK-3X8WQ-V72BE', 'RSAI1-LX2RD-FP7KQ-MYNW3-VBZC4',
+            'RSAI1-WKTY8-CVZ4L-N9MBQ-ER7XJ', 'RSAI1-ZML7Q-YT9WB-XFDCE-GQV28',
+            'RSAI1-MCYWQ-7RDLK-F2X98-TVGZ4', 'RSAI1-PNT8V-ZKCY3-WL9FQ-GMDXR',
+            'RSAI1-KFXC7-TYBVL-W93QD-EMN4Z', 'RSAI1-VGKW4-ZM9LQ-XFTYR-C8PNE',
+            'RSAI1-WRPZ7-MXYNC-DQ94V-TBKFL', 'RSAI1-GBXQ8-WFZTP-L9KYC-MV7DR',
+            'RSAI1-XD72K-VTLCM-YWBRQ-GPZ98', 'RSAI1-KWZ3N-LVYTP-98BMF-XCDRQ',
+            'RSAI1-ZL7XQ-NMTCV-W8BGR-YD29K', 'RSAI1-YTCKV-RP8LM-Q3ZBD-NWF74',
+            'RSAI1-QWMB9-DC4TZ-YKXPL-VF7GR', 'RSAI1-ZDRTY-8KVWN-LQMB3-CXP7F',
+            'RSAI1-KRZML-VF8WD-T9CBX-YMQLP', 'RSAI1-BGVCP-XMZQ4-LT9WR-FYKND',
+            'RSAI1-9WDVC-BRQZL-MTKY8-XP7GF', 'RSAI1-MLYK8-GZWRQ-BXDPT-VN43C',
+            'RSAI1-YKPZD-TRWBX-VQM7L-CFGN8', 'RSAI1-WTZVC-XRM9B-PKYFL-GDQ37',
+            'RSAI1-CMBYW-TQF9X-KLDZR-V7PGN', 'RSAI1-XRYMF-ZVDPK-LW3NQ-GBT98',
+            'RSAI1-PKYFL-TMC8Q-W9DZR-XNBGV', 'RSAI1-VZRW8-KQYTD-MNPLC-XGF93',
+            'RSAI1-W9ZDR-MKXTY-VBQFL-NCPG7', 'RSAI1-TYMZQ-F8XVD-WRCLP-KNGB9',
+            'RSAI1-BPXWM-K9ZDR-TLYCQ-VGFN8', 'RSAI1-GYBDL-VRTPM-QCWZX-KN8F3',
+            'RSAI1-ZWVPK-NTQ9X-MCYBR-FGLD8', 'RSAI1-MTLYQ-VBXZC-W9DRK-PNFG3',
+            'RSAI1-YDZVM-KQCXP-TN8LB-WGFR4', 'RSAI1-LMKYQ-TFZD9-VBWXP-RGCN8',
+            'RSAI1-XTPWQ-NCYLB-FZVRK-MD839', 'RSAI1-Q9MZC-XTWLB-KRFGY-PVDN8',
+            'RSAI1-WDLTY-RVBNM-CXQPZ-GKF38', 'RSAI1-ZTVQX-MNPLB-KY9DR-CFWG8',
+            'RSAI1-MYLQK-ZCVRW-P8DTX-BFGN3', 'RSAI1-VCMBP-RXWTQ-D9LGY-ZNF84',
+            'RSAI1-LTMBW-QCVZD-RKXNP-YGF83', 'RSAI1-XCYRQ-VTGZK-W9MBF-LPDN7',
+            'RSAI1-YWTPM-BLZCR-XFNDQ-VK389', 'RSAI1-KQZMC-T8WLD-YRPXN-BFVG3'
+        ];
+
+        // --- DOM Elements ---
+        const authSection = document.getElementById('auth-section');
+        const loginForm = document.getElementById('login-form');
+        const userInfo = document.getElementById('user-info');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const loginBtn = document.getElementById('login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const authMessage = document.getElementById('auth-message');
+        const displayUsername = document.getElementById('display-username');
+        const forgotPasswordLink = document.getElementById('forgot-password');
+
+        const dashboardSection = document.getElementById('dashboard-section');
+        const serverManagementSection = document.getElementById('server-management-section');
+        const publicCapabilitiesSection = document.getElementById('public-capabilities-section');
+        const serverGrid = document.getElementById('server-grid');
+        const clientKeySection = document.getElementById('client-key-section');
+        const clientNameInput = document.getElementById('client-name');
+        const addClientBtn = document.getElementById('add-client-btn');
+        const clientsList = document.getElementById('clients-list');
+        const keyGenMessage = document.getElementById('key-gen-message');
+        const noClientsMessage = document.getElementById('no-clients-message');
+        const clientAddSection = document.getElementById('client-add-section');
+
+        const totalServersCount = document.getElementById('total-servers-count');
+        const runningServersCount = document.getElementById('running-servers-count');
+        const stoppedServersCount = document.getElementById('stopped-servers-count');
+        const alertsCount = document.getElementById('alerts-count');
+
+        // Server Details Modal Elements
+        const serverDetailsModal = document.getElementById('server-details-modal');
+        const closeModalBtn = serverDetailsModal ? serverDetailsModal.querySelector('.close-button') : null;
+        const modalServerName = document.getElementById('modal-server-name');
+        const modalServerStatus = document.getElementById('modal-server-status');
+        const modalServerIp = document.getElementById('modal-server-ip');
+        const modalServerCpu = document.getElementById('modal-server-cpu');
+        const modalServerRam = document.getElementById('modal-server-ram');
+        const modalServerDiskIO = document.getElementById('modal-server-disk-io');
+        const modalServerLatency = document.getElementById('modal-server-latency');
+        const modalServerErrorRate = document.getElementById('modal-server-error-rate');
+        const modalServerUptime = document.getElementById('modal-server-uptime');
+        const modalServerOS = document.getElementById('modal-server-os');
+        const modalServerKernel = document.getElementById('modal-server-kernel');
+        const modalServerSecurityPatch = document.getElementById('modal-server-security-patch');
+        const modalConnectedUsers = document.getElementById('modal-connected-users'); // New
+        const modalActiveProcesses = document.getElementById('modal-active-processes'); // New
+        const modalNetworkThroughput = document.getElementById('modal-network-throughput'); // New
+        const serverLogsDiv = document.getElementById('server-logs');
+        const trafficChartCanvas = document.getElementById('traffic-chart');
+        const maintenanceModeToggle = document.getElementById('maintenance-mode');
+        const maintenanceToggleRow = document.getElementById('maintenance-toggle-row');
+        const serverActionsContainer = document.getElementById('server-actions-container');
+
+        const modalRestartBtn = document.getElementById('modal-restart-btn');
+        const modalStopBtn = document.getElementById('modal-stop-btn');
+        const modalDeployBtn = document.getElementById('modal-deploy-btn');
+        const modalRollbackBtn = document.getElementById('modal-rollback-btn');
+        const modalIsolateBtn = document.getElementById('modal-isolate-btn'); // New
+        const modalPurgeLogsBtn = document.getElementById('modal-purge-logs-btn'); // New
+        const modalScaleResourcesBtn = document.getElementById('modal-scale-resources-btn'); // New
+        const modalForceSyncBtn = document.getElementById('modal-force-sync-btn'); // New
+        const modalActionMessage = document.getElementById('modal-action-message');
+
+        // --- Global State Variables ---
+        let isAuthenticated = false;
+        let currentUserRole = 'guest'; // 'guest', 'public', 'admin'
+        let clients = [];
+        let availableKeys = [];
+        let servers = []; // Array to hold server data
+
+        // --- Local Storage Keys ---
+        const LS_AUTH_STATUS = 'rightCloudAuthStatus';
+        const LS_CURRENT_USER_ROLE = 'rightCloudUserRole';
+        const LS_CLIENTS = 'rightCloudClients';
+        const LS_AVAILABLE_KEYS = 'rightCloudAvailableKeys';
+        const LS_SERVERS = 'rightCloudServers';
+
+        // --- Helper Functions ---
+
+        /**
+         * Generates a random IP address.
+         * @returns {string} A random IPv4 address.
+         */
+        function generateRandomIp() {
+            return Array(4).fill(0).map(() => Math.floor(Math.random() * 256)).join('.');
+        }
+
+        /**
+         * Generates a random uptime string.
+         * @returns {string} A random uptime string (e.g., "5d 12h 30m").
+         */
+        function generateRandomUptime() {
+            const days = Math.floor(Math.random() * 30) + 1; // 1 to 30 days
+            const hours = Math.floor(Math.random() * 24);
+            const minutes = Math.floor(Math.random() * 60);
+            return `${days}d ${hours}h ${minutes}m`;
+        }
+
+        /**
+         * Generates a random percentage string.
+         * @returns {string} A random percentage (e.g., "75%").
+         */
+        function generateRandomPercentage() {
+            return `${Math.floor(Math.random() * 90) + 10}%`; // 10% to 99%
+        }
+
+        /**
+         * Generates a random disk I/O string.
+         * @returns {string} A random disk I/O (e.g., "120MB/s").
+         */
+        function generateRandomDiskIO() {
+            return `${Math.floor(Math.random() * 500) + 50}MB/s`;
+        }
+
+        /**
+         * Generates a random network latency string.
+         * @returns {string} A random latency (e.g., "25ms").
+         */
+        function generateRandomLatency() {
+            return `${Math.floor(Math.random() * 100) + 5}ms`;
+        }
+
+        /**
+         * Generates a random error rate string.
+         * @returns {string} A random error rate (e.g., "0.05%").
+         */
+        function generateRandomErrorRate() {
+            return `${(Math.random() * 0.5).toFixed(2)}%`; // 0.00% to 0.50%
+        }
+
+        /**
+         * Generates a random OS version.
+         * @returns {string} A random OS version.
+         */
+        function generateRandomOS() {
+            const os = ['Linux (Ubuntu 22.04)', 'Linux (CentOS 8)', 'Windows Server 2022', 'FreeBSD 13.1'];
+            return os[Math.floor(Math.random() * os.length)];
+        }
+
+        /**
+         * Generates a random kernel version.
+         * @returns {string} A random kernel version.
+         */
+        function generateRandomKernel() {
+            const kernels = ['5.15.0-91-generic', '4.18.0-425.10.1.el8', '10.0.20348.1', '13.1-RELEASE-p6'];
+            return kernels[Math.floor(Math.random() * kernels.length)];
+        }
+
+        /**
+         * Generates a random security patch level.
+         * @returns {string} A random security patch level.
+         */
+        function generateRandomSecurityPatch() {
+            const patches = ['Latest', '2024-06-B', '2024-05-A', 'Critical Update Pending'];
+            return patches[Math.floor(Math.random() * patches.length)];
+        }
+
+        /**
+         * Generates a random number of connected users.
+         * @returns {number} A random number of users.
+         */
+        function generateRandomConnectedUsers() {
+            return Math.floor(Math.random() * 50) + 5; // 5 to 54 users
+        }
+
+        /**
+         * Generates a random number of active processes.
+         * @returns {number} A random number of processes.
+         */
+        function generateRandomActiveProcesses() {
+            return Math.floor(Math.random() * 200) + 50; // 50 to 249 processes
+        }
+
+        /**
+         * Generates a random network throughput.
+         * @returns {string} A random throughput (e.g., "1.2 Gbps").
+         */
+        function generateRandomNetworkThroughput() {
+            const value = (Math.random() * 5 + 0.5).toFixed(1); // 0.5 to 5.5 Gbps
+            return `${value} Gbps`;
+        }
+
+
+        /**
+         * Generates simulated server logs.
+         * @returns {string[]} An array of simulated log entries.
+         */
+        function generateSimulatedLogs() {
+            const logTypes = ['INFO', 'WARNING', 'ERROR', 'DEBUG'];
+            const messages = [
+                'System heartbeat detected.',
+                'Disk usage at 75%. Threshold alert.',
+                'Network anomaly detected. Investigating.',
+                'Authentication successful for user root.',
+                'Failed login attempt from unauthorized IP.',
+                'Resource allocation adjusted.',
+                'Database connection re-established.',
+                'Critical process terminated unexpectedly.',
+                'Scheduled backup initiated.',
+                'Memory leak detected in process PID 1234.'
+            ];
+            const logs = [];
+            for (let i = 0; i < 10; i++) {
+                const type = logTypes[Math.floor(Math.random() * logTypes.length)];
+                const msg = messages[Math.floor(Math.random() * messages.length)];
+                logs.push(`[${new Date().toLocaleTimeString()}] [${type}] ${msg}`);
             }
-        };
+            return logs;
+        }
 
-        // --- DOM REFERENCES ---
-        const DOM = {
-            root: document.documentElement,
-            authContainer: document.getElementById('auth-container'),
-            appContainer: document.getElementById('app-container'),
-            mainContent: document.getElementById('main-content'),
-            mainNav: document.getElementById('main-nav'),
-            userMenu: document.getElementById('user-menu'),
-            sidebar: document.getElementById('sidebar'),
-            modalContainer: document.getElementById('modal-container'),
-            notificationContainer: document.getElementById('notification-container'),
-            get: (id) => document.getElementById(id)
-        };
-        
-        // --- MOCK API: Simulates server interactions ---
-        const API = {
-            _simulateDelay: (ms = 500) => new Promise(res => setTimeout(res, ms)),
-
-            async createApiKey(name) {
-                await this._simulateDelay();
-                const newKey = {
-                    id: `rs_sk_${Date.now()}${Math.random().toString(36).substr(2, 9)}`,
-                    name: name,
-                    created: new Date().toISOString()
-                };
-                State.addApiKey(newKey);
-                return newKey;
-            },
-
-            async revokeApiKey(keyId) {
-                await this._simulateDelay();
-                State.removeApiKey(keyId);
-                return { success: true };
+        /**
+         * Generates simulated traffic data for a chart.
+         * @returns {number[]} An array of traffic values.
+         */
+        function generateSimulatedTrafficData() {
+            const data = [];
+            for (let i = 0; i < 30; i++) { // 30 data points
+                data.push(Math.floor(Math.random() * 100) + 20); // Values between 20 and 120
             }
-        };
+            return data;
+        }
 
-        // --- STATE MANAGEMENT: The single source of truth ---
-        const State = {
-            _data: {},
-            
-            init() {
-                const user = Auth.getCurrentUser();
-                if (!user) return;
+        /**
+         * Draws a simple line chart on a canvas.
+         * @param {HTMLCanvasElement} canvas The canvas element.
+         * @param {number[]} data The data points to plot.
+         */
+        function drawLineChart(canvas, data) {
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                const userStateKey = `appState_${user.email}`;
-                const savedState = localStorage.getItem(userStateKey);
-                const defaultState = {
-                    credits: CONFIG.initialCredits,
-                    apiKeys: [],
-                    projects: [...CONFIG.defaultProjects],
-                    activeProject: CONFIG.defaultProjects[0],
-                    activeNav: CONFIG.navItems[0].id
-                };
-                this._data = Object.assign(defaultState, savedState ? JSON.parse(savedState) : {});
-            },
-            
-            save() {
-                const user = Auth.getCurrentUser();
-                if (!user) return;
-                const userStateKey = `appState_${user.email}`;
-                localStorage.setItem(userStateKey, JSON.stringify(this._data));
-            },
-            
-            get(key) { return this._data[key]; },
-            set(key, value) { this._data[key] = value; this.save(); },
-            
-            addApiKey(key) { this._data.apiKeys.push(key); this.save(); },
-            removeApiKey(keyId) { this._data.apiKeys = this._data.apiKeys.filter(k => k.id !== keyId); this.save(); }
-        };
+            const padding = 20;
+            const width = canvas.width - 2 * padding;
+            const height = canvas.height - 2 * padding;
+            const maxVal = Math.max(...data);
+            const minVal = Math.min(...data);
+            const range = maxVal - minVal;
 
-        // --- AUTHENTICATION & SESSION ---
-        const Auth = {
-            _currentUser: null,
+            ctx.strokeStyle = '#00f0ff'; // Cyan line
+            ctx.lineWidth = 2;
 
-            init() {
-                const user = sessionStorage.getItem('currentUser');
-                if (user) {
-                    this._currentUser = JSON.parse(user);
-                }
-            },
+            ctx.beginPath();
+            ctx.moveTo(padding, padding + height - ((data[0] - minVal) / range) * height);
 
-            getCurrentUser: () => Auth._currentUser,
-            isAuthenticated: () => !!Auth._currentUser,
-
-            login(email, password) {
-                // WARNING: This is an insecure method for demonstration only.
-                // NEVER store passwords in plaintext in a real application.
-                const users = JSON.parse(localStorage.getItem('rightSolutionsUsers')) || [];
-                const user = users.find(u => u.email === email && u.password === password);
-                
-                if (user) {
-                    this._currentUser = { email: user.email };
-                    sessionStorage.setItem('currentUser', JSON.stringify(this._currentUser));
-                    return true;
-                }
-                return false;
-            },
-            
-            register(email, password) {
-                const users = JSON.parse(localStorage.getItem('rightSolutionsUsers')) || [];
-                if (users.some(u => u.email === email)) {
-                    throw new Error('An account with this email already exists.');
-                }
-                users.push({ email, password });
-                localStorage.setItem('rightSolutionsUsers', JSON.stringify(users));
-            },
-            
-            logout() {
-                State.save(); // Save user state before logging out
-                this._currentUser = null;
-                sessionStorage.removeItem('currentUser');
+            for (let i = 1; i < data.length; i++) {
+                const x = padding + (i / (data.length - 1)) * width;
+                const y = padding + height - ((data[i] - minVal) / range) * height;
+                ctx.lineTo(x, y);
             }
-        };
+            ctx.stroke();
 
-        // --- UI & RENDER FUNCTIONS ---
-        const UI = {
-            init() {
-                if (Auth.isAuthenticated()) {
-                    this.showApp();
+            // Draw points
+            ctx.fillStyle = '#ff0000'; // Red points
+            data.forEach((val, i) => {
+                const x = padding + (i / (data.length - 1)) * width;
+                const y = padding + height - ((val - minVal) / range) * height;
+                ctx.beginPath();
+                ctx.arc(x, y, 3, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+
+        // --- Core Functions ---
+
+        /**
+         * Loads the application state from Local Storage.
+         * Initializes clients, availableKeys, and authentication status.
+         */
+        function loadStateFromLocalStorage() {
+            try {
+                isAuthenticated = localStorage.getItem(LS_AUTH_STATUS) === 'true';
+                currentUserRole = localStorage.getItem(LS_CURRENT_USER_ROLE) || 'guest';
+
+                const storedClients = localStorage.getItem(LS_CLIENTS);
+                clients = storedClients ? JSON.parse(storedClients) : [];
+
+                const storedAvailableKeys = localStorage.getItem(LS_AVAILABLE_KEYS);
+                availableKeys = storedAvailableKeys ? JSON.parse(storedAvailableKeys) : [...initialSerialKeys];
+
+                const storedServers = localStorage.getItem(LS_SERVERS);
+                servers = storedServers ? JSON.parse(storedServers) : [];
+
+                // Initialize servers if they don't exist or if the count is off or properties are missing
+                if (servers.length === 0 || servers.length !== 15 || !servers[0].osVersion || !servers[0].connectedUsers) { // Check for new property
+                    servers = [];
+                    const serverStatuses = ['Running', 'Stopped', 'Maintenance', 'Degraded', 'Isolated']; // Added Isolated
+                    for (let i = 1; i <= 15; i++) {
+                        servers.push({
+                            id: `node-${String(i).padStart(2, '0')}`,
+                            name: `Node-${String(i).padStart(2, '0')}`,
+                            status: serverStatuses[Math.floor(Math.random() * serverStatuses.length)],
+                            ip: generateRandomIp(),
+                            cpu: generateRandomPercentage(),
+                            ram: generateRandomPercentage(),
+                            diskIO: generateRandomDiskIO(),
+                            latency: generateRandomLatency(),
+                            errorRate: generateRandomErrorRate(),
+                            uptime: generateRandomUptime(),
+                            osVersion: generateRandomOS(),
+                            kernelVersion: generateRandomKernel(),
+                            securityPatch: generateRandomSecurityPatch(),
+                            connectedUsers: generateRandomConnectedUsers(), // New
+                            activeProcesses: generateRandomActiveProcesses(), // New
+                            networkThroughput: generateRandomNetworkThroughput(), // New
+                            logs: generateSimulatedLogs(),
+                            trafficData: generateSimulatedTrafficData(),
+                            isMaintenance: false
+                        });
+                    }
                 } else {
-                    this.showAuth();
-                }
-                this.initTheme();
-                this.bindGlobalEvents();
-            },
-            
-            // --- View Switching ---
-            showAuth() {
-                DOM.authContainer.innerHTML = this.renderAuthForm();
-                DOM.authContainer.classList.replace('hidden-view', 'visible-view');
-                DOM.appContainer.classList.replace('visible-view', 'hidden-view');
-            },
-
-            showApp() {
-                DOM.authContainer.classList.replace('visible-view', 'hidden-view');
-                DOM.appContainer.classList.replace('hidden-view', 'visible-view');
-                this.buildAppShell();
-                this.renderPage();
-            },
-
-            // --- App Shell & Page Rendering ---
-            buildAppShell() {
-                const user = Auth.getCurrentUser();
-                DOM.mainNav.innerHTML = CONFIG.navItems.map(item => `
-                    <a href="#${item.id}" data-action="navigate" data-page="${item.id}" class="nav-link flex items-center px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 border-l-4 border-transparent transition-all-modern">
-                        ${item.icon} ${item.label}
-                    </a>
-                `).join('');
-
-                DOM.get('user-menu-email').textContent = user.email;
-                DOM.get('user-avatar').src = `https://i.pravatar.cc/40?u=${user.email}`;
-                DOM.get('credit-amount').textContent = State.get('credits');
-            },
-            
-            renderPage() {
-                const pageId = State.get('activeNav');
-                let content = '';
-
-                switch (pageId) {
-                    case 'dashboard': content = this.renderDashboard(); break;
-                    case 'dev-platform': content = this.renderDevPlatform(); break;
-                    case 'marketplace': content = this.renderMarketplace(); break;
-                    default: content = this.renderDashboard();
-                }
-                
-                DOM.mainContent.innerHTML = content;
-                this.updateActiveNav();
-                this.initObservers();
-            },
-
-            updateActiveNav() {
-                const pageId = State.get('activeNav');
-                const page = CONFIG.navItems.find(p => p.id === pageId);
-                
-                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                const activeLink = document.querySelector(`.nav-link[data-page="${pageId}"]`);
-                if(activeLink) activeLink.classList.add('active');
-
-                DOM.get('header-title').textContent = page?.label || 'Dashboard';
-            },
-
-            // --- Page Content Renderers ---
-            renderDashboard() {
-                const user = Auth.getCurrentUser();
-                return `
-                    <div class="space-y-8">
-                        <div class="section-observer">
-                            <h2 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Welcome back, ${user.email.split('@')[0]}!</h2>
-                            <p class="mt-2 text-lg text-slate-600 dark:text-slate-400">Here's a snapshot of your account activity.</p>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                           ${this.renderStatCard('Credits Remaining', `₹${State.get('credits')}`, 'text-green-500', 'M5 13l4 4L19 7')}
-                           ${this.renderStatCard('API Keys', State.get('apiKeys').length, 'text-blue-500', 'M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z')}
-                           ${this.renderStatCard('Active Projects', State.get('projects').length, 'text-indigo-500', 'M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.19a1.5 1.5 0 00-1.06-.44z')}
-                        </div>
-                    </div>
-                `;
-            },
-            
-            renderStatCard(title, value, color, svgPath) {
-                return `
-                <div class="section-observer interactive-card bg-white dark:bg-slate-800/50 rounded-xl shadow-md p-6 transition-all-modern">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-slate-500 dark:text-slate-400">${title}</p>
-                            <p class="text-3xl font-bold text-slate-900 dark:text-white mt-1">${value}</p>
-                        </div>
-                        <div class="w-12 h-12 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-900 ${color}">
-                            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="${svgPath}"></path></svg>
-                        </div>
-                    </div>
-                </div>`;
-            },
-            
-            renderDevPlatform() {
-                const keys = State.get('apiKeys');
-                const keysTable = keys.length > 0 ? `
-                    <table class="min-w-full divide-y divide-slate-300 dark:divide-slate-700">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-slate-900 dark:text-white sm:pl-0">Name</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-slate-900 dark:text-white">API Key</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-slate-900 dark:text-white">Created</th>
-                                <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0"><span class="sr-only">Actions</span></th>
-                            </tr>
-                        </thead>
-                        <tbody id="api-keys-list" class="divide-y divide-slate-200 dark:divide-slate-800">
-                            ${keys.map(key => this.renderApiKeyRow(key)).join('')}
-                        </tbody>
-                    </table>
-                ` : `
-                    <div class="text-center py-12 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-lg">
-                        <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z"></path></svg>
-                        <h3 class="mt-2 text-sm font-medium text-slate-900 dark:text-white">No API keys</h3>
-                        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Get started by creating a new API key.</p>
-                    </div>
-                `;
-
-                return `
-                    <div class="space-y-8">
-                        <div class="sm:flex sm:items-center section-observer">
-                            <div class="sm:flex-auto">
-                                <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">API Keys</h2>
-                                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Manage your API keys to use the Right Solutions A.I. services.</p>
-                            </div>
-                            <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-                                <button type="button" data-action="create-key" class="btn-gradient inline-flex items-center justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all-modern">
-                                    Create New Key
-                                </button>
-                            </div>
-                        </div>
-                        <div class="mt-8 flow-root section-observer">
-                            <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                                <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                                    ${keysTable}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            },
-            
-            renderApiKeyRow(key) {
-                const template = DOM.get('api-key-template').content.cloneNode(true);
-                const row = template.querySelector('tr');
-                row.dataset.keyId = key.id;
-                row.querySelector('.key-name').textContent = key.name;
-                row.querySelector('.key-display').textContent = `${key.id.substring(0, 10)}...${key.id.slice(-4)}`;
-                row.querySelector('.key-created').textContent = new Date(key.created).toLocaleDateString();
-                
-                // Add staggered animation effect
-                setTimeout(() => row.classList.remove('opacity-0', 'translate-y-2'), 50);
-                
-                return row.outerHTML;
-            },
-
-            renderMarketplace() {
-                return `
-                    <div class="text-center section-observer">
-                        <svg class="mx-auto h-24 w-24 text-blue-300 dark:text-blue-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" /></svg>
-                        <h2 class="mt-6 text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Marketplace Coming Soon</h2>
-                        <p class="mt-4 text-lg text-slate-600 dark:text-slate-400">Discover pre-built A.I. models and integrations.</p>
-                    </div>
-                `;
-            },
-            
-            renderAuthForm() {
-                return `
-                    <div class="w-full max-w-md space-y-8">
-                        <div class="text-center">
-                            <svg class="mx-auto h-12 w-auto text-blue-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM10 17l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
-                            <h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-slate-900 dark:text-white">${CONFIG.appName}</h2>
-                            <p class="mt-2 text-center text-sm text-slate-600 dark:text-slate-400">Your intelligent solutions partner</p>
-                        </div>
-                        
-                        <div id="login-form-container" class="">
-                            <form id="login-form" class="space-y-6 bg-white dark:bg-slate-800/50 p-8 rounded-xl shadow-lg" novalidate>
-                                <input type="hidden" name="remember" value="true">
-                                <div class="space-y-4 rounded-md">
-                                    <div>
-                                        <label for="login-email" class="sr-only">Email address</label>
-                                        <input id="login-email" name="email" type="email" autocomplete="email" required class="relative block w-full appearance-none rounded-md border border-slate-300 dark:border-slate-700 px-3 py-2 text-slate-900 dark:text-white dark:bg-slate-900 placeholder-slate-500 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm" placeholder="Email address">
-                                    </div>
-                                    <div>
-                                        <label for="login-password" class="sr-only">Password</label>
-                                        <input id="login-password" name="password" type="password" autocomplete="current-password" required class="relative block w-full appearance-none rounded-md border border-slate-300 dark:border-slate-700 px-3 py-2 text-slate-900 dark:text-white dark:bg-slate-900 placeholder-slate-500 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm" placeholder="Password">
-                                    </div>
-                                </div>
-                                <div>
-                                    <button type="submit" class="btn-gradient group relative flex w-full justify-center rounded-md border border-transparent py-2 px-4 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all-modern">Sign in</button>
-                                </div>
-                                <p class="text-center text-sm">
-                                    <a href="#" id="show-register" class="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">Don't have an account? Register</a>
-                                </p>
-                            </form>
-                        </div>
-
-                        <div id="register-form-container" class="hidden">
-                             <form id="register-form" class="space-y-6 bg-white dark:bg-slate-800/50 p-8 rounded-xl shadow-lg" novalidate>
-                                <div class="space-y-4 rounded-md">
-                                    <div>
-                                        <label for="register-email" class="sr-only">Email address</label>
-                                        <input id="register-email" name="email" type="email" required class="relative block w-full appearance-none rounded-md border border-slate-300 dark:border-slate-700 px-3 py-2 text-slate-900 dark:text-white dark:bg-slate-900 placeholder-slate-500 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm" placeholder="Email address">
-                                    </div>
-                                    <div>
-                                        <label for="register-password" class="sr-only">Password</label>
-                                        <input id="register-password" name="password" type="password" required class="relative block w-full appearance-none rounded-md border border-slate-300 dark:border-slate-700 px-3 py-2 text-slate-900 dark:text-white dark:bg-slate-900 placeholder-slate-500 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm" placeholder="Password (min. 8 characters)">
-                                    </div>
-                                     <div>
-                                        <label for="register-password-confirm" class="sr-only">Confirm Password</label>
-                                        <input id="register-password-confirm" name="password-confirm" type="password" required class="relative block w-full appearance-none rounded-md border border-slate-300 dark:border-slate-700 px-3 py-2 text-slate-900 dark:text-white dark:bg-slate-900 placeholder-slate-500 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm" placeholder="Confirm Password">
-                                    </div>
-                                </div>
-                                <div>
-                                    <button type="submit" class="btn-gradient group relative flex w-full justify-center rounded-md border border-transparent py-2 px-4 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all-modern">Create Account</button>
-                                </div>
-                                <p class="text-center text-sm">
-                                    <a href="#" id="show-login" class="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">Already have an account? Sign In</a>
-                                </p>
-                            </form>
-                        </div>
-                    </div>
-                `;
-            },
-
-            // --- UI Components & Utilities ---
-            showNotification(message, type = 'success', duration = 3000) {
-                const colors = {
-                    success: 'bg-green-500 dark:bg-green-600',
-                    error: 'bg-red-500 dark:bg-red-600',
-                    info: 'bg-blue-500 dark:bg-blue-600'
-                };
-                const notif = document.createElement('div');
-                notif.className = `text-white py-3 px-5 rounded-lg shadow-xl transition-all-modern transform translate-y-10 opacity-0 ${colors[type]}`;
-                notif.innerHTML = `<p>${message}</p>`;
-                DOM.notificationContainer.appendChild(notif);
-                
-                setTimeout(() => notif.classList.remove('translate-y-10', 'opacity-0'), 10);
-                setTimeout(() => {
-                    notif.classList.add('translate-y-10', 'opacity-0');
-                    notif.addEventListener('transitionend', () => notif.remove());
-                }, duration);
-            },
-
-            async createModal({ title, content, confirmText = 'Confirm', cancelText = 'Cancel', isDestructive = false }) {
-                return new Promise((resolve) => {
-                    const confirmClass = isDestructive 
-                        ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500' 
-                        : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500';
-
-                    const modalHTML = `
-                        <div class="fixed inset-0 bg-black/50 transition-opacity" aria-hidden="true"></div>
-                        <div class="fixed inset-0 z-10 overflow-y-auto">
-                            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                                <div id="modal-panel" class="relative transform overflow-hidden rounded-lg bg-white dark:bg-slate-800 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg opacity-0 scale-95">
-                                    <div class="bg-white dark:bg-slate-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                                        <div class="sm:flex sm:items-start">
-                                            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                                                <h3 class="text-lg font-medium leading-6 text-slate-900 dark:text-white" id="modal-title">${title}</h3>
-                                                <div class="mt-2">
-                                                    <div class="text-sm text-slate-500 dark:text-slate-400">${content}</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="bg-slate-50 dark:bg-slate-800/50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                                        <button type="button" id="modal-confirm" class="inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm ${confirmClass}">${confirmText}</button>
-                                        <button type="button" id="modal-cancel" class="mt-3 inline-flex w-full justify-center rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-4 py-2 text-base font-medium text-slate-700 dark:text-slate-200 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm">
-                                            ${cancelText}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>`;
-                    
-                    DOM.modalContainer.innerHTML = modalHTML;
-                    const modalPanel = DOM.get('modal-panel');
-                    setTimeout(() => modalPanel.classList.remove('opacity-0', 'scale-95'), 10);
-                    
-                    const closeModal = (value) => {
-                        modalPanel.classList.add('opacity-0', 'scale-95');
-                        modalPanel.addEventListener('transitionend', () => {
-                            DOM.modalContainer.innerHTML = '';
-                            resolve(value);
-                        }, { once: true });
-                    };
-
-                    DOM.get('modal-confirm').onclick = () => closeModal(true);
-                    DOM.get('modal-cancel').onclick = () => closeModal(false);
-                });
-            },
-
-            toggleButtonLoading(button, isLoading) {
-                if (isLoading) {
-                    button.dataset.originalContent = button.innerHTML;
-                    button.innerHTML = '<div class="spinner mx-auto"></div>';
-                    button.disabled = true;
-                } else {
-                    button.innerHTML = button.dataset.originalContent;
-                    button.disabled = false;
-                }
-            },
-            
-            toggleUserMenu(forceState) {
-                const menu = DOM.userMenu;
-                const isHidden = menu.classList.contains('hidden');
-                
-                if (forceState === true || (forceState === undefined && isHidden)) { // Show
-                    menu.classList.remove('hidden');
-                    setTimeout(() => menu.classList.remove('scale-95', 'opacity-0'), 1);
-                } else { // Hide
-                    menu.classList.add('scale-95', 'opacity-0');
-                    menu.addEventListener('transitionend', () => menu.classList.add('hidden'), { once: true });
-                }
-            },
-
-            // --- Observers & Theme ---
-            initObservers() {
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('is-visible');
-                            observer.unobserve(entry.target);
-                        }
+                    // Ensure existing servers have new properties if they were loaded from an older state
+                    servers.forEach(server => {
+                        if (!server.osVersion) server.osVersion = generateRandomOS();
+                        if (!server.kernelVersion) server.kernelVersion = generateRandomKernel();
+                        if (!server.securityPatch) server.securityPatch = generateRandomSecurityPatch();
+                        if (!server.connectedUsers) server.connectedUsers = generateRandomConnectedUsers(); // New
+                        if (!server.activeProcesses) server.activeProcesses = generateRandomActiveProcesses(); // New
+                        if (!server.networkThroughput) server.networkThroughput = generateRandomNetworkThroughput(); // New
+                        if (!server.logs || server.logs.length === 0) server.logs = generateSimulatedLogs();
+                        if (!server.trafficData || server.trafficData.length === 0) server.trafficData = generateSimulatedTrafficData();
+                        if (typeof server.isMaintenance === 'undefined') server.isMaintenance = false;
                     });
-                }, { threshold: 0.1 });
+                }
 
-                document.querySelectorAll('.section-observer').forEach(el => observer.observe(el));
-            },
-            
-            initTheme() {
-                const isDark = DOM.root.classList.contains('dark');
-                DOM.get('theme-toggle').innerHTML = isDark ? CONFIG.themeIcons.dark : CONFIG.themeIcons.light;
-            },
 
-            toggleTheme() {
-                DOM.root.classList.toggle('dark');
-                const isDark = DOM.root.classList.contains('dark');
-                localStorage.setItem('theme', isDark ? 'dark' : 'light');
-                this.initTheme();
-            },
-            
-            // --- Event Binding ---
-            bindGlobalEvents() {
-                DOM.authContainer.addEventListener('click', App.handleAuthEvents);
-                DOM.authContainer.addEventListener('submit', App.handleAuthEvents);
-                DOM.appContainer.addEventListener('click', App.handleAppEvents);
-                DOM.mainContent.addEventListener('click', App.handlePageSpecificEvents);
+                // Ensure availableKeys only contains keys not already assigned to clients
+                const usedKeys = new Set(clients.map(c => c.key));
+                availableKeys = availableKeys.filter(key => !usedKeys.has(key));
+                // Also add any new keys from initialSerialKeys that haven't been used yet
+                const currentKeysInAvailable = new Set(availableKeys);
+                initialSerialKeys.forEach(key => {
+                    if (!usedKeys.has(key) && !currentKeysInAvailable.has(key)) {
+                        availableKeys.push(key);
+                    }
+                });
+
+            } catch (error) {
+                console.error("Error loading state from local storage:", error);
+                // Fallback to default state if local storage is corrupted
+                isAuthenticated = false;
+                currentUserRole = 'guest';
+                clients = [];
+                availableKeys = [...initialSerialKeys];
+                servers = []; // Will be re-initialized by the check above
             }
-        };
-        
-        // --- MAIN APPLICATION OBJECT: Orchestrates everything ---
-        const App = {
-            init() {
-                Auth.init();
-                State.init();
-                UI.init();
-            },
+        }
 
-            // --- Event Handlers ---
-            handleAuthEvents(e) {
-                const targetId = e.target.id;
-                
-                // Form submission
-                if (e.type === 'submit') {
-                    e.preventDefault();
-                    const form = e.target;
-                    const email = form.querySelector('input[type="email"]').value.trim().toLowerCase();
-                    const password = form.querySelector('input[type="password"]').value;
-                    
-                    if (form.id === 'login-form') {
-                        App.handleLogin(email, password);
-                    } else if (form.id === 'register-form') {
-                        const passwordConfirm = form.querySelector('#register-password-confirm').value;
-                        App.handleRegister(email, password, passwordConfirm);
-                    }
-                }
-                
-                // Link clicks for switching forms
-                if (e.type === 'click' && (targetId === 'show-register' || targetId === 'show-login')) {
-                    e.preventDefault();
-                    DOM.get('login-form-container').classList.toggle('hidden');
-                    DOM.get('register-form-container').classList.toggle('hidden');
-                }
-            },
-            
-            handleAppEvents(e) {
-                const actionTarget = e.target.closest('[data-action]');
-                if (!actionTarget) {
-                    if (!e.target.closest('[data-action="toggle-user-menu"]')) {
-                        UI.toggleUserMenu(false);
-                    }
-                    return;
+        /**
+         * Saves the current application state to Local Storage.
+         */
+        function saveStateToLocalStorage() {
+            try {
+                localStorage.setItem(LS_AUTH_STATUS, isAuthenticated);
+                localStorage.setItem(LS_CURRENT_USER_ROLE, currentUserRole);
+                localStorage.setItem(LS_CLIENTS, JSON.stringify(clients));
+                localStorage.setItem(LS_AVAILABLE_KEYS, JSON.stringify(availableKeys));
+                localStorage.setItem(LS_SERVERS, JSON.stringify(servers));
+            } catch (error) {
+                console.error("Error saving state to local storage:", error);
+            }
+        }
+
+        /**
+         * Renders the simulated server cards.
+         */
+        function renderServers() {
+            if (!serverGrid) {
+                console.error("Error: serverGrid element not found.");
+                return;
+            }
+            serverGrid.innerHTML = ''; // Clear previous servers
+            const statusColors = {
+                'Running': 'bg-green-100 text-green-700',
+                'Stopped': 'bg-red-100 text-red-700',
+                'Maintenance': 'bg-yellow-100 text-yellow-700',
+                'Degraded': 'bg-orange-100 text-orange-700',
+                'Isolated': 'bg-gray-700 text-gray-300' // New color for isolated
+            };
+            const statusIcons = {
+                'Running': '<i class="fas fa-check-circle"></i>',
+                'Stopped': '<i class="fas fa-times-circle"></i>',
+                'Maintenance': '<i class="fas fa-tools"></i>',
+                'Degraded': '<i class="fas fa-exclamation-triangle"></i>',
+                'Isolated': '<i class="fas fa-unlink"></i>' // New icon for isolated
+            };
+
+            servers.forEach(server => {
+                const serverCard = document.createElement('div');
+                serverCard.className = `p-4 rounded-lg shadow-sm flex flex-col ${statusColors[server.status]}`;
+
+                // Only make cards clickable for admin
+                if (currentUserRole === 'admin') {
+                    serverCard.classList.add('cursor-pointer', 'hover:shadow-md', 'transition', 'duration-200');
+                    serverCard.dataset.serverId = server.id; // Store ID for click handling
                 }
 
-                const action = actionTarget.dataset.action;
-                switch(action) {
-                    case 'toggle-theme': UI.toggleTheme(); break;
-                    case 'toggle-user-menu': UI.toggleUserMenu(); break;
-                    case 'logout': App.handleLogout(); break;
-                    case 'toggle-sidebar': DOM.sidebar.classList.toggle('hidden-mobile'); break;
-                    case 'navigate': 
-                        State.set('activeNav', actionTarget.dataset.page);
-                        UI.renderPage();
-                        if (window.innerWidth < 768) { // Close sidebar on mobile nav
-                            DOM.sidebar.classList.add('hidden-mobile');
+                serverCard.innerHTML = `
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-semibold text-lg">${server.name}</h3>
+                        <div class="text-xl">${statusIcons[server.status]}</div>
+                    </div>
+                    <p class="text-sm">Status: ${server.status}</p>
+                    <p class="text-xs text-gray-600">IP: ${server.ip}</p>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2">
+                        <div class="bg-blue-600 h-2.5 rounded-full" style="width: ${server.cpu}"></div>
+                    </div>
+                    <p class="text-xs text-gray-600 mt-1">CPU: ${server.cpu}</p>
+                `;
+                serverGrid.appendChild(serverCard);
+            });
+
+            // Add event listeners for server cards ONLY IF ADMIN
+            if (currentUserRole === 'admin') {
+                document.querySelectorAll('#server-grid .p-4.rounded-lg.shadow-sm').forEach(card => {
+                    card.addEventListener('click', (event) => {
+                        const serverId = event.currentTarget.dataset.serverId;
+                        showServerDetails(serverId);
+                    });
+                });
+            }
+        }
+
+        /**
+         * Updates the dashboard counts based on current server statuses.
+         */
+        function updateDashboardCounts() {
+            let runningCount = 0;
+            let stoppedCount = 0;
+            let maintenanceCount = 0;
+            let degradedCount = 0;
+            let isolatedCount = 0; // New
+
+            servers.forEach(server => {
+                if (server.status === 'Running') runningCount++;
+                else if (server.status === 'Stopped') stoppedCount++;
+                else if (server.status === 'Maintenance') maintenanceCount++;
+                else if (server.status === 'Degraded') degradedCount++;
+                else if (server.status === 'Isolated') isolatedCount++; // New
+            });
+
+            if (totalServersCount) totalServersCount.textContent = servers.length;
+            if (runningServersCount) runningServersCount.textContent = runningCount;
+            if (stoppedServersCount) stoppedServersCount.textContent = stoppedCount;
+            // For alerts, we can combine Maintenance, Degraded, and Isolated
+            if (alertsCount) alertsCount.textContent = maintenanceCount + degradedCount + isolatedCount;
+        }
+
+        /**
+         * Displays the server details modal for a given server ID.
+         * @param {string} serverId The ID of the server to display.
+         */
+        function showServerDetails(serverId) {
+            // Prevent public users from opening the modal
+            if (currentUserRole !== 'admin') {
+                console.warn("Attempted to access server details as non-admin user.");
+                return;
+            }
+
+            const server = servers.find(s => s.id === serverId);
+            if (!server) return;
+
+            // Ensure all modal elements exist before attempting to set their properties
+            if (modalServerName) modalServerName.textContent = server.name;
+            if (modalServerStatus) modalServerStatus.textContent = server.status;
+            if (modalServerIp) modalServerIp.textContent = server.ip;
+            if (modalServerCpu) modalServerCpu.textContent = server.cpu;
+            if (modalServerRam) modalServerRam.textContent = server.ram;
+            if (modalServerDiskIO) modalServerDiskIO.textContent = server.diskIO;
+            if (modalServerLatency) modalServerLatency.textContent = server.latency;
+            if (modalServerErrorRate) modalServerErrorRate.textContent = server.errorRate;
+            if (modalServerUptime) modalServerUptime.textContent = server.uptime;
+            if (modalServerOS) modalServerOS.textContent = server.osVersion;
+            if (modalServerKernel) modalServerKernel.textContent = server.kernelVersion;
+            if (modalServerSecurityPatch) modalServerSecurityPatch.textContent = server.securityPatch;
+            if (modalConnectedUsers) modalConnectedUsers.textContent = server.connectedUsers; // New
+            if (modalActiveProcesses) modalActiveProcesses.textContent = server.activeProcesses; // New
+            if (modalNetworkThroughput) modalNetworkThroughput.textContent = server.networkThroughput; // New
+            if (modalActionMessage) modalActionMessage.textContent = ''; // Clear previous messages
+
+            // Populate logs
+            if (serverLogsDiv) {
+                serverLogsDiv.innerHTML = server.logs.map(log => `<p>${log}</p>`).join('');
+                serverLogsDiv.scrollTop = serverLogsDiv.scrollHeight; // Scroll to bottom
+            }
+
+            // Draw traffic chart
+            if (trafficChartCanvas) {
+                drawLineChart(trafficChartCanvas, server.trafficData);
+            }
+
+            // Set maintenance mode toggle state
+            if (maintenanceModeToggle) {
+                maintenanceModeToggle.checked = server.isMaintenance;
+            }
+
+            // Update button states based on server status AND user role (already checked isAdmin above)
+            // Note: Isolated status implies most actions are disabled
+            const isRunning = server.status === 'Running';
+            const isStopped = server.status === 'Stopped';
+            const isMaintenance = server.status === 'Maintenance';
+            const isIsolated = server.status === 'Isolated';
+
+            if (modalRestartBtn) modalRestartBtn.disabled = isMaintenance || isIsolated;
+            if (modalStopBtn) modalStopBtn.disabled = isStopped || isMaintenance || isIsolated;
+            if (modalDeployBtn) modalDeployBtn.disabled = !isRunning;
+            if (modalRollbackBtn) modalRollbackBtn.disabled = !isRunning;
+            if (modalIsolateBtn) modalIsolateBtn.disabled = isIsolated; // Cannot isolate an already isolated node
+            if (modalPurgeLogsBtn) modalPurgeLogsBtn.disabled = isStopped || isIsolated; // Can't purge logs if node is stopped or isolated
+            if (modalScaleResourcesBtn) modalScaleResourcesBtn.disabled = !isRunning;
+            if (modalForceSyncBtn) modalForceSyncBtn.disabled = !isRunning;
+
+
+            if (maintenanceModeToggle) maintenanceModeToggle.disabled = false; // Admin can always toggle
+
+            // Ensure actions container and toggle row are visible for admin
+            if (serverActionsContainer) serverActionsContainer.classList.remove('hidden');
+            if (maintenanceToggleRow) maintenanceToggleRow.classList.remove('hidden');
+
+
+            // Remove previous event listeners to prevent duplicates and get new references
+            // Only clone if the element exists
+            if (modalRestartBtn) modalRestartBtn.replaceWith(modalRestartBtn.cloneNode(true));
+            if (modalStopBtn) modalStopBtn.replaceWith(modalStopBtn.cloneNode(true));
+            if (modalDeployBtn) modalDeployBtn.replaceWith(modalDeployBtn.cloneNode(true));
+            if (modalRollbackBtn) modalRollbackBtn.replaceWith(modalRollbackBtn.cloneNode(true));
+            if (modalIsolateBtn) modalIsolateBtn.replaceWith(modalIsolateBtn.cloneNode(true)); // New
+            if (modalPurgeLogsBtn) modalPurgeLogsBtn.replaceWith(modalPurgeLogsBtn.cloneNode(true)); // New
+            if (modalScaleResourcesBtn) modalScaleResourcesBtn.replaceWith(modalScaleResourcesBtn.cloneNode(true)); // New
+            if (modalForceSyncBtn) modalForceSyncBtn.replaceWith(modalForceSyncBtn.cloneNode(true)); // New
+            if (maintenanceModeToggle) maintenanceModeToggle.replaceWith(maintenanceModeToggle.cloneNode(true)); // Also clone the toggle
+
+            const newModalRestartBtn = document.getElementById('modal-restart-btn');
+            const newModalStopBtn = document.getElementById('modal-stop-btn');
+            const newModalDeployBtn = document.getElementById('modal-deploy-btn');
+            const newModalRollbackBtn = document.getElementById('modal-rollback-btn');
+            const newModalIsolateBtn = document.getElementById('modal-isolate-btn'); // New
+            const newModalPurgeLogsBtn = document.getElementById('modal-purge-logs-btn'); // New
+            const newModalScaleResourcesBtn = document.getElementById('modal-scale-resources-btn'); // New
+            const newModalForceSyncBtn = document.getElementById('modal-force-sync-btn'); // New
+            const newMaintenanceModeToggle = document.getElementById('maintenance-mode');
+
+            // Re-apply disabled/checked states to the new elements
+            if (newModalRestartBtn) newModalRestartBtn.disabled = isMaintenance || isIsolated;
+            if (newModalStopBtn) newModalStopBtn.disabled = isStopped || isMaintenance || isIsolated;
+            if (newModalDeployBtn) newModalDeployBtn.disabled = !isRunning;
+            if (newModalRollbackBtn) newModalRollbackBtn.disabled = !isRunning;
+            if (newModalIsolateBtn) newModalIsolateBtn.disabled = isIsolated;
+            if (newModalPurgeLogsBtn) newModalPurgeLogsBtn.disabled = isStopped || isIsolated;
+            if (newModalScaleResourcesBtn) newModalScaleResourcesBtn.disabled = !isRunning;
+            if (newModalForceSyncBtn) newModalForceSyncBtn.disabled = !isRunning;
+
+            if (newMaintenanceModeToggle) {
+                newMaintenanceModeToggle.disabled = false; // Admin can always toggle
+                newMaintenanceModeToggle.checked = server.isMaintenance;
+            }
+
+            // Attach event listeners to the new elements
+            if (newModalRestartBtn) {
+                newModalRestartBtn.addEventListener('click', () => {
+                    if (server.status !== 'Maintenance' && server.status !== 'Isolated') { // Cannot restart if isolated
+                        server.status = 'Maintenance'; // Simulate reboot process
+                        if (modalActionMessage) {
+                            modalActionMessage.textContent = `${server.name}: Initiating reboot sequence...`;
+                            modalActionMessage.classList.add('glitch-text');
                         }
-                        break;
-                }
-            },
-
-            async handlePageSpecificEvents(e) {
-                const actionTarget = e.target.closest('[data-action]');
-                if (!actionTarget) return;
-
-                const action = actionTarget.dataset.action;
-                const button = actionTarget;
-
-                switch(action) {
-                    case 'create-key':
-                        const confirmed = await UI.createModal({
-                            title: 'Create New API Key',
-                            content: `
-                                <label for="key-name" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Key Name</label>
-                                <input type="text" name="key-name" id="key-name" class="mt-1 block w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="e.g., My Test Server">
-                            `,
-                            confirmText: 'Create Key'
-                        });
-
-                        if (confirmed) {
-                            const keyName = DOM.get('key-name').value.trim();
-                            if (!keyName) {
-                                UI.showNotification('Key name cannot be empty.', 'error');
-                                return;
+                        saveStateToLocalStorage();
+                        renderServers();
+                        updateDashboardCounts();
+                        setTimeout(() => {
+                            server.status = 'Running';
+                            server.uptime = generateRandomUptime(); // Reset uptime
+                            server.logs.unshift(`[${new Date().toLocaleTimeString()}] [INFO] Node rebooted successfully.`);
+                            server.logs = server.logs.slice(0, 10); // Keep last 10 logs
+                            if (modalActionMessage) {
+                                modalActionMessage.textContent = `${server.name}: Reboot complete. Node operational.`;
+                                modalActionMessage.classList.remove('glitch-text');
                             }
-                            UI.toggleButtonLoading(button, true);
-                            try {
-                                await API.createApiKey(keyName);
-                                UI.showNotification('API Key created successfully!', 'success');
-                                UI.renderPage(); // Re-render the dev platform page
-                            } catch (err) {
-                                UI.showNotification(err.message, 'error');
-                            } finally {
-                                UI.toggleButtonLoading(button, false);
-                            }
-                        }
-                        break;
-                        
-                    case 'revoke-key':
-                        const keyRow = e.target.closest('tr');
-                        const keyId = keyRow.dataset.keyId;
-                        const keyDisplay = keyRow.querySelector('.key-display').textContent;
-                        
-                        const shouldRevoke = await UI.createModal({
-                            title: 'Revoke API Key',
-                            content: `Are you sure you want to revoke the key <strong>${keyDisplay}</strong>? This action cannot be undone.`,
-                            confirmText: 'Revoke Key',
-                            isDestructive: true
-                        });
+                            saveStateToLocalStorage();
+                            renderServers();
+                            updateDashboardCounts();
+                            showServerDetails(serverId); // Re-render modal with updated status
+                        }, 3000); // Longer simulation time
+                    }
+                });
+            }
 
-                        if (shouldRevoke) {
-                            keyRow.style.opacity = '0.5';
-                            await API.revokeApiKey(keyId);
-                            UI.showNotification('API Key successfully revoked.', 'success');
-                            UI.renderPage();
+
+            if (newModalStopBtn) {
+                newModalStopBtn.addEventListener('click', () => {
+                    if (server.status !== 'Stopped' && server.status !== 'Maintenance' && server.status !== 'Isolated') { // Cannot stop if isolated
+                        server.status = 'Stopped'; // Simulate stop
+                        if (modalActionMessage) {
+                            modalActionMessage.textContent = `${server.name}: Terminating node connection...`;
+                            modalActionMessage.classList.add('glitch-text');
                         }
-                        break;
-                }
-            },
-            
-            // --- Core Logic Methods ---
-            handleLogin(email, password) {
-                if (Auth.login(email, password)) {
-                    UI.showNotification('Login successful!', 'success');
-                    State.init();
-                    UI.showApp();
+                        saveStateToLocalStorage();
+                        renderServers();
+                        updateDashboardCounts();
+                        setTimeout(() => {
+                            server.logs.unshift(`[${new Date().toLocaleTimeString()}] [WARNING] Node terminated by operator.`);
+                            server.logs = server.logs.slice(0, 10);
+                            if (modalActionMessage) {
+                                modalActionMessage.textContent = `${server.name}: Node successfully terminated.`;
+                                modalActionMessage.classList.remove('glitch-text');
+                            }
+                            saveStateToLocalStorage();
+                            renderServers();
+                            updateDashboardCounts();
+                            showServerDetails(serverId); // Re-render modal with updated status
+                        }, 2000);
+                    }
+                });
+            }
+
+
+            if (newModalDeployBtn) {
+                newModalDeployBtn.addEventListener('click', () => {
+                    if (server.status === 'Running') {
+                        if (modalActionMessage) {
+                            modalActionMessage.textContent = `${server.name}: Deploying critical update...`;
+                            modalActionMessage.classList.add('glitch-text');
+                        }
+                        setTimeout(() => {
+                            server.errorRate = generateRandomErrorRate(); // Simulate potential change after update
+                            server.securityPatch = 'Latest'; // Simulate patch application
+                            server.logs.unshift(`[${new Date().toLocaleTimeString()}] [INFO] Critical update deployed.`);
+                            server.logs = server.logs.slice(0, 10);
+                            if (modalActionMessage) {
+                                modalActionMessage.textContent = `${server.name}: Update deployed. System integrity check initiated.`;
+                                modalActionMessage.classList.remove('glitch-text');
+                            }
+                            saveStateToLocalStorage();
+                            renderServers();
+                            updateDashboardCounts();
+                            showServerDetails(serverId);
+                        }, 2500);
+                    }
+                });
+            }
+
+
+            if (newModalRollbackBtn) {
+                newModalRollbackBtn.addEventListener('click', () => {
+                    if (server.status === 'Running') {
+                        if (modalActionMessage) {
+                            modalActionMessage.textContent = `${server.name}: Initiating system rollback...`;
+                            modalActionMessage.classList.add('glitch-text');
+                        }
+                        setTimeout(() => {
+                            server.errorRate = generateRandomErrorRate(); // Simulate change
+                            server.securityPatch = '2024-05-A'; // Simulate rollback to older patch
+                            server.logs.unshift(`[${new Date().toLocaleTimeString()}] [WARNING] System rollback initiated.`);
+                            server.logs = server.logs.slice(0, 10);
+                            if (modalActionMessage) {
+                                modalActionMessage.textContent = `${server.name}: Rollback complete. Previous version restored.`;
+                                modalActionMessage.classList.remove('glitch-text');
+                            }
+                            saveStateToLocalStorage();
+                            renderServers();
+                            updateDashboardCounts();
+                            showServerDetails(serverId);
+                        }, 2500);
+                    }
+                });
+            }
+
+            if (newModalIsolateBtn) {
+                newModalIsolateBtn.addEventListener('click', () => {
+                    if (server.status !== 'Isolated') {
+                        server.status = 'Isolated';
+                        if (modalActionMessage) {
+                            modalActionMessage.textContent = `${server.name}: Node isolated from network. All external connections severed.`;
+                            modalActionMessage.classList.add('glitch-text');
+                        }
+                        server.logs.unshift(`[${new Date().toLocaleTimeString()}] [CRITICAL] Node isolated by operator.`);
+                        server.logs = server.logs.slice(0, 10);
+                        saveStateToLocalStorage();
+                        renderServers();
+                        updateDashboardCounts();
+                        setTimeout(() => {
+                             if (modalActionMessage) modalActionMessage.classList.remove('glitch-text');
+                             showServerDetails(serverId); // Re-render modal to update status and button states
+                        }, 1500);
+                    }
+                });
+            }
+
+            if (newModalPurgeLogsBtn) {
+                newModalPurgeLogsBtn.addEventListener('click', () => {
+                    if (server.status !== 'Stopped' && server.status !== 'Isolated') {
+                        server.logs = [`[${new Date().toLocaleTimeString()}] [INFO] Logs purged by operator.`];
+                        if (modalActionMessage) {
+                            modalActionMessage.textContent = `${server.name}: Log archives purged. Data integrity maintained.`;
+                            modalActionMessage.classList.add('glitch-text');
+                        }
+                        saveStateToLocalStorage();
+                        renderServers();
+                        updateDashboardCounts();
+                        setTimeout(() => {
+                            if (modalActionMessage) modalActionMessage.classList.remove('glitch-text');
+                            showServerDetails(serverId);
+                        }, 1500);
+                    }
+                });
+            }
+
+            if (newModalScaleResourcesBtn) {
+                newModalScaleResourcesBtn.addEventListener('click', () => {
+                    if (server.status === 'Running') {
+                        const currentCpu = parseInt(server.cpu.replace('%', ''));
+                        const currentRam = parseInt(server.ram.replace('%', ''));
+                        const newCpu = Math.min(100, currentCpu + 10); // Scale up by 10%
+                        const newRam = Math.min(100, currentRam + 5); // Scale up by 5%
+                        server.cpu = `${newCpu}%`;
+                        server.ram = `${newRam}%`;
+                        if (modalActionMessage) {
+                            modalActionMessage.textContent = `${server.name}: Resource allocation increased. CPU: ${newCpu}%, RAM: ${newRam}%.`;
+                            modalActionMessage.classList.add('glitch-text');
+                        }
+                        server.logs.unshift(`[${new Date().toLocaleTimeString()}] [INFO] Resources scaled up.`);
+                        server.logs = server.logs.slice(0, 10);
+                        saveStateToLocalStorage();
+                        renderServers();
+                        updateDashboardCounts();
+                        setTimeout(() => {
+                            if (modalActionMessage) modalActionMessage.classList.remove('glitch-text');
+                            showServerDetails(serverId);
+                        }, 1500);
+                    }
+                });
+            }
+
+            if (newModalForceSyncBtn) {
+                newModalForceSyncBtn.addEventListener('click', () => {
+                    if (server.status === 'Running') {
+                        if (modalActionMessage) {
+                            modalActionMessage.textContent = `${server.name}: Initiating forced data synchronization...`;
+                            modalActionMessage.classList.add('glitch-text');
+                        }
+                        server.logs.unshift(`[${new Date().toLocaleTimeString()}] [INFO] Forced data synchronization initiated.`);
+                        server.logs = server.logs.slice(0, 10);
+                        saveStateToLocalStorage();
+                        renderServers();
+                        updateDashboardCounts();
+                        setTimeout(() => {
+                            server.errorRate = generateRandomErrorRate(); // Simulate some data change
+                            if (modalActionMessage) {
+                                modalActionMessage.textContent = `${server.name}: Data synchronization complete. Integrity verified.`;
+                                modalActionMessage.classList.remove('glitch-text');
+                            }
+                            showServerDetails(serverId);
+                        }, 2000);
+                    }
+                });
+            }
+
+
+            if (newMaintenanceModeToggle) {
+                newMaintenanceModeToggle.addEventListener('change', () => {
+                    server.isMaintenance = newMaintenanceModeToggle.checked;
+                    if (server.isMaintenance) {
+                        server.status = 'Maintenance';
+                        if (modalActionMessage) modalActionMessage.textContent = `${server.name}: Entering Maintenance Mode.`;
+                        server.logs.unshift(`[${new Date().toLocaleTimeString()}] [INFO] Node entered Maintenance Mode.`);
+                    } else {
+                        server.status = 'Running'; // Assume it goes back to running after maintenance
+                        if (modalActionMessage) modalActionMessage.textContent = `${server.name}: Exiting Maintenance Mode.`;
+                        server.logs.unshift(`[${new Date().toLocaleTimeString()}] [INFO] Node exited Maintenance Mode.`);
+                    }
+                    server.logs = server.logs.slice(0, 10);
+                    saveStateToLocalStorage();
+                    renderServers();
+                    updateDashboardCounts();
+                    showServerDetails(serverId); // Re-render modal to update status display
+                });
+            }
+
+            if (serverDetailsModal) serverDetailsModal.classList.remove('hidden');
+        }
+
+        /**
+         * Hides the server details modal.
+         */
+        function hideServerDetails() {
+            if (serverDetailsModal) serverDetailsModal.classList.add('hidden');
+        }
+
+        /**
+         * Renders the list of registered clients and their serial keys.
+         */
+        function renderClients() {
+            if (clientsList) {
+                clientsList.innerHTML = ''; // Clear previous list
+                if (clients.length === 0) {
+                    if (noClientsMessage) {
+                        noClientsMessage.classList.remove('hidden');
+                        clientsList.appendChild(noClientsMessage);
+                    }
                 } else {
-                    UI.showNotification('Invalid email or password.', 'error');
-                }
-            },
-            
-            handleRegister(email, password, passwordConfirm) {
-                if (password.length < 8) { UI.showNotification('Password must be at least 8 characters.', 'error'); return; }
-                if (password !== passwordConfirm) { UI.showNotification('Passwords do not match.', 'error'); return; }
-                
-                try {
-                    Auth.register(email, password);
-                    UI.showNotification('Registration successful! Please log in.', 'success');
-                    DOM.get('login-form-container').classList.remove('hidden');
-                    DOM.get('register-form-container').classList.add('hidden');
-                    DOM.get('login-email').value = email;
-                    DOM.get('login-password').focus();
-                } catch (err) {
-                    UI.showNotification(err.message, 'error');
-                }
-            },
+                    if (noClientsMessage) noClientsMessage.classList.add('hidden');
+                    clients.forEach((client, index) => {
+                        const clientItem = document.createElement('div');
+                        clientItem.className = `p-3 mb-2 rounded-md bg-white border border-gray-200 flex justify-between items-center ${index % 2 === 0 ? 'bg-gray-50' : ''}`;
+                        clientItem.innerHTML = `
+                            <div>
+                                <p class="font-semibold text-gray-800">${client.name}</p>
+                                <p class="text-sm text-gray-600 break-all">${client.key}</p>
+                            </div>
+                            <button data-key="${client.key}" class="copy-key-btn text-blue-500 hover:text-blue-700 text-lg ml-2" title="Copy Key">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        `;
+                        clientsList.appendChild(clientItem);
+                    });
 
-            handleLogout() {
-                Auth.logout();
-                UI.showAuth();
+                    // Add event listeners for copy buttons
+                    document.querySelectorAll('.copy-key-btn').forEach(button => {
+                        button.addEventListener('click', (event) => {
+                            const keyToCopy = event.currentTarget.dataset.key;
+                            copyToClipboard(keyToCopy);
+                            // Optional: Provide visual feedback
+                            event.currentTarget.innerHTML = '<i class="fas fa-check text-green-500"></i>';
+                            setTimeout(() => {
+                                event.currentTarget.innerHTML = '<i class="fas fa-copy"></i>';
+                            }, 1500);
+                        });
+                    });
+                }
+            } else {
+                console.error("Error: clientsList not found.");
             }
-        };
+        }
 
-        // --- START THE APPLICATION ---
-        App.init();
-    });
+        /**
+         * Copies text to the clipboard.
+         * @param {string} text The text to copy.
+         */
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+        }
+
+        /**
+         * Generates a unique serial key from the available keys.
+         * @returns {string|null} A unique serial key or null if no keys are available.
+         */
+        function generateUniqueKey() {
+            if (availableKeys.length === 0) {
+                return null; // No keys left
+            }
+            const randomIndex = Math.floor(Math.random() * availableKeys.length);
+            const key = availableKeys[randomIndex];
+            availableKeys.splice(randomIndex, 1); // Remove the used key
+            return key;
+        }
+
+        /**
+         * Handles the login process.
+         */
+        function handleLogin() {
+            const enteredUsername = usernameInput.value.trim();
+            const enteredPassword = passwordInput.value.trim();
+
+            if (authMessage) {
+                authMessage.textContent = 'Authenticating...';
+                authMessage.classList.remove('text-red-200', 'text-yellow-200', 'text-green-700', 'glitch-text');
+                authMessage.classList.add('text-blue-200');
+            }
+
+
+            setTimeout(() => { // Simulate network delay
+                if (enteredUsername === ADMIN_USERNAME && enteredPassword === ADMIN_PASSWORD) {
+                    isAuthenticated = true;
+                    currentUserRole = 'admin';
+                    saveStateToLocalStorage();
+                    updateUIForAuthStatus();
+                    if (authMessage) {
+                        authMessage.textContent = 'Access Granted. Welcome, Operator.';
+                        authMessage.classList.remove('text-blue-200');
+                        authMessage.classList.add('text-green-700');
+                    }
+                    if (usernameInput) usernameInput.value = '';
+                    if (passwordInput) passwordInput.value = '';
+                    setTimeout(() => { if (authMessage) { authMessage.textContent = ''; authMessage.classList.remove('text-green-700'); } }, 3000);
+                } else if (enteredUsername === PUBLIC_USERNAME && enteredPassword === PUBLIC_PASSWORD) {
+                    isAuthenticated = true;
+                    currentUserRole = 'public';
+                    saveStateToLocalStorage();
+                    updateUIForAuthStatus();
+                    if (authMessage) {
+                        authMessage.textContent = 'Public Access Granted. Welcome, Observer.';
+                        authMessage.classList.remove('text-blue-200');
+                        authMessage.classList.add('text-yellow-200');
+                    }
+                    if (usernameInput) usernameInput.value = '';
+                    if (passwordInput) passwordInput.value = '';
+                    setTimeout(() => { if (authMessage) { authMessage.textContent = ''; authMessage.classList.remove('text-yellow-200'); } }, 3000);
+                }
+                else {
+                    isAuthenticated = false;
+                    currentUserRole = 'guest';
+                    if (authMessage) {
+                        authMessage.textContent = 'Access Denied. Invalid Credentials.';
+                        authMessage.classList.remove('text-blue-200');
+                        authMessage.classList.add('glitch-text', 'text-red-200'); // Add glitch effect for errors
+                        setTimeout(() => { if (authMessage) authMessage.classList.remove('glitch-text'); }, 1500); // Remove after a short time
+                    }
+                }
+            }, 1000);
+        }
+
+        /**
+         * Handles the logout process.
+         */
+        function handleLogout() {
+            isAuthenticated = false;
+            currentUserRole = 'guest';
+            saveStateToLocalStorage();
+            updateUIForAuthStatus();
+            if (authMessage) {
+                authMessage.textContent = 'Protocol Deactivated. Session Terminated.'; // Clear any previous messages
+                authMessage.classList.remove('text-red-200', 'text-blue-200', 'glitch-text');
+                authMessage.classList.add('text-yellow-200');
+                setTimeout(() => { if (authMessage) { authMessage.textContent = ''; authMessage.classList.remove('text-yellow-200'); } }, 3000);
+            }
+        }
+
+        /**
+         * Handles adding a new client and generating a serial key.
+         */
+        function handleAddClient() {
+            const clientName = clientNameInput.value.trim();
+
+            if (!clientName) {
+                if (keyGenMessage) {
+                    keyGenMessage.textContent = 'Client identifier cannot be empty.';
+                    keyGenMessage.classList.remove('text-green-600');
+                    keyGenMessage.classList.add('text-red-500');
+                }
+                return;
+            }
+
+            // Check if client already exists
+            if (clients.some(client => client.name.toLowerCase() === clientName.toLowerCase())) {
+                if (keyGenMessage) {
+                    keyGenMessage.textContent = 'Client with this identifier already authorized.';
+                    keyGenMessage.classList.remove('text-green-600');
+                    keyGenMessage.classList.add('text-red-500');
+                }
+                return;
+            }
+
+            const newKey = generateUniqueKey();
+            if (newKey) {
+                clients.push({ name: clientName, key: newKey });
+                saveStateToLocalStorage();
+                renderClients();
+                if (clientNameInput) clientNameInput.value = ''; // Clear input
+                if (keyGenMessage) {
+                    keyGenMessage.textContent = 'Authorization Key Generated Successfully.';
+                    keyGenMessage.classList.remove('text-red-500');
+                    keyGenMessage.classList.add('text-green-600');
+                    setTimeout(() => { if (keyGenMessage) { keyGenMessage.textContent = ''; keyGenMessage.classList.remove('text-green-600'); } }, 3000);
+                }
+            } else {
+                if (keyGenMessage) {
+                    keyGenMessage.textContent = 'All authorization keys have been depleted. Replenish supply.';
+                    keyGenMessage.classList.remove('text-green-600');
+                    keyGenMessage.classList.add('text-red-500');
+                }
+            }
+        }
+
+        /**
+         * Updates the UI based on the authentication status and user role.
+         */
+        function updateUIForAuthStatus() {
+            if (isAuthenticated) {
+                if (loginForm) loginForm.classList.add('hidden');
+                if (userInfo) {
+                    userInfo.classList.remove('hidden');
+                    if (displayUsername) displayUsername.textContent = currentUserRole.toUpperCase(); // Display role
+                }
+
+                if (dashboardSection) dashboardSection.classList.remove('hidden');
+
+                if (currentUserRole === 'admin') {
+                    if (serverManagementSection) serverManagementSection.classList.remove('hidden');
+                    if (clientKeySection) clientKeySection.classList.remove('hidden');
+                    if (publicCapabilitiesSection) publicCapabilitiesSection.classList.add('hidden'); // Hide public section
+                    if (clientAddSection) clientAddSection.classList.remove('hidden'); // Admin can add clients
+                } else if (currentUserRole === 'public') {
+                    if (serverManagementSection) serverManagementSection.classList.add('hidden'); // Hide server operations
+                    if (clientKeySection) clientKeySection.classList.add('hidden'); // Hide client management
+                    if (publicCapabilitiesSection) publicCapabilitiesSection.classList.remove('hidden'); // Show public section
+                }
+
+            } else {
+                if (loginForm) loginForm.classList.remove('hidden');
+                if (userInfo) userInfo.classList.add('hidden');
+                if (dashboardSection) dashboardSection.classList.add('hidden');
+                if (serverManagementSection) serverManagementSection.classList.add('hidden');
+                if (clientKeySection) clientKeySection.classList.add('hidden');
+                if (publicCapabilitiesSection) publicCapabilitiesSection.classList.add('hidden'); // Hide public section on logout
+            }
+            renderServers(); // Re-render servers to reflect any status changes (e.g., clickability)
+            updateDashboardCounts();
+            renderClients(); // Re-render clients to ensure correct state display
+        }
+
+        // --- Event Listeners ---
+        if (loginBtn) loginBtn.addEventListener('click', handleLogin);
+        if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
+        if (addClientBtn) addClientBtn.addEventListener('click', handleAddClient);
+
+        // Allow pressing Enter in password field to login
+        if (passwordInput) {
+            passwordInput.addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    handleLogin();
+                }
+            });
+        }
+
+
+        // Allow pressing Enter in client name field to add client
+        if (clientNameInput) {
+            clientNameInput.addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    handleAddClient();
+                }
+            });
+        }
+
+
+        // Forgot password link handler
+        if (forgotPasswordLink) {
+            forgotPasswordLink.addEventListener('click', (event) => {
+                event.preventDefault();
+                if (authMessage) {
+                    authMessage.textContent = 'Initiating System Override Protocol... (Simulated)';
+                    authMessage.classList.remove('text-red-200', 'text-blue-200');
+                    authMessage.classList.add('glitch-text', 'text-yellow-200');
+                    setTimeout(() => { if (authMessage) { authMessage.classList.remove('glitch-text'); authMessage.textContent = ''; authMessage.classList.remove('text-yellow-200'); } }, 4000);
+                }
+            });
+        }
+
+
+        // Close modal button
+        if (closeModalBtn) closeModalBtn.addEventListener('click', hideServerDetails);
+
+        // Close modal when clicking outside of it
+        window.addEventListener('click', (event) => {
+            if (event.target === serverDetailsModal) {
+                hideServerDetails();
+            }
+        });
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadStateFromLocalStorage();
+            updateUIForAuthStatus(); // This will trigger renderServers, updateDashboardCounts, and renderClients
+        });
     </script>
 </body>
 </html>
