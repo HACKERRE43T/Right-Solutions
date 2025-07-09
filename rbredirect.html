@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Right Bill 2025 - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Animated gradient background for a more "awesome" look */
+            background: linear-gradient(-45deg, #e0eafc, #cfdef3, #eef2f3, #d7e3f3);
+            background-size: 400% 400%;
+            animation: animated-gradient 15s ease infinite;
+        }
+        .gradient-text {
+            background: linear-gradient(to right, #3b82f6, #1e40af);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        /* Keyframes for the background animation */
+        @keyframes animated-gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        /* Keyframes for fade-in animation on page load */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in-up {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        /* Keyframes for the shake animation on error */
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+        .animate-shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+    </style>
+</head>
+<body class="text-gray-800 flex flex-col min-h-screen">
+
+    <!-- Main Content -->
+    <main class="flex-grow flex items-center justify-center p-4">
+        <div class="w-full max-w-md mx-auto fade-in-up">
+            
+            <!-- Login Box -->
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden border border-white/50">
+                <div class="p-8 md:p-12">
+                    <div class="text-center mb-8">
+                        <h1 class="text-4xl font-bold gradient-text">Right Bill 2025</h1>
+                        <p class="text-gray-500 mt-2">Powered by <span class="font-semibold">Right Solutions</span></p>
+                    </div>
+                    
+                    <h2 class="text-2xl font-bold text-gray-900 text-center">Secure Portal Access</h2>
+                    <p class="text-gray-500 text-center mt-2">Enter your company passcode to continue.</p>
+                    
+                    <form id="loginForm" class="mt-8 space-y-6">
+                        <div>
+                            <label for="passcode" class="sr-only">Passcode</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                                    <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                                    </svg>
+                                </span>
+                                <input id="passcode" name="passcode" type="password" required class="w-full pl-10 pr-4 py-3 text-center text-lg bg-gray-100 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition" placeholder="••••••••">
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300">
+                            Log In
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+    
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl p-8 max-w-sm w-full text-center">
+            <div id="modalIconContainer" class="mx-auto flex items-center justify-center h-12 w-12 rounded-full">
+                <!-- Icon will be inserted here by JS -->
+            </div>
+            <h3 id="modalTitle" class="text-lg leading-6 font-medium text-gray-900 mt-4"></h3>
+            <div class="mt-2">
+                <p id="modalMessage" class="text-sm text-gray-500"></p>
+            </div>
+            <div class="mt-5">
+                <button id="closeModal" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none sm:text-sm">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-transparent text-gray-600 py-6">
+        <div class="container mx-auto px-6 text-center fade-in-up" style="animation-delay: 200ms;">
+            <p>&copy; 2025 Right Solutions. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('loginForm');
+            const passcode_input = document.getElementById('passcode');
+            const modal = document.getElementById('loginModal');
+            const closeModalBtn = document.getElementById('closeModal');
+            const modalIconContainer = document.getElementById('modalIconContainer');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalMessage = document.getElementById('modalMessage');
+
+            // --- Icons for the modal ---
+            const successIcon = `
+                <svg class="h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>`;
+            
+            const errorIcon = `
+                <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>`;
+
+            // --- Function to show the modal ---
+            function showModal(status, title, message) {
+                if (status === 'success') {
+                    modalIconContainer.innerHTML = successIcon;
+                    modalIconContainer.className = 'mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100';
+                } else {
+                    modalIconContainer.innerHTML = errorIcon;
+                    modalIconContainer.className = 'mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100';
+                }
+                modalTitle.textContent = title;
+                modalMessage.textContent = message;
+                modal.classList.remove('hidden');
+            }
+
+            // --- Function to hide the modal ---
+            function hideModal() {
+                modal.classList.add('hidden');
+            }
+            
+            closeModalBtn.addEventListener('click', hideModal);
+
+            // --- Handle form submission ---
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault(); // Prevent the form from actually submitting
+                const enteredPasscode = passcode_input.value;
+
+                // The secure company passcode
+                const correctPasscode = '88525';
+
+                if (enteredPasscode === correctPasscode) {
+                    // --- On Success ---
+                    showModal('success', 'Login Successful', 'Redirecting to Right Bill 2025...');
+                    passcode_input.value = '';
+
+                    // Redirect to the local rb.html file after a short delay.
+                    // NOTE: This may not work in all preview environments due to security,
+                    // but it will work when hosted on a standard web server.
+                    setTimeout(() => {
+                        window.location.href = 'rb.html';
+                    }, 2000);
+
+                } else {
+                    // --- On Failure ---
+                    showModal('error', 'Login Failed', 'The passcode you entered is incorrect. Please try again.');
+                    
+                    // Add a shake animation for visual feedback
+                    const loginBox = document.querySelector('.bg-white\\/80');
+                    loginBox.classList.add('animate-shake');
+                    setTimeout(() => {
+                         loginBox.classList.remove('animate-shake');
+                    }, 500);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
