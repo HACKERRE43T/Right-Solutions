@@ -91,15 +91,19 @@
 
     <header id="header" class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#" class="flex items-center space-x-3"><img src="rightsolutionslogo-com.png" alt="Right Solutions Logo" class="h-12 w-12"><span class="text-2xl font-bold text-gray-900">Right Solutions</span></a>
-            <div class="hidden md:flex items-center space-x-8">
+            <a href="#" class="flex items-center space-x-3"><img src="https://placehold.co/48x48/1A1D24/00F5A0?text=RS" alt="Right Solutions Logo" class="h-12 w-12"><span class="text-2xl font-bold text-gray-900">Right Solutions</span></a>
+            <div id="desktop-menu" class="hidden md:flex items-center space-x-8">
                 <a href="#services" class="font-medium text-gray-600 hover:text-black transition-colors">Services</a>
                 <a href="#projects" class="font-medium text-gray-600 hover:text-black transition-colors">Our Projects</a>
                 <a href="#platform" class="font-medium text-gray-600 hover:text-black transition-colors">Platform</a>
+                <!-- === NEW LINK ADDED HERE === -->
+                <a href="rbredirect.html" class="font-medium text-gray-600 hover:text-black transition-colors">Right Bill</a>
                 <a href="download.html" class="font-medium text-gray-600 hover:text-black transition-colors">Download</a>
                 <a href="#contact" class="button-primary px-6 py-2 rounded-full">Start a Project</a>
             </div>
-            <button id="menu-button" class="md:hidden text-gray-700"></button>
+            <button id="menu-button" class="md:hidden text-gray-700">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
         </nav>
         <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 space-y-2"></div>
     </header>
@@ -159,7 +163,7 @@
                         </div>
                     </div>
                     <div class="flex items-center justify-center">
-                        <img src="niyamashakthi-right.png" class="w-2/3 opacity-80" alt="Niyamashakthi">
+                        <img src="https://placehold.co/400x400/1A1D24/00F5A0?text=Niyamashakthi" class="w-2/3 opacity-80" alt="Niyamashakthi">
                     </div>
                 </div>
 
@@ -258,7 +262,28 @@
         
         particlesJS('particles-js', {"particles":{"number":{"value":60,"density":{"enable":true,"value_area":800}},"color":{"value":"#00F5A0"},"shape":{"type":"circle"},"opacity":{"value":0.5,"random":true,"anim":{"enable":true,"speed":1,"opacity_min":0.1,"sync":false}},"size":{"value":3,"random":true,"anim":{"enable":false}},"line_linked":{"enable":true,"distance":150,"color":"#E2E8F0","opacity":0.2,"width":1},"move":{"enable":true,"speed":1,"direction":"none","random":false,"straight":false,"out_mode":"out","bounce":false}},"interactivity":{"detect_on":"canvas","events":{"onhover":{"enable":true,"mode":"grab"},"onclick":{"enable":true,"mode":"push"},"resize":true},"modes":{"grab":{"distance":140,"line_linked":{"opacity":0.5}},"push":{"particles_nb":4}}},"retina_detect":true});
 
-        // --- NEW: Platform Button Intro Trigger ---
+        // --- Mobile Menu Logic ---
+        const menuButton = document.getElementById('menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const desktopMenu = document.getElementById('desktop-menu');
+
+        if (menuButton && mobileMenu && desktopMenu) {
+            menuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            // Clone desktop links to mobile menu for consistency
+            mobileMenu.innerHTML = desktopMenu.innerHTML;
+            // Style mobile links appropriately
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.classList.add('block', 'py-2');
+                link.classList.remove('px-6', 'py-2', 'rounded-full', 'button-primary');
+                if (link.textContent === 'Start a Project') {
+                    link.classList.add('w-full', 'text-center', 'button-primary', 'px-6', 'py-2', 'rounded-full');
+                }
+            });
+        }
+
+        // --- Platform Button Intro Trigger ---
         const platformButton = document.querySelector('#platform a');
         if (platformButton) {
             platformButton.addEventListener('click', function(event) {
