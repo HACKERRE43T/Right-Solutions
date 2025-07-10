@@ -7,10 +7,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         /* ==============================================
-        RIGHT BILL 2025 - STYLESHEET (v6)
+        RIGHT BILL 2025 - STYLESHEET (v14 - Final)
         ==============================================
         TABLE OF CONTENTS
         1.  :root & Global Styles
@@ -18,16 +19,18 @@
         3.  Main App Layout & Structure
         4.  Sidebar & Navigation
         5.  Header & Page Title
-        6.  Dashboard
+        6.  Dashboard & Chart
         7.  Generic Components (Buttons, Modals, Forms, Tables, Notifications)
-        8.  Invoice, Bill & Expense Specific Styles
+        8.  Document & Salary Slip Specific Styles
         9.  Reports (P&L, Journal)
-        10. AI Help Panel
-        11. Custom Context Menu & Tooltips
-        12. Dark Mode
-        13. Animations & Transitions
-        14. Responsive Design
-        15. Print Styles
+        10. Tax Hub & GSTR Simulation
+        11. Accounts & Banking Hub
+        12. Karyasthan AI Panel
+        13. Custom Context Menu & Tooltips
+        14. Dark Mode
+        15. Animations & Transitions
+        16. Responsive Design
+        17. Print Styles
         ==============================================
         */
 
@@ -242,7 +245,7 @@
             margin: 0;
         }
 
-        /* 6. Dashboard */
+        /* 6. Dashboard & Chart */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -274,6 +277,13 @@
         }
         .stat-card-value.positive { color: var(--secondary-color); }
         .stat-card-value.negative { color: var(--danger-color); }
+        .chart-container {
+            background-color: var(--card-bg-light);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-sm);
+        }
 
         /* 7. Generic Components (Buttons, Modals, Forms, Tables, Notifications) */
         .btn {
@@ -288,6 +298,10 @@
             gap: 0.5rem;
             font-size: 0.9rem;
         }
+        .btn:disabled {
+            background-color: #D1D5DB;
+            cursor: not-allowed;
+        }
         .btn-sm {
             padding: 0.5rem 1rem;
             font-size: 0.8rem;
@@ -300,7 +314,7 @@
             background-color: var(--primary-color);
             color: white;
         }
-        .btn-primary:hover {
+        .btn-primary:hover:not(:disabled) {
             background-color: var(--primary-hover);
             box-shadow: var(--shadow-md);
         }
@@ -460,8 +474,8 @@
         .notification.error { background-color: var(--danger-color); }
         .notification.info { background-color: var(--info-color); }
 
-        /* 8. Invoice, Bill & Expense Specific Styles */
-        #invoice-creator-container, #bill-creator-container {
+        /* 8. Document & Salary Slip Specific Styles */
+        #invoice-creator-container, #bill-creator-container, #po-creator-container, #credit-note-creator-container {
             display: none;
             animation: fadeIn 0.5s;
         }
@@ -472,26 +486,46 @@
             margin-bottom: 2rem;
         }
         .document-preview {
-            background-color: var(--card-bg-light);
-            padding: 2rem;
+            background-color: #fff;
+            padding: 2.5rem;
             margin-top: 2rem;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-md);
+            border-radius: 0;
+            box-shadow: var(--shadow-lg);
             border: 1px solid var(--border-light);
+            font-family: 'Helvetica Neue', 'Arial', sans-serif;
         }
         .document-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--border-light);
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--primary-color);
         }
         .document-title {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             font-weight: 700;
-            color: var(--text-light);
+            color: var(--primary-color);
             text-align: right;
+            text-transform: uppercase;
+            line-height: 1;
+        }
+        .document-items-table {
+            margin-top: 2rem;
+        }
+        .document-items-table th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+        .document-items-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        .document-items-table tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
         }
         .document-items-table .form-control { padding: 0.5rem; }
         .document-items-table .item-row td { padding: 0.5rem; }
@@ -501,19 +535,22 @@
             width: 100%;
             max-width: 350px;
         }
-        .document-totals table { width: 100%; }
-        .document-totals td { padding: 0.75rem; border: none; }
+        .document-totals table { width: 100%; font-size: 1rem; }
+        .document-totals td { padding: 0.75rem 1rem; border: none; }
+        .document-totals tr td:first-child { font-weight: 600; color: #555; }
         .document-totals .grand-total {
             font-weight: 700;
-            font-size: 1.2rem;
-            background-color: var(--bg-light);
+            font-size: 1.25rem;
+            background-color: var(--primary-color);
+            color: white;
+            border-top: 2px solid var(--primary-color);
         }
         .document-footer {
-            margin-top: 8rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border-light);
-            font-size: 0.9rem;
-            color: #6B7280;
+            margin-top: 4rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #ddd;
+            font-size: 0.85rem;
+            color: #777;
             clear: both;
         }
         .customer-address-preview {
@@ -562,7 +599,38 @@
         .journal-entry-type.debit { color: var(--danger-color); }
 
 
-        /* 10. AI Help Panel */
+        /* 10. Tax Hub & GSTR Simulation */
+        .tax-hub-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        .tax-card {
+            background-color: var(--card-bg-light);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-sm);
+        }
+        .gstr-summary-table th {
+            background-color: #E5E7EB;
+        }
+
+        /* 11. Accounts & Banking Hub */
+        .banking-hub-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        .banking-card {
+            background-color: var(--card-bg-light);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        /* 12. Karyasthan AI Panel */
         .ai-help-panel {
             position: fixed;
             top: 0;
@@ -588,13 +656,39 @@
             flex-grow: 1;
             padding: 1.5rem;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .ai-message {
+            padding: 0.75rem 1rem;
+            border-radius: var(--border-radius);
+            max-width: 80%;
+        }
+        .ai-message.user {
+            background-color: var(--primary-color);
+            color: white;
+            align-self: flex-end;
+        }
+        .ai-message.karyasthan {
+            background-color: var(--bg-light);
+            align-self: flex-start;
+        }
+        .ai-message pre {
+            background-color: rgba(0,0,0,0.1);
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
         .ai-help-footer {
             padding: 1rem 1.5rem;
             border-top: 1px solid var(--border-light);
+            display: flex;
+            gap: 1rem;
         }
 
-        /* 11. Custom Context Menu & Tooltips */
+        /* 13. Custom Context Menu & Tooltips */
         #context-menu {
             position: fixed;
             z-index: 3000;
@@ -642,7 +736,7 @@
         }
         [data-tooltip]:hover::after { opacity: 1; }
 
-        /* 12. Dark Mode */
+        /* 14. Dark Mode */
         body.dark-mode {
             background-color: var(--bg-dark);
             color: var(--text-dark);
@@ -666,13 +760,34 @@
             background-color: var(--primary-color);
             color: white;
         }
-        body.dark-mode .stat-card, body.dark-mode .chart-container, body.dark-mode .table-wrapper, body.dark-mode .document-preview {
+        body.dark-mode .stat-card, body.dark-mode .chart-container, body.dark-mode .table-wrapper, body.dark-mode .banking-card, body.dark-mode .tax-card {
             background-color: var(--card-bg-dark);
             border-color: var(--border-dark);
+        }
+        body.dark-mode .document-preview {
+            background-color: #1F2937;
+            border-color: var(--border-dark);
+            color: var(--text-dark);
+        }
+        body.dark-mode .document-title {
+            color: var(--primary-color);
+        }
+        body.dark-mode .document-items-table tbody tr:nth-child(even) {
+            background-color: #374151;
+        }
+        body.dark-mode .document-items-table td {
+            border-color: #4b5563;
+        }
+
+        body.dark-mode #analysis-results pre {
+            background-color: var(--bg-dark);
         }
         body.dark-mode th {
             background-color: #374151;
             color: #9CA3AF;
+        }
+        body.dark-mode .gstr-summary-table th {
+            background-color: #4B5563;
         }
         body.dark-mode tbody tr:hover {
             background-color: #374151;
@@ -722,14 +837,15 @@
         body.dark-mode .splash-subtitle {
             color: var(--text-dark);
         }
-        body.dark-mode .document-header, body.dark-mode .document-footer {
+        body.dark-mode .document-header {
+            border-color: var(--primary-color);
+        }
+        body.dark-mode .document-footer {
             border-color: var(--border-dark);
         }
-        body.dark-mode .document-title {
-            color: var(--text-dark);
-        }
         body.dark-mode .document-totals .grand-total {
-            background-color: var(--bg-dark);
+            background-color: var(--primary-color);
+            color: white;
         }
         body.dark-mode .customer-address-preview {
             background-color: var(--bg-dark);
@@ -738,7 +854,7 @@
             background-color: #374151;
         }
 
-        /* 13. Animations & Transitions */
+        /* 15. Animations & Transitions */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -764,7 +880,7 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* 14. Responsive Design */
+        /* 16. Responsive Design */
         @media (max-width: 768px) {
             #app-container { flex-direction: column; }
             .sidebar {
@@ -803,7 +919,7 @@
             .document-form-grid { grid-template-columns: 1fr; }
         }
 
-        /* 15. Print Styles */
+        /* 17. Print Styles */
         @media print {
             body * { visibility: hidden; }
             .printable, .printable * { visibility: visible; }
@@ -859,8 +975,14 @@
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-12v.75m0 3v.75m0 3v.75m0 3V18m-3 .75h18A2.25 2.25 0 0021 16.5V7.5A2.25 2.25 0 0018.75 5.25H5.25A2.25 2.25 0 003 7.5v9A2.25 2.25 0 005.25 18.75h1.5M16.5 18.75h-1.5m-6 0h1.5" /></svg>
                     <span>Bills</span></a></li>
                 <li class="nav-item"><a href="#" class="nav-link" data-page="expenses">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h6m-3-3.75l-3 1.5 3 1.5m-3-4.5l3 1.5-3 1.5m16.5 0l-3-1.5 3-1.5m3 4.5l-3-1.5 3-1.5M6.75 12h10.5a2.25 2.25 0 012.25 2.25v2.25a2.25 2.25 0 01-2.25 2.25H6.75a2.25 2.25 0 01-2.25-2.25v-2.25a2.25 2.25 0 012.25-2.25z" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h6m-3-3.75l-3 1.5 3 1.5m-3-4.5l3 1.5-3 1.5m16.5 0l-3-1.5 3-1.5M6.75 12h10.5a2.25 2.25 0 012.25 2.25v2.25a2.25 2.25 0 01-2.25 2.25H6.75a2.25 2.25 0 01-2.25-2.25v-2.25a2.25 2.25 0 012.25-2.25z" /></svg>
                     <span>Expenses</span></a></li>
+                <li class="nav-item"><a href="#" class="nav-link" data-page="banking">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h6m3.75-3.75-1.5-3-1.5 3M16.5 18.75h-12.75a2.25 2.25 0 01-2.25-2.25v-9A2.25 2.25 0 013.75 5.25h16.5a2.25 2.25 0 012.25 2.25v9a2.25 2.25 0 01-2.25 2.25H16.5z" /></svg>
+                    <span>Accounts & Banking</span></a></li>
+                <li class="nav-item"><a href="#" class="nav-link" data-page="tax">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h15.75c.621 0 1.125.504 1.125 1.125v6.75c0 .621-.504 1.125-1.125 1.125H4.125A1.125 1.125 0 013 21v-7.875zM3 13.125h18v0M15.75 13.125c0-1.036.84-1.875 1.875-1.875h.375c1.036 0 1.875.84 1.875 1.875v6.75c0 1.035-.84 1.875-1.875 1.875h-.375a1.875 1.875 0 01-1.875-1.875v-6.75zM9.75 13.125c0-1.036.84-1.875 1.875-1.875h.375c1.036 0 1.875.84 1.875 1.875v6.75c0 1.035-.84 1.875-1.875 1.875h-.375A1.875 1.875 0 019.75 21v-7.875zM3.75 13.125c0-1.036.84-1.875 1.875-1.875h.375c1.036 0 1.875.84 1.875 1.875v6.75c0 1.035-.84 1.875-1.875 1.875h-.375A1.875 1.875 0 013.75 21v-7.875zM12 3c0 .552.448 1 1 1h.008c.552 0 1-.448 1-1h-2.016z" /></svg>
+                    <span>Tax</span></a></li>
                 <li class="nav-item"><a href="#" class="nav-link" data-page="products">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>
                     <span>Products</span></a></li>
@@ -879,9 +1001,9 @@
             </ul>
             <div class="sidebar-footer">
                 <ul class="nav-menu" style="margin: 0;">
-                    <li class="nav-item"><a href="#" class="nav-link" id="ai-help-btn" data-tooltip="AI Help (Ctrl+H)">
+                    <li class="nav-item"><a href="#" class="nav-link" id="ai-help-btn" data-tooltip="Karyasthan AI (Ctrl+H)">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.898 20.562L16.25 21.75l-.648-1.188a2.25 2.25 0 01-1.47-1.47l-1.188-.648 1.188-.648a2.25 2.25 0 011.47-1.47l.648-1.188.648 1.188a2.25 2.25 0 011.47 1.47l1.188.648-1.188.648a2.25 2.25 0 01-1.47 1.47z" /></svg>
-                        <span>AI Help</span></a></li>
+                        <span>Karyasthan</span></a></li>
                     <li class="nav-item"><a href="#" class="nav-link" data-page="settings">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-1.003 1.11-1.226M15 21h-6a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v12a2 2 0 01-2 2zm-2.175-12.131c-.448-.097-1.026-.097-1.474 0M12 9.75a.75.75 0 01.75.75v2.5a.75.75 0 01-1.5 0v-2.5a.75.75 0 01.75-.75z" /></svg>
                         <span>Settings</span></a></li>
@@ -900,8 +1022,8 @@
                     <!-- Stat cards will be dynamically inserted here -->
                 </div>
                 <div class="chart-container">
-                    <h3>Financial Overview</h3>
-                    <p>A visual chart of revenue vs. expenses will be displayed here in a future update.</p>
+                    <h3>Income vs Expenses (Last 6 Months)</h3>
+                    <canvas id="financialChart"></canvas>
                 </div>
             </div>
 
@@ -959,6 +1081,60 @@
                         <thead><tr><th>Date</th><th>Category</th><th>Vendor</th><th>Amount</th><th>Actions</th></tr></thead>
                         <tbody></tbody>
                     </table>
+                </div>
+            </div>
+
+            <!-- Accounts & Banking Page -->
+            <div id="banking" class="page">
+                <div class="page-header">
+                    <h2 class="page-title">Accounts & Banking</h2>
+                     <div style="display: flex; gap: 1rem;">
+                        <button class="btn btn-secondary" id="add-deposit-btn">Add Deposit</button>
+                        <button class="btn btn-secondary" id="add-withdrawal-btn">Add Withdrawal</button>
+                        <button class="btn btn-primary" id="new-account-btn">Add New Account</button>
+                    </div>
+                </div>
+                <div class="banking-hub-container">
+                     <div class="banking-card">
+                        <h3>Your Accounts</h3>
+                        <div id="accounts-list" class="table-wrapper"></div>
+                    </div>
+                    <div class="banking-card">
+                        <h3>All Transactions</h3>
+                        <div id="transactions-list" class="table-wrapper"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tax Hub Page -->
+            <div id="tax" class="page">
+                <div class="page-header">
+                    <h2 class="page-title">Tax Hub</h2>
+                </div>
+                <div class="tax-hub-container">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-card-header">Total Tax Collected</div>
+                            <div id="tax-collected" class="stat-card-value"></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-card-header">Input Tax Credit (ITC)</div>
+                            <div id="tax-itc" class="stat-card-value"></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-card-header">Net Tax Liability</div>
+                            <div id="tax-liability" class="stat-card-value"></div>
+                        </div>
+                    </div>
+                    <div class="tax-card">
+                        <h3>GSTR-1 Summary (Simulated)</h3>
+                        <p>This is a summary of your outward supplies, ready for GSTR-1 filing.</p>
+                        <div id="gstr1-summary" class="table-wrapper"></div>
+                    </div>
+                    <div class="tax-card">
+                        <h3>Tax Ledger</h3>
+                        <div id="tax-ledger" class="table-wrapper"></div>
+                    </div>
                 </div>
             </div>
 
@@ -1079,17 +1255,18 @@
         </div>
     </div>
 
-    <!-- AI Help Panel -->
+    <!-- Karyasthan AI Panel -->
     <div id="ai-help-panel" class="ai-help-panel no-print">
         <div class="ai-help-header">
-            <h3 class="modal-title">AI Help Assistant</h3>
+            <h3 class="modal-title">Karyasthan AI</h3>
             <button class="close-modal" id="close-ai-panel">&times;</button>
         </div>
-        <div class="ai-help-body">
-            <p>Ask me anything about Right Bill 2025!</p>
+        <div class="ai-help-body" id="karyasthan-chat-body">
+            <!-- Chat messages will be appended here -->
         </div>
         <div class="ai-help-footer">
-            <input type="text" id="ai-help-input" class="form-control" placeholder="e.g., How to add a customer?">
+            <input type="text" id="karyasthan-input" class="form-control" placeholder="Ask Karyasthan...">
+            <button class="btn btn-primary" id="send-to-karyasthan-btn">Send</button>
         </div>
     </div>
     
@@ -1098,7 +1275,7 @@
     
     <script>
     /* ==============================================
-    RIGHT BILL 2025 - JAVASCRIPT LOGIC (v6)
+    RIGHT BILL 2025 - JAVASCRIPT LOGIC (v14 - Final)
     ==============================================
     TABLE OF CONTENTS
     1.  Global State & Initialization
@@ -1114,12 +1291,14 @@
     11. Module Logic: Bills of Supply
     12. Module Logic: Journal
     13. Module Logic: Reports (P&L)
-    14. Module Logic: Dashboard
-    15. Module Logic: Settings
-    16. AI Help Assistant Logic
-    17. Advanced Features (Shortcuts, Context Menu)
-    18. Event Listeners & Form Handlers
-    19. Utility Functions
+    14. Module Logic: Tax Hub
+    15. Module Logic: Accounts & Banking
+    16. Module Logic: Dashboard & Chart
+    17. Module Logic: Settings
+    18. Module Logic: Karyasthan AI
+    19. Advanced Features (Shortcuts, Context Menu)
+    20. Event Listeners & Form Handlers
+    21. Utility Functions
     ==============================================
     */
 
@@ -1127,7 +1306,9 @@
         
         // 1. Global State & Initialization
         let state = {};
-        const DB_NAME = 'rightBill2025Data_v6';
+        let financialChart = null;
+        const DB_NAME = 'rightBill2025Data_v14';
+        const OPENAI_API_KEY = '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';
 
         function init() {
             setTimeout(() => {
@@ -1144,22 +1325,15 @@
         function loadData() {
             const savedData = localStorage.getItem(DB_NAME);
             const defaultState = {
-                companies: [],
-                products: [],
-                customers: [],
-                invoices: [],
-                bills: [],
-                expenses: [],
-                journal: [],
-                settings: {
-                    darkMode: false,
-                    activeCompanyId: null,
-                }
+                companies: [], products: [], customers: [], invoices: [], bills: [], expenses: [], journal: [], accounts: [], transactions: [],
+                settings: { darkMode: false, activeCompanyId: null }
             };
             state = savedData ? JSON.parse(savedData) : defaultState;
-            // Ensure new arrays exist for backward compatibility
-            if (!state.bills) state.bills = [];
-            if (!state.journal) state.journal = [];
+            // Ensure all arrays exist for backward compatibility
+            Object.keys(defaultState).forEach(key => {
+                if (!state[key]) state[key] = defaultState[key];
+            });
+            if (!state.settings) state.settings = defaultState.settings;
             
             if (state.settings.darkMode) {
                 document.body.classList.add('dark-mode');
@@ -1192,15 +1366,16 @@
             document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
             document.querySelector(`.nav-link[data-page="${pageId}"]`).classList.add('active');
 
-            // Reset views
             document.getElementById('invoice-list-container').style.display = 'block';
             document.getElementById('invoice-creator-container').style.display = 'none';
             document.getElementById('bill-list-container').style.display = 'block';
             document.getElementById('bill-creator-container').style.display = 'none';
 
-            // Render page-specific content
             if (pageId === 'reports') renderPnLReport();
             if (pageId === 'journal') renderJournal();
+            if (pageId === 'dashboard') renderDashboard();
+            if (pageId === 'banking') renderBankingHub();
+            if (pageId === 'tax') renderTaxHub();
         }
 
         // 4. Modal, Notification & Loader Management
@@ -1233,15 +1408,18 @@
 
         // 5. Component Rendering Functions
         function renderAll() {
+            const currentPage = document.querySelector('.page.active')?.id || 'dashboard';
             renderCompaniesTable();
             renderProductsTable();
             renderCustomersTable();
             renderInvoicesTable();
             renderBillsTable();
             renderExpensesTable();
-            renderDashboard();
-            if (document.getElementById('reports').classList.contains('active')) renderPnLReport();
-            if (document.getElementById('journal').classList.contains('active')) renderJournal();
+            if (currentPage === 'dashboard') renderDashboard();
+            if (currentPage === 'reports') renderPnLReport();
+            if (currentPage === 'journal') renderJournal();
+            if (currentPage === 'banking') renderBankingHub();
+            if (currentPage === 'tax') renderTaxHub();
         }
         
         // 6. Module Logic: Companies
@@ -1256,10 +1434,10 @@
                     <td>${company.id === state.settings.activeCompanyId ? 'Yes' : 'No'}</td>
                     <td>
                         <button class="btn btn-sm btn-secondary edit-btn">Edit</button>
-                        ${company.id !== state.settings.activeCompanyId ? '<button class="btn btn-sm btn-secondary set-active-company-btn">Set Active</button>' : ''}
+                        ${company.id !== state.settings.activeCompanyId ? `<button class="btn btn-sm btn-secondary set-active-company-btn">Set Active</button>` : ''}
                     </td>
                 </tr>
-            `).join('');
+            `).join('') || '<tr><td colspan="5">No companies added yet.</td></tr>';
         }
         
         function showCompanyForm(companyId = null) {
@@ -1314,11 +1492,11 @@
                  <tr data-id="${p.id}" data-type="product">
                     <td>${p.name}</td>
                     <td>${formatCurrency(p.price)}</td>
-                    <td>${p.tax}%</td>
+                    <td>${p.tax || 0}%</td>
                     <td>${p.unit || 'N/A'}</td>
                     <td><button class="btn btn-sm btn-secondary edit-btn">Edit</button></td>
                 </tr>
-            `).join('');
+            `).join('') || '<tr><td colspan="5">No products added yet.</td></tr>';
         }
         
         function showProductForm(productId = null) {
@@ -1369,7 +1547,7 @@
                     <td>${c.gstin || 'N/A'}</td>
                     <td><button class="btn btn-sm btn-secondary edit-btn">Edit</button></td>
                 </tr>
-            `).join('');
+            `).join('') || '<tr><td colspan="5">No customers or vendors added yet.</td></tr>';
         }
         
         function showCustomerForm(customerId = null) {
@@ -1430,7 +1608,7 @@
                     <td>${formatCurrency(exp.amount, activeCompany?.currency)}</td>
                     <td><button class="btn btn-sm btn-secondary edit-btn">Edit</button></td>
                 </tr>
-            `).join('');
+            `).join('') || '<tr><td colspan="5">No expenses recorded yet.</td></tr>';
         }
 
         function showExpenseForm(expenseId = null) {
@@ -1439,6 +1617,13 @@
             const vendorOptions = state.customers.filter(c => c.type === 'Vendor').map(v => `<option value="${v.id}" ${v.id === expense.vendorId ? 'selected' : ''}>${v.name}</option>`).join('');
             const expenseCategories = ['Office Supplies', 'Travel', 'Rent', 'Utilities', 'Marketing', 'Salaries', 'Other'];
             const categoryOptions = expenseCategories.map(cat => `<option value="${cat}" ${cat === expense.category ? 'selected' : ''}>${cat}</option>`).join('');
+            const accountOptions = state.accounts.map(acc => `<option value="${acc.id}" ${acc.id === expense.accountId ? 'selected' : ''}>${acc.name}</option>`).join('');
+
+            if(state.accounts.length === 0) {
+                showNotification("Please add a bank/cash account first.", "error");
+                navigateTo('banking');
+                return;
+            }
 
             openModal(`
                 <div class="modal-content">
@@ -1458,9 +1643,15 @@
                                 <input type="number" step="0.01" name="amount" class="form-control" value="${expense.amount || ''}" required>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label>Category</label>
-                            <select name="category" class="form-control" required><option value="">Select Category</option>${categoryOptions}</select>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Category</label>
+                                <select name="category" class="form-control" required><option value="">Select Category</option>${categoryOptions}</select>
+                            </div>
+                            <div class="form-group">
+                                <label>Paid From Account</label>
+                                <select name="accountId" class="form-control" required><option value="">Select Account</option>${accountOptions}</select>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>Vendor (Optional)</label>
@@ -1474,6 +1665,9 @@
                     </form>
                 </div>
             `);
+            if (expense.category) document.querySelector('#expense-form [name="category"]').value = expense.category;
+            if (expense.accountId) document.querySelector('#expense-form [name="accountId"]').value = expense.accountId;
+            if (expense.vendorId) document.querySelector('#expense-form [name="vendorId"]').value = expense.vendorId;
             document.getElementById('expense-form').addEventListener('submit', handleExpenseFormSubmit);
         }
 
@@ -1491,7 +1685,7 @@
                     <td>${formatCurrency(inv.grandTotal, activeCompany?.currency)}</td>
                     <td><button class="btn btn-sm btn-secondary view-btn">View/Edit</button></td>
                 </tr>
-            `).join('');
+            `).join('') || '<tr><td colspan="6">No invoices created yet.</td></tr>';
         }
         
         function showInvoiceCreator(invoiceId = null) {
@@ -1529,6 +1723,7 @@
                     <div class="document-preview">
                         <div class="document-header">
                             <div>
+                                <img src="https://placehold.co/150x50/4F46E5/FFFFFF?text=${activeCompany.name}" alt="Company Logo" style="max-height: 50px; margin-bottom: 1rem;">
                                 <h4>${activeCompany.name}</h4>
                                 <p>${activeCompany.address?.replace(/\n/g, '<br>')}<br><b>State:</b> ${activeCompany.state || 'N/A'}<br><b>GSTIN:</b> ${activeCompany.gstin || 'N/A'}</p>
                             </div>
@@ -1557,8 +1752,8 @@
                             </div>
                         </div>
 
-                        <div class="table-wrapper">
-                            <table class="document-items-table">
+                        <div class="table-wrapper document-items-table">
+                            <table>
                                 <thead>
                                     <tr>
                                         <th style="width: 30%;">Item</th>
@@ -1586,6 +1781,13 @@
                             </table>
                         </div>
                         <div style="clear:both;"></div>
+                        <div class="document-footer">
+                            <div class="form-group no-print">
+                                <label>Notes / Terms & Conditions</label>
+                                <textarea name="notes" class="form-control">${invoice.notes || ''}</textarea>
+                            </div>
+                            <div class="printable-notes" style="white-space: pre-wrap;">${invoice.notes || ''}</div>
+                        </div>
                     </div>
                 </form>
             `;
@@ -1648,7 +1850,7 @@
                     <td>${formatCurrency(bill.grandTotal, activeCompany?.currency)}</td>
                     <td><button class="btn btn-sm btn-secondary view-btn">View/Edit</button></td>
                 </tr>
-            `).join('');
+            `).join('') || '<tr><td colspan="6">No bills created yet.</td></tr>';
         }
 
         function showBillCreator(billId = null) {
@@ -1685,7 +1887,8 @@
                 <form id="bill-form" data-id="${bill.id || ''}">
                     <div class="document-preview">
                         <div class="document-header">
-                            <div>
+                           <div>
+                                <img src="https://placehold.co/150x50/4F46E5/FFFFFF?text=${activeCompany.name}" alt="Company Logo" style="max-height: 50px; margin-bottom: 1rem;">
                                 <h4>${activeCompany.name}</h4>
                                 <p>${activeCompany.address?.replace(/\n/g, '<br>')}<br><b>State:</b> ${activeCompany.state || 'N/A'}<br><b>GSTIN:</b> ${activeCompany.gstin || 'N/A'}</p>
                             </div>
@@ -1708,8 +1911,8 @@
                             </div>
                         </div>
 
-                        <div class="table-wrapper">
-                            <table class="document-items-table">
+                        <div class="table-wrapper document-items-table">
+                            <table>
                                 <thead>
                                     <tr>
                                         <th style="width: 40%;">Item</th>
@@ -1732,6 +1935,13 @@
                             </table>
                         </div>
                         <div style="clear:both;"></div>
+                         <div class="document-footer">
+                            <div class="form-group no-print">
+                                <label>Notes / Terms & Conditions</label>
+                                <textarea name="notes" class="form-control">${bill.notes || ''}</textarea>
+                            </div>
+                            <div class="printable-notes" style="white-space: pre-wrap;">${bill.notes || ''}</div>
+                        </div>
                     </div>
                 </form>
             `;
@@ -1835,7 +2045,7 @@
                     <td class="journal-entry-type debit">${entry.debit ? formatCurrency(entry.debit, currency) : ''}</td>
                     <td class="journal-entry-type credit">${entry.credit ? formatCurrency(entry.credit, currency) : ''}</td>
                 </tr>
-            `).join('');
+            `).join('') || '<tr><td colspan="4">No journal entries found.</td></tr>';
         }
 
         // 13. Module Logic: Reports (P&L)
@@ -1916,7 +2126,236 @@
             `;
         }
 
-        // 14. Module Logic: Dashboard
+        // 14. Module Logic: Tax Hub
+        function renderTaxHub() {
+             const activeCompany = getActiveCompany();
+            if (!activeCompany) {
+                document.getElementById('tax').innerHTML = `<p>Please set an active company to view tax information.</p>`;
+                return;
+            }
+
+            let totalTaxCollected = 0;
+            let totalITC = 0;
+
+            state.invoices.forEach(inv => {
+                if(inv.status === 'Paid') {
+                    totalTaxCollected += inv.taxTotal || 0;
+                }
+            });
+            
+            state.expenses.forEach(exp => {
+                const product = state.products.find(p => p.id === exp.productId);
+                if(product && product.tax > 0) {
+                    totalITC += exp.amount * (product.tax / 100);
+                }
+            });
+
+            const netTaxLiability = totalTaxCollected - totalITC;
+            const currency = activeCompany.currency;
+
+            document.getElementById('tax-collected').textContent = formatCurrency(totalTaxCollected, currency);
+            document.getElementById('tax-itc').textContent = formatCurrency(totalITC, currency);
+            document.getElementById('tax-liability').textContent = formatCurrency(netTaxLiability, currency);
+            
+            renderGstr1Summary();
+            renderTaxLedger();
+        }
+
+        function renderGstr1Summary() {
+            const container = document.getElementById('gstr1-summary');
+            const activeCompany = getActiveCompany();
+            const currency = activeCompany.currency;
+            
+            const b2bInvoices = state.invoices.filter(inv => state.customers.find(c => c.id === inv.customerId)?.gstin);
+            const b2cInvoices = state.invoices.filter(inv => !state.customers.find(c => c.id === inv.customerId)?.gstin);
+
+            const b2bTotal = b2bInvoices.reduce((sum, inv) => sum + inv.grandTotal, 0);
+            const b2cTotal = b2cInvoices.reduce((sum, inv) => sum + inv.grandTotal, 0);
+            
+            container.innerHTML = `
+                <table class="gstr-summary-table">
+                    <thead>
+                        <tr><th>Category</th><th>No. of Invoices</th><th>Total Value</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>B2B (Business to Business)</td><td>${b2bInvoices.length}</td><td>${formatCurrency(b2bTotal, currency)}</td></tr>
+                        <tr><td>B2C (Business to Consumer)</td><td>${b2cInvoices.length}</td><td>${formatCurrency(b2cTotal, currency)}</td></tr>
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function renderTaxLedger() {
+            const container = document.getElementById('tax-ledger');
+            const activeCompany = getActiveCompany();
+            const currency = activeCompany.currency;
+
+            const taxTransactions = [];
+            state.invoices.forEach(inv => {
+                if (inv.taxTotal > 0) {
+                    taxTransactions.push({ date: inv.date, description: `Tax from Invoice ${inv.number}`, credit: inv.taxTotal, debit: 0 });
+                }
+            });
+            state.expenses.forEach(exp => {
+                const product = state.products.find(p => p.id === exp.productId);
+                 if(product && product.tax > 0) {
+                     taxTransactions.push({ date: exp.date, description: `ITC from Expense ${exp.category}`, credit: 0, debit: exp.amount * (product.tax / 100) });
+                }
+            });
+
+            taxTransactions.sort((a,b) => new Date(b.date) - new Date(a.date));
+
+            container.innerHTML = `
+                <table>
+                    <thead><tr><th>Date</th><th>Description</th><th>Tax Paid (Debit)</th><th>Tax Collected (Credit)</th></tr></thead>
+                    <tbody>
+                        ${taxTransactions.map(t => `
+                            <tr>
+                                <td>${new Date(t.date).toLocaleDateString()}</td>
+                                <td>${t.description}</td>
+                                <td class="journal-entry-type debit">${t.debit ? formatCurrency(t.debit, currency) : ''}</td>
+                                <td class="journal-entry-type credit">${t.credit ? formatCurrency(t.credit, currency) : ''}</td>
+                            </tr>
+                        `).join('') || '<tr><td colspan="4">No tax transactions found.</td></tr>'}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        // 15. Module Logic: Accounts & Banking
+        function renderBankingHub() {
+            renderAccountsList();
+            renderTransactionsList();
+        }
+
+        function renderAccountsList() {
+            const container = document.getElementById('accounts-list');
+            const activeCompany = getActiveCompany();
+            const currency = activeCompany?.currency;
+
+            container.innerHTML = `
+                <table>
+                    <thead><tr><th>Account Name</th><th>Type</th><th>Balance</th><th>Actions</th></tr></thead>
+                    <tbody>
+                        ${state.accounts.map(acc => {
+                            const balance = state.transactions
+                                .filter(t => t.accountId === acc.id)
+                                .reduce((bal, t) => bal + (t.type === 'Deposit' ? t.amount : -t.amount), acc.openingBalance || 0);
+                            return `
+                                <tr data-id="${acc.id}" data-type="account">
+                                    <td>${acc.name}</td>
+                                    <td>${acc.type}</td>
+                                    <td>${formatCurrency(balance, currency)}</td>
+                                    <td><button class="btn btn-sm btn-secondary edit-btn">Edit</button></td>
+                                </tr>
+                            `;
+                        }).join('') || '<tr><td colspan="4">No accounts added yet.</td></tr>'}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function renderTransactionsList() {
+            const container = document.getElementById('transactions-list');
+            const activeCompany = getActiveCompany();
+            const currency = activeCompany?.currency;
+
+            container.innerHTML = `
+                 <table>
+                    <thead><tr><th>Date</th><th>Account</th><th>Description</th><th>Debit</th><th>Credit</th></tr></thead>
+                    <tbody>
+                        ${state.transactions.sort((a,b) => new Date(b.date) - new Date(a.date)).map(t => {
+                            const accountName = state.accounts.find(a => a.id === t.accountId)?.name || 'N/A';
+                            return `
+                                <tr>
+                                    <td>${new Date(t.date).toLocaleDateString()}</td>
+                                    <td>${accountName}</td>
+                                    <td>${t.description}</td>
+                                    <td class="journal-entry-type debit">${t.type === 'Withdrawal' ? formatCurrency(t.amount, currency) : ''}</td>
+                                    <td class="journal-entry-type credit">${t.type === 'Deposit' ? formatCurrency(t.amount, currency) : ''}</td>
+                                </tr>
+                            `;
+                        }).join('') || '<tr><td colspan="5">No transactions found.</td></tr>'}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function showAccountForm(accountId = null) {
+            const account = state.accounts.find(a => a.id === accountId) || {};
+            const isEditing = !!accountId;
+            openModal(`
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">${isEditing ? 'Edit' : 'Add'} Account</h3>
+                        <button class="close-modal">&times;</button>
+                    </div>
+                    <form id="account-form">
+                        <input type="hidden" name="id" value="${account.id || ''}">
+                        <div class="form-group">
+                            <label>Account Name</label>
+                            <input type="text" name="name" class="form-control" value="${account.name || ''}" required>
+                        </div>
+                        <div class="form-grid">
+                           <div class="form-group">
+                                <label>Account Type</label>
+                                <select name="type" class="form-control">
+                                    <option value="Bank" ${account.type === 'Bank' ? 'selected' : ''}>Bank</option>
+                                    <option value="Cash" ${account.type === 'Cash' ? 'selected' : ''}>Cash</option>
+                                    <option value="Credit Card" ${account.type === 'Credit Card' ? 'selected' : ''}>Credit Card</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Opening Balance</label>
+                                <input type="number" step="0.01" name="openingBalance" class="form-control" value="${account.openingBalance || 0}" ${isEditing ? 'disabled' : ''}>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">${isEditing ? 'Save Changes' : 'Add Account'}</button>
+                    </form>
+                </div>
+            `);
+            document.getElementById('account-form').addEventListener('submit', handleAccountFormSubmit);
+        }
+
+        function showTransactionForm(type) {
+             const accountOptions = state.accounts.map(acc => `<option value="${acc.id}">${acc.name}</option>`).join('');
+             if(state.accounts.length === 0) {
+                showNotification("Please add a bank/cash account first.", "error");
+                return;
+             }
+             openModal(`
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Add ${type}</h3>
+                        <button class="close-modal">&times;</button>
+                    </div>
+                    <form id="transaction-form" data-type="${type}">
+                        <div class="form-group">
+                            <label>Account</label>
+                            <select name="accountId" class="form-control" required>${accountOptions}</select>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Date</label>
+                                <input type="date" name="date" class="form-control" value="${new Date().toISOString().split('T')[0]}" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Amount</label>
+                                <input type="number" step="0.01" name="amount" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea name="description" class="form-control"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add ${type}</button>
+                    </form>
+                </div>
+             `);
+             document.getElementById('transaction-form').addEventListener('submit', handleTransactionFormSubmit);
+        }
+
+        // 16. Module Logic: Dashboard & Chart
         function renderDashboard() {
             const activeCompany = getActiveCompany();
             const currency = activeCompany?.currency;
@@ -1951,13 +2390,94 @@
                     <div class="stat-card-value">${formatCurrency(outstanding, currency)}</div>
                 </div>
             `;
+
+            renderFinancialChart();
         }
 
-        // 15. Module Logic: Settings
+        function renderFinancialChart() {
+            const ctx = document.getElementById('financialChart').getContext('2d');
+            if (financialChart) {
+                financialChart.destroy();
+            }
+
+            const labels = [];
+            const incomeData = [];
+            const expenseData = [];
+
+            for (let i = 5; i >= 0; i--) {
+                const d = new Date();
+                d.setMonth(d.getMonth() - i);
+                labels.push(d.toLocaleString('default', { month: 'short' }));
+
+                const monthStart = new Date(d.getFullYear(), d.getMonth(), 1);
+                const monthEnd = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+
+                const monthlyIncome = state.invoices
+                    .filter(inv => inv.status === 'Paid' && new Date(inv.date) >= monthStart && new Date(inv.date) <= monthEnd)
+                    .reduce((sum, inv) => sum + inv.grandTotal, 0) + 
+                    state.bills
+                    .filter(bill => bill.status === 'Paid' && new Date(bill.date) >= monthStart && new Date(bill.date) <= monthEnd)
+                    .reduce((sum, bill) => sum + bill.grandTotal, 0);
+
+                const monthlyExpenses = state.expenses
+                    .filter(exp => new Date(exp.date) >= monthStart && new Date(exp.date) <= monthEnd)
+                    .reduce((sum, exp) => sum + exp.amount, 0);
+
+                incomeData.push(monthlyIncome);
+                expenseData.push(monthlyExpenses);
+            }
+
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+            const labelColor = isDarkMode ? '#F9FAFB' : '#1F2937';
+
+            financialChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Income',
+                        data: incomeData,
+                        backgroundColor: 'rgba(16, 185, 129, 0.6)',
+                        borderColor: 'rgba(16, 185, 129, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'Expenses',
+                        data: expenseData,
+                        backgroundColor: 'rgba(239, 68, 68, 0.6)',
+                        borderColor: 'rgba(239, 68, 68, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: labelColor },
+                            grid: { color: gridColor }
+                        },
+                        x: {
+                            ticks: { color: labelColor },
+                            grid: { color: gridColor }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { color: labelColor }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 17. Module Logic: Settings
         function handleDarkModeToggle(e) {
             state.settings.darkMode = e.target.checked;
             document.body.classList.toggle('dark-mode', state.settings.darkMode);
             saveData();
+            renderFinancialChart();
         }
         
         function handleResetApp() {
@@ -2012,22 +2532,95 @@
             reader.readAsText(file);
         }
 
-        // 16. AI Help Assistant Logic
+        // 18. Module Logic: Karyasthan AI
         function toggleAiHelpPanel() {
-            document.getElementById('ai-help-panel').classList.toggle('open');
-        }
-        
-        function getAIHelp(query) {
-            showNotification(`AI Assistant: You asked about "${query}". This feature will be powered by a real AI in a future update!`, "info");
+            const panel = document.getElementById('ai-help-panel');
+            panel.classList.toggle('open');
+            if (panel.classList.contains('open')) {
+                const chatBody = document.getElementById('karyasthan-chat-body');
+                const activeCompany = getActiveCompany();
+                const companyName = activeCompany ? activeCompany.name : 'your company';
+                chatBody.innerHTML = `<div class="ai-message karyasthan">Hello! I am Karyasthan, a financial advisor and accountant developed by Right Solutions to assist ${companyName}. How can I help you today?</div>`;
+            }
         }
 
-        // 17. Advanced Features (Shortcuts, Context Menu)
+        async function handleKaryasthanQuery() {
+            const input = document.getElementById('karyasthan-input');
+            const query = input.value.trim();
+            if (!query) return;
+
+            const chatBody = document.getElementById('karyasthan-chat-body');
+            chatBody.innerHTML += `<div class="ai-message user">${query}</div>`;
+            input.value = '';
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            toggleLoadingOverlay(true);
+
+            try {
+                const dataContext = `
+                    Here is the current data from the Right Bill 2025 application:
+                    - Invoices: ${JSON.stringify(state.invoices)}
+                    - Bills: ${JSON.stringify(state.bills)}
+                    - Expenses: ${JSON.stringify(state.expenses)}
+                    - Customers: ${JSON.stringify(state.customers)}
+                    - Products: ${JSON.stringify(state.products)}
+                    - Accounts: ${JSON.stringify(state.accounts)}
+                    - Active Company: ${JSON.stringify(getActiveCompany())}
+                    - Today's Date: ${new Date().toLocaleDateString()}
+                `;
+                
+                const prompt = `
+                    You are Karyasthan, a helpful and professional financial advisor and accountant for the company "${getActiveCompany()?.name || 'the user'}".
+                    Based on the following data, answer the user's question. Provide a concise, natural language answer.
+                    If the question implies an action (like "create an invoice"), first confirm the details, then respond with a JSON object representing the action.
+                    
+                    DATA CONTEXT:
+                    ${dataContext}
+                    
+                    USER QUESTION:
+                    "${query}"
+                    
+                    Your response should be in plain text or, for actions, a JSON object.
+                `;
+
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${OPENAI_API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: "gpt-3.5-turbo",
+                        messages: [{ role: "user", content: prompt }]
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error.message || `HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                const answer = result.choices[0].message.content;
+
+                chatBody.innerHTML += `<div class="ai-message karyasthan">${answer}</div>`;
+                chatBody.scrollTop = chatBody.scrollHeight;
+
+            } catch (error) {
+                console.error("Karyasthan AI Error:", error);
+                chatBody.innerHTML += `<div class="ai-message karyasthan" style="color: var(--danger-color);"><strong>Error:</strong> I couldn't process that request. ${error.message}</div>`;
+            } finally {
+                toggleLoadingOverlay(false);
+            }
+        }
+        
+        // 19. Advanced Features (Shortcuts, Context Menu)
         function handleKeyboardShortcuts(e) {
             if (e.ctrlKey) {
                 switch(e.key.toLowerCase()) {
                     case 'i': e.preventDefault(); document.getElementById('new-invoice-btn').click(); break;
                     case 'd': e.preventDefault(); document.getElementById('dark-mode-toggle').click(); break;
-                    case 's': e.preventDefault(); saveData(); showNotification('Data saved!', 'success'); break;
+                    case 's': e.preventDefault(); showNotification('Data is saved automatically!', 'info'); break;
                     case 'h': e.preventDefault(); toggleAiHelpPanel(); break;
                 }
             }
@@ -2075,16 +2668,11 @@
                 if (type === 'invoice') showInvoiceCreator(id);
                 if (type === 'bill') showBillCreator(id);
                 if (type === 'expense') showExpenseForm(id);
+                if (type === 'account') showAccountForm(id);
             }
             if (action === 'delete') {
                 if (confirm(`Are you sure you want to delete this ${type}?`)) {
-                    const itemToDelete = state[type + 's'].find(item => item.id === id);
                     state[type + 's'] = state[type + 's'].filter(item => item.id !== id);
-                    addJournalEntry({
-                        description: `Deleted ${type} ${itemToDelete.number || itemToDelete.name || itemToDelete.category}`,
-                        debit: type === 'expense' ? itemToDelete.amount : 0,
-                        credit: type === 'invoice' || type === 'bill' ? itemToDelete.grandTotal : 0
-                    });
                     saveData();
                     renderAll();
                     showNotification(`${type.charAt(0).toUpperCase() + type.slice(1)} deleted.`, 'success');
@@ -2097,16 +2685,47 @@
                     const oldStatus = doc.status;
                     doc.status = status;
                     
-                    // Journaling for status change
                     if (status === 'Paid' && oldStatus !== 'Paid') {
-                        addJournalEntry({ description: `Payment received for ${type} ${doc.number}`, credit: doc.grandTotal });
-                    } else if (oldStatus === 'Paid' && status !== 'Paid') {
-                        addJournalEntry({ description: `Reversal for ${type} ${doc.number}`, debit: doc.grandTotal });
+                        const accountOptions = state.accounts.map(acc => `<option value="${acc.id}">${acc.name}</option>`).join('');
+                        if (state.accounts.length === 0) {
+                            showNotification("Please add a bank/cash account first to record the payment.", "error");
+                            return;
+                        }
+                        openModal(`
+                            <div class="modal-content">
+                                <div class="modal-header"><h3 class="modal-title">Record Payment</h3><button class="close-modal">&times;</button></div>
+                                <form id="record-payment-form">
+                                    <div class="form-group">
+                                        <label>Deposit to Account</label>
+                                        <select name="accountId" class="form-control" required>${accountOptions}</select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Confirm Payment</button>
+                                </form>
+                            </div>
+                        `);
+                        document.getElementById('record-payment-form').onsubmit = (e) => {
+                            e.preventDefault();
+                            const accountId = e.target.accountId.value;
+                            state[type + 's'][index].status = 'Paid';
+                            addJournalEntry({ description: `Payment received for ${type} ${doc.number}`, credit: doc.grandTotal });
+                            state.transactions.push({
+                                id: generateId(),
+                                accountId,
+                                date: new Date().toISOString(),
+                                description: `Payment for ${type} #${doc.number}`,
+                                amount: doc.grandTotal,
+                                type: 'Deposit'
+                            });
+                            saveData();
+                            renderAll();
+                            closeModal();
+                            showNotification(`Status updated to Paid.`, 'success');
+                        };
+                    } else {
+                         saveData();
+                         renderAll();
+                         showNotification(`Status updated to ${status}.`, 'success');
                     }
-
-                    saveData();
-                    renderAll();
-                    showNotification(`Status updated to ${status}.`, 'success');
                 }
             }
             if (action === 'duplicate') {
@@ -2128,7 +2747,7 @@
             hideContextMenu();
         }
 
-        // 18. Event Listeners & Form Handlers
+        // 20. Event Listeners & Form Handlers
         function setupEventListeners() {
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.addEventListener('click', (e) => {
@@ -2144,6 +2763,9 @@
             document.getElementById('new-invoice-btn').addEventListener('click', () => showInvoiceCreator());
             document.getElementById('new-bill-btn').addEventListener('click', () => showBillCreator());
             document.getElementById('new-expense-btn').addEventListener('click', () => showExpenseForm());
+            document.getElementById('new-account-btn').addEventListener('click', () => showAccountForm());
+            document.getElementById('add-deposit-btn').addEventListener('click', () => showTransactionForm('Deposit'));
+            document.getElementById('add-withdrawal-btn').addEventListener('click', () => showTransactionForm('Withdrawal'));
 
             document.querySelector('#app-container').addEventListener('click', e => {
                 const target = e.target;
@@ -2157,6 +2779,7 @@
                     if (type === 'product') showProductForm(id);
                     if (type === 'customer') showCustomerForm(id);
                     if (type === 'expense') showExpenseForm(id);
+                    if (type === 'account') showAccountForm(id);
                 }
                 if (target.classList.contains('view-btn')) {
                     if (type === 'invoice') showInvoiceCreator(id);
@@ -2178,8 +2801,12 @@
 
             document.getElementById('ai-help-btn').addEventListener('click', toggleAiHelpPanel);
             document.getElementById('close-ai-panel').addEventListener('click', toggleAiHelpPanel);
-            document.getElementById('ai-help-input').addEventListener('keypress', e => {
-                if (e.key === 'Enter' && e.target.value) getAIHelp(e.target.value);
+            document.getElementById('send-to-karyasthan-btn').addEventListener('click', handleKaryasthanQuery);
+            document.getElementById('karyasthan-input').addEventListener('keypress', e => {
+                if (e.key === 'Enter' && e.target.value) {
+                    e.preventDefault();
+                    handleKaryasthanQuery();
+                }
             });
 
             document.addEventListener('keydown', handleKeyboardShortcuts);
@@ -2264,20 +2891,23 @@
 
             if (id) {
                 const index = state.expenses.findIndex(item => item.id === id);
-                const oldAmount = state.expenses[index].amount;
                 state.expenses[index] = { ...state.expenses[index], ...data };
-                addJournalEntry({
-                    description: `Edited expense: ${data.category}`,
-                    debit: data.amount - oldAmount
-                });
             } else {
                 data.id = generateId();
                 state.expenses.push(data);
-                addJournalEntry({
-                    description: `Expense: ${data.category}`,
-                    debit: data.amount
-                });
             }
+            state.transactions.push({
+                id: generateId(),
+                accountId: data.accountId,
+                date: data.date,
+                description: `Expense: ${data.category} - ${data.description || ''}`,
+                amount: data.amount,
+                type: 'Withdrawal'
+            });
+            addJournalEntry({
+                description: `Expense: ${data.category}`,
+                debit: data.amount
+            });
             saveData();
             renderAll();
             closeModal();
@@ -2312,11 +2942,11 @@
                 subtotal: subtotal,
                 taxTotal: taxTotal,
                 grandTotal: subtotal + taxTotal,
+                notes: form.querySelector('[name="notes"]').value
             };
             
             if (id) {
                 const index = state.invoices.findIndex(item => item.id === id);
-                // Preserve status on edit
                 data.status = state.invoices[index].status;
                 state.invoices[index] = { ...state.invoices[index], ...data };
             } else {
@@ -2327,7 +2957,6 @@
             }
             saveData();
             navigateTo('invoices');
-            renderAll();
             showNotification(`Invoice saved successfully.`, 'success');
         }
 
@@ -2351,6 +2980,7 @@
                 date: form.querySelector('[name="date"]').value,
                 items: items,
                 grandTotal: grandTotal,
+                notes: form.querySelector('[name="notes"]').value
             };
             
             if (id) {
@@ -2365,11 +2995,45 @@
             }
             saveData();
             navigateTo('bills');
-            renderAll();
             showNotification(`Bill saved successfully.`, 'success');
         }
 
-        // 19. Utility Functions
+        function handleAccountFormSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            const id = form.querySelector('[name="id"]')?.value;
+            const data = Object.fromEntries(new FormData(form).entries());
+            data.openingBalance = parseFloat(data.openingBalance) || 0;
+
+            if (id) {
+                const index = state.accounts.findIndex(item => item.id === id);
+                state.accounts[index] = { ...state.accounts[index], ...data };
+            } else {
+                data.id = generateId();
+                state.accounts.push(data);
+            }
+            saveData();
+            renderAll();
+            closeModal();
+            showNotification('Account saved successfully.', 'success');
+        }
+
+        function handleTransactionFormSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            const data = Object.fromEntries(new FormData(form).entries());
+            data.amount = parseFloat(data.amount);
+            data.type = form.dataset.type;
+            data.id = generateId();
+
+            state.transactions.push(data);
+            saveData();
+            renderAll();
+            closeModal();
+            showNotification('Transaction recorded.', 'success');
+        }
+
+        // 22. Utility Functions
         function generateId() {
             return Date.now().toString(36) + Math.random().toString(36).substr(2);
         }
@@ -2387,32 +3051,16 @@
 
         function getDateRange(period) {
             const now = new Date();
-            let start = new Date();
-            let end = new Date();
-
+            let start = new Date(); let end = new Date();
             switch(period) {
-                case 'monthly':
-                    start = new Date(now.getFullYear(), now.getMonth(), 1);
-                    end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-                    break;
-                case 'quarterly':
-                    const quarter = Math.floor(now.getMonth() / 3);
-                    start = new Date(now.getFullYear(), quarter * 3, 1);
-                    end = new Date(now.getFullYear(), quarter * 3 + 3, 0);
-                    break;
-                case 'yearly':
-                    start = new Date(now.getFullYear(), 0, 1);
-                    end = new Date(now.getFullYear(), 11, 31);
-                    break;
-                case 'all':
-                default:
-                    start = new Date(0); // Epoch time
-                    end = new Date();
-                    break;
+                case 'monthly': start = new Date(now.getFullYear(), now.getMonth(), 1); end = new Date(now.getFullYear(), now.getMonth() + 1, 0); break;
+                case 'quarterly': const quarter = Math.floor(now.getMonth() / 3); start = new Date(now.getFullYear(), quarter * 3, 1); end = new Date(now.getFullYear(), quarter * 3 + 3, 0); break;
+                case 'yearly': start = new Date(now.getFullYear(), 0, 1); end = new Date(now.getFullYear(), 11, 31); break;
+                default: start = new Date(0); end = new Date(); break;
             }
             return { start, end };
         }
-
+        
         // Start the application
         init();
     });
