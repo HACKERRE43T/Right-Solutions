@@ -1,1 +1,713 @@
-<h1>Site under Construction</h1>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Right Manage — AI-powered shop management</title>
+  <meta name="description" content="Right Manage: AI-powered shop management — invoices, customers, finances, all in one. Start free trial by calling 9447088525. Basic ₹199 / month, Pro ₹499 / month." />
+  <style>
+    :root{
+      --bg:#0b0f18;
+      --bg-2:#0e1422;
+      --fg:#e8ecf3;
+      --muted:#a9b3c6;
+      --primary:#5cf1ff;
+      --accent:#ff3b3b; /* red tick */
+      --accent-2:#8b5cff;
+      --card:#111826cc;
+      --glass:rgba(255,255,255,0.06);
+      --glass-brd:rgba(255,255,255,0.14);
+      --success:#2dd4bf;
+      --warning:#f59e0b;
+      --shadow:0 10px 30px rgba(0,0,0,0.35);
+      --radius:16px;
+      --radius-sm:12px;
+      --radius-lg:22px;
+      --maxw:1200px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      color:var(--fg);
+      background: radial-gradient(1200px 800px at 10% 10%, #15345733, transparent 60%),
+                  radial-gradient(1000px 700px at 90% 0%, #3f1d7a33, transparent 60%),
+                  linear-gradient(180deg, var(--bg), var(--bg-2));
+      overflow-x:hidden;
+    }
+
+    /* Subtle AI-like animated background */
+    .ai-orbs{
+      position:fixed; inset:0; pointer-events:none; z-index:-1; filter: blur(40px) saturate(140%);
+    }
+    .orb{
+      position:absolute; border-radius:50%;
+      opacity:0.25; mix-blend-mode:screen;
+      animation: float 18s ease-in-out infinite;
+      background: radial-gradient(circle at 30% 30%, #5cf1ff, transparent 60%),
+                  radial-gradient(circle at 70% 70%, #8b5cff, transparent 60%);
+    }
+    .orb.one{width:520px;height:520px; left:-120px; top:-80px; animation-delay:0s;}
+    .orb.two{width:420px;height:420px; right:-120px; top:120px; animation-delay:3s;}
+    .orb.three{width:460px;height:460px; left:30%; bottom:-160px; animation-delay:6s;}
+    @keyframes float{
+      0%,100%{transform: translateY(0) translateX(0) scale(1)}
+      50%{transform: translateY(-30px) translateX(10px) scale(1.05)}
+    }
+
+    a{color:var(--primary); text-decoration:none}
+    a:hover{text-decoration:underline}
+
+    header{
+      position:sticky; top:0; z-index:50;
+      backdrop-filter:saturate(140%) blur(10px);
+      background:linear-gradient(180deg, rgba(17,24,38,0.85), rgba(17,24,38,0.45));
+      border-bottom:1px solid var(--glass-brd);
+    }
+    .nav{
+      max-width:var(--maxw); margin:0 auto; display:flex; align-items:center; justify-content:space-between;
+      padding:16px 24px;
+    }
+    .brand{display:flex; align-items:center; gap:12px; font-weight:700; letter-spacing:0.2px}
+    .brand svg{width:28px;height:28px}
+    .brand .name{font-size:18px}
+    .nav-actions{display:flex; align-items:center; gap:12px}
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:10px;
+      padding:12px 18px; border-radius:999px; border:1px solid var(--glass-brd);
+      background:linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      color:var(--fg); cursor:pointer; transition:.2s ease; text-decoration:none; box-shadow:0 0 0 rgba(0,0,0,0);
+      will-change:transform, box-shadow;
+    }
+    .btn:hover{transform:translateY(-1px); box-shadow:0 8px 24px rgba(0,0,0,0.25)}
+    .btn:active{transform:translateY(0)}
+    .btn.primary{
+      background:linear-gradient(180deg, #27e1ff, #0fbcd2);
+      color:#041318;
+      border-color:transparent;
+    }
+    .btn.accent{
+      background:linear-gradient(180deg, #ff5a5a, #e63232);
+      color:white; border-color:transparent;
+    }
+    .btn.ghost{background:transparent}
+    .badge{
+      display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
+      background:rgba(255,255,255,0.06); border:1px solid var(--glass-brd); color:var(--muted); font-size:12px;
+    }
+
+    .container{max-width:var(--maxw); margin:0 auto; padding:0 24px}
+    .hero{
+      padding:72px 0 28px;
+      display:grid; grid-template-columns:1.2fr 1fr; gap:36px; align-items:center;
+    }
+    .headline{
+      font-size:44px; line-height:1.1; letter-spacing:-0.5px; margin:12px 0 16px;
+    }
+    .subhead{color:var(--muted); font-size:18px; margin-bottom:18px}
+    .trust-line{color:var(--muted); font-size:14px; margin-top:10px}
+    .hero-card{
+      background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      border:1px solid var(--glass-brd); border-radius:var(--radius-lg); padding:22px; box-shadow:var(--shadow);
+    }
+    .hero-visual{
+      position:relative; min-height:320px; border-radius:var(--radius-lg);
+      background:linear-gradient(135deg, rgba(39,225,255,0.18), rgba(139,92,255,0.14));
+      border:1px dashed rgba(255,255,255,0.2);
+      overflow:hidden;
+    }
+    .viz{
+      position:absolute; inset:0; display:grid; place-items:center;
+      background:
+        radial-gradient(120px 30px at 50% 18%, rgba(92,241,255,0.18), transparent 70%),
+        radial-gradient(180px 50px at 50% 62%, rgba(139,92,255,0.18), transparent 70%);
+    }
+    .viz-screen{
+      width:86%; height:70%; border-radius:14px; background:rgba(7,11,20,0.8); border:1px solid rgba(255,255,255,0.08);
+      box-shadow:0 12px 40px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.05);
+      padding:14px; display:grid; grid-template-columns:1fr 1fr; gap:12px;
+      animation: glow 4s ease-in-out infinite;
+    }
+    @keyframes glow{
+      0%,100%{box-shadow:0 12px 40px rgba(0,0,0,0.35), 0 0 0 rgba(92,241,255,0)}
+      50%{box-shadow:0 12px 40px rgba(0,0,0,0.35), 0 0 32px rgba(92,241,255,0.2)}
+    }
+    .viz-card{
+      background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:12px;
+    }
+    .viz-row{display:flex; align-items:center; justify-content:space-between; font-size:12px; color:#c5cfdf; padding:6px 0}
+    .viz-bar{height:8px; border-radius:6px; background:linear-gradient(90deg, #27e1ff, #8b5cff)}
+    .viz-pulse{position:absolute; inset:auto 16px 16px auto; width:12px;height:12px;border-radius:50%; background:#27e1ff; box-shadow:0 0 14px #27e1ff; animation:pulse 2.6s ease-in-out infinite}
+    @keyframes pulse{0%,100%{transform:scale(1); opacity:.8}50%{transform:scale(1.25); opacity:.35}}
+
+    .cta-row{display:flex; gap:12px; flex-wrap:wrap; margin-top:8px}
+    .cta-row .btn{padding:14px 20px}
+    .trust-badges{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px}
+
+    /* Features */
+    .section{padding:40px 0}
+    .section h2{font-size:28px; margin:0 0 10px}
+    .section p.lead{color:var(--muted); margin:0 0 20px}
+    .features{
+      display:grid; grid-template-columns:repeat(3,1fr); gap:16px;
+    }
+    .tile{
+      background:var(--glass); border:1px solid var(--glass-brd); border-radius:var(--radius); padding:18px;
+      transition:.2s ease; position:relative; overflow:hidden;
+    }
+    .tile:hover{transform:translateY(-3px); box-shadow:0 14px 38px rgba(0,0,0,0.3)}
+    .tile svg{width:28px;height:28px}
+    .tile h3{font-size:16px; margin:10px 0 6px}
+    .tile p{color:var(--muted); font-size:14px; margin:0}
+    .spark{
+      position:absolute; top:-80px; right:-60px; width:180px;height:180px;border-radius:50%;
+      background:radial-gradient(circle at 30% 30%, rgba(92,241,255,0.28), transparent 60%);
+      filter:blur(24px); opacity:.4
+    }
+
+    /* How it works */
+    .steps{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+    .step{background:var(--glass); border:1px solid var(--glass-brd); border-radius:var(--radius); padding:16px}
+    .step h4{margin:8px 0 6px; font-size:16px}
+    .step p{margin:0; color:var(--muted); font-size:14px}
+
+    /* Pricing */
+    .pricing{
+      display:grid; grid-template-columns:repeat(2,1fr); gap:16px;
+    }
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      border:1px solid var(--glass-brd); border-radius:var(--radius-lg); padding:22px; box-shadow:var(--shadow);
+    }
+    .price{font-size:30px; margin:8px 0}
+    .features-list{list-style:none; padding:0; margin:10px 0 16px; display:grid; gap:8px}
+    .features-list li{display:flex; align-items:flex-start; gap:10px; color:#cfe6f0; font-size:14px}
+    .check{
+      width:18px; height:18px; border-radius:50%; background:rgba(45,212,191,0.15); border:1px solid rgba(45,212,191,0.5);
+      display:inline-grid; place-items:center; margin-top:1px
+    }
+
+    /* Testimonial & FAQ */
+    .quote{
+      background:linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+      border:1px solid var(--glass-brd); border-radius:var(--radius-lg); padding:18px;
+      font-size:16px; color:#dfe6f5
+    }
+    .faq{display:grid; gap:10px}
+    .faq-item{background:var(--glass); border:1px solid var(--glass-brd); border-radius:12px; padding:14px}
+    .faq-item h4{margin:0 0 6px; font-size:16px}
+    .faq-item p{margin:0; color:var(--muted); font-size:14px}
+
+    footer{
+      border-top:1px solid var(--glass-brd);
+      background:linear-gradient(180deg, rgba(17,24,38,0.5), rgba(17,24,38,0.8));
+      padding:24px 0; color:var(--muted); font-size:13px
+    }
+
+    /* Modals */
+    .modal{
+      position:fixed; inset:0; display:none; place-items:center; z-index:100;
+      background:rgba(3,7,16,0.55);
+      backdrop-filter: blur(8px);
+      animation: fadeIn .2s ease;
+    }
+    .modal.show{display:grid}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    .modal-card{
+      width:min(520px, 92vw); border-radius:20px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      border:1px solid var(--glass-brd); box-shadow:0 30px 80px rgba(0,0,0,0.5);
+      overflow:hidden; transform: translateY(12px); animation: rise .25s ease forwards;
+    }
+    @keyframes rise{to{transform: translateY(0)}}
+    .modal-header{
+      display:flex; align-items:center; justify-content:space-between; padding:16px 18px;
+      border-bottom:1px solid var(--glass-brd);
+      background:
+        radial-gradient(180px 60px at 10% 0%, rgba(92,241,255,0.16), transparent 60%),
+        radial-gradient(180px 60px at 90% 0%, rgba(139,92,255,0.16), transparent 60%);
+    }
+    .modal-title{font-weight:700}
+    .close{background:transparent; border:none; color:var(--muted); cursor:pointer; font-size:20px}
+    .modal-body{padding:18px}
+    .form{display:grid; gap:12px}
+    label{font-size:13px; color:#cfe6f0}
+    input, button, textarea, select{
+      font-family:inherit; font-size:15px;
+    }
+    .input{
+      width:100%; padding:12px 12px; border-radius:12px;
+      border:1px solid rgba(255,255,255,0.18);
+      background:rgba(255,255,255,0.06); color:var(--fg);
+      outline:none; transition:.15s;
+    }
+    .input:focus{border-color:#27e1ff; box-shadow:0 0 0 3px rgba(39,225,255,0.15)}
+    .help{color:var(--muted); font-size:13px}
+    .hr{height:1px; background:var(--glass-brd); margin:12px 0}
+    .callout{
+      background:rgba(39,225,255,0.08); border:1px solid rgba(39,225,255,0.36); color:#c6f7ff;
+      border-radius:12px; padding:12px; font-size:14px
+    }
+    .center{display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap}
+
+    /* Login specific */
+    .login-bg{
+      position:absolute; inset:0; pointer-events:none;
+      background:
+        radial-gradient(300px 80px at 50% -10%, rgba(92,241,255,0.2), transparent 70%),
+        radial-gradient(400px 120px at -10% 40%, rgba(139,92,255,0.18), transparent 70%),
+        radial-gradient(400px 120px at 110% 60%, rgba(255,91,91,0.18), transparent 70%);
+      z-index:0;
+    }
+    .login-body{position:relative; z-index:1}
+    .login-actions{display:flex; gap:10px; align-items:center; justify-content:flex-end; margin-top:6px}
+    .error{
+      color:#fecaca; background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.4);
+      padding:8px 10px; border-radius:10px; font-size:13px; display:none
+    }
+    .error.show{display:block; animation:shake .35s ease}
+    @keyframes shake{
+      0%{transform:translateX(0)} 25%{transform:translateX(-6px)} 50%{transform:translateX(6px)} 75%{transform:translateX(-4px)} 100%{transform:translateX(0)}
+    }
+    .success{
+      color:#d1fae5; background:rgba(16,185,129,0.14); border:1px solid rgba(16,185,129,0.4);
+      padding:10px 12px; border-radius:10px; font-size:14px; display:none; margin-top:8px
+    }
+    .success.show{display:block}
+
+    .download-area{display:none; margin-top:10px}
+    .download-area.show{display:block}
+
+    /* Responsive */
+    @media (max-width: 980px){
+      .hero{grid-template-columns:1fr; padding-top:56px}
+      .viz-screen{grid-template-columns:1fr}
+      .features{grid-template-columns:repeat(2,1fr)}
+      .steps{grid-template-columns:1fr; gap:12px}
+      .pricing{grid-template-columns:1fr}
+    }
+    @media (max-width: 540px){
+      .headline{font-size:32px}
+      .subhead{font-size:16px}
+      .nav{padding:12px 16px}
+      .btn{padding:10px 14px}
+    }
+  </style>
+</head>
+<body>
+  <div class="ai-orbs" aria-hidden="true">
+    <div class="orb one"></div>
+    <div class="orb two"></div>
+    <div class="orb three"></div>
+  </div>
+
+  <header role="banner" aria-label="Site header">
+    <nav class="nav container" aria-label="Main">
+      <div class="brand" aria-label="Right Manage logo">
+        <!-- Red tick logo -->
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M20.285 6.709a1 1 0 0 1 .006 1.414l-9.2 9.2a1 1 0 0 1-1.414 0l-5.2-5.2a1 1 0 1 1 1.414-1.414l4.493 4.493 8.493-8.493a1 1 0 0 1 1.408 0z" fill="currentColor"/>
+        </svg>
+        <span class="name" style="color:var(--fg)"><span style="color:var(--accent)">Right</span> Manage</span>
+      </div>
+      <div class="nav-actions">
+        <a class="btn ghost" href="#pricing" id="navPricing">Pricing</a>
+        <a class="btn" href="#features">Features</a>
+        <button class="btn accent" id="openLogin" aria-haspopup="dialog" aria-controls="loginModal">Official Login</button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero container" aria-label="Hero">
+      <div class="hero-card" aria-live="polite">
+        <span class="badge" title="Trusted">Starting at ₹199 / month — Pro ₹499 / month</span>
+        <h1 class="headline">AI-powered shop management — invoices, customers, finances, all in one.</h1>
+        <p class="subhead">Right Manage makes reporting and finance simple. Customize invoices, track customers, and get smart growth insights from built‑in AI.</p>
+        <div class="cta-row">
+          <a class="btn primary" href="tel:9447088525" aria-label="Start Free Trial by calling 9447088525">
+            <!-- phone icon -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 3.11 5.18 2 2 0 0 1 5.09 3h3a2 2 0 0 1 2 1.72c.12.86.31 1.7.57 2.5a2 2 0 0 1-.45 2.11L9 11a16 16 0 0 0 4 4l1.66-1.21a2 2 0 0 1 2.11-.45c.8.26 1.64.45 2.5.57A2 2 0 0 1 22 16.92z" fill="#041318"/>
+            </svg>
+            Start Free Trial — Call 9447088525
+          </a>
+          <a class="btn" id="viewPricing" href="#pricing" aria-label="View pricing and download demo">
+            <!-- price tag icon -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M20.59 13.41 12 22l-8.59-8.59A2 2 0 0 1 3 12V4a2 2 0 0 1 2-2h8a2 2 0 0 1 1.41.59l6.18 6.18a2 2 0 0 1 0 2.82zM7 7h.01" stroke="#cfe6f0" stroke-width="1.4"/>
+            </svg>
+            View Pricing & Download Demo
+          </a>
+        </div>
+        <p class="trust-line">Basic from ₹199 / month — Pro ₹499 / month.</p>
+        <div class="trust-badges" role="group" aria-label="Trust badges">
+          <span class="badge">
+            <!-- shield -->
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#2dd4bf" d="M12 2l7 3v6c0 5-3.5 9.74-7 11-3.5-1.26-7-6-7-11V5l7-3z"/></svg>
+            Secure
+          </span>
+          <span class="badge">
+            <!-- gdpr -->
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#60a5fa" fill="none"/><path d="M8 12h8M12 8v8" stroke="#60a5fa"/></svg>
+            GDPR‑ready
+          </span>
+          <span class="badge">
+            <!-- support -->
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 19a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2" stroke="#fbbf24" fill="none"/><circle cx="12" cy="8" r="4" stroke="#fbbf24" fill="none"/></svg>
+            24/7 support
+          </span>
+        </div>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="viz">
+          <div class="viz-screen" role="img" aria-label="AI dashboard preview">
+            <div class="viz-card">
+              <div class="viz-row"><span>AI Growth Score</span><strong>92</strong></div>
+              <div class="viz-bar" style="width:92%"></div>
+              <div class="viz-row"><span>Monthly Revenue</span><strong>₹4.2L</strong></div>
+              <div class="viz-bar" style="width:78%"></div>
+              <div class="viz-row"><span>Invoice Health</span><strong>Stable</strong></div>
+              <div class="viz-bar" style="width:67%"></div>
+            </div>
+            <div class="viz-card">
+              <div class="viz-row"><span>Smart Report</span><span>Ready</span></div>
+              <div class="viz-row"><span>GT info sync</span><span>On</span></div>
+              <div class="viz-row"><span>Recommendations</span><span>3</span></div>
+              <div style="margin-top:8px; font-size:12px; color:#9ecce0">“Focus on repeat customers. Reduce credit cycle by 4 days.”</div>
+            </div>
+          </div>
+          <div class="viz-pulse" title="Live AI"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="section container" aria-label="Features">
+      <h2>Features that keep your shop ahead</h2>
+      <p class="lead">AI does the heavy lifting so reporting and finance feel effortless.</p>
+      <div class="features">
+        <article class="tile">
+          <div class="spark" aria-hidden="true"></div>
+          <div style="display:flex; align-items:center; gap:10px">
+            <!-- invoice icon -->
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l3 3v17H6z" stroke="#cfe6f0" fill="none"/><path d="M9 7h6M9 11h6M9 15h6" stroke="#5cf1ff"/></svg>
+            <h3>Customizable invoices</h3>
+          </div>
+          <p>Flexible invoice templates, taxes, and branding that fit your workflow.</p>
+        </article>
+        <article class="tile">
+          <div class="spark" aria-hidden="true"></div>
+          <div style="display:flex; align-items:center; gap:10px">
+            <!-- AI icon -->
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="6" stroke="#8b5cff" fill="none"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M5 19l3-3M16 8l3-3" stroke="#5cf1ff"/></svg>
+            <h3>AI financial assistant</h3>
+          </div>
+          <p>Ask natural questions. Get instant insights and growth guidance.</p>
+        </article>
+        <article class="tile">
+          <div class="spark" aria-hidden="true"></div>
+          <div style="display:flex; align-items:center; gap:10px">
+            <!-- report icon -->
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4h16v12H8z" stroke="#cfe6f0" fill="none"/><path d="M8 16l3-4 3 2 4-6" stroke="#2dd4bf"/></svg>
+            <h3>Smart reporting</h3>
+          </div>
+          <p>Automated reports, GT info sync, and easy-to-act recommendations.</p>
+        </article>
+        <article class="tile">
+          <div class="spark" aria-hidden="true"></div>
+          <div style="display:flex; align-items:center; gap:10px">
+            <!-- bolt icon -->
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" fill="#f59e0b"/></svg>
+            <h3>Fast, easy setup</h3>
+          </div>
+          <p>Get started in minutes. Import data and go—no heavy onboarding.</p>
+        </article>
+        <article class="tile">
+          <div class="spark" aria-hidden="true"></div>
+          <div style="display:flex; align-items:center; gap:10px">
+            <!-- lock icon -->
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2" stroke="#60a5fa" fill="none"/><path d="M8 10V8a4 4 0 0 1 8 0v2" stroke="#60a5fa"/></svg>
+            <h3>Secure & private</h3>
+          </div>
+          <p>Data encryption, role-based access, and GDPR‑ready controls.</p>
+        </article>
+        <article class="tile">
+          <div class="spark" aria-hidden="true"></div>
+          <div style="display:flex; align-items:center; gap:10px">
+            <!-- users icon -->
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="9" r="3" stroke="#5cf1ff" fill="none"/><circle cx="16" cy="9" r="3" stroke="#8b5cff" fill="none"/><path d="M3 20a5 5 0 0 1 10 0M11 20a5 5 0 0 1 10 0" stroke="#cfe6f0"/></svg>
+            <h3>Customers made simple</h3>
+          </div>
+          <p>Track contacts, credit, and loyalty to grow repeat sales.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section container" aria-label="How it works">
+      <h2>How it works</h2>
+      <div class="steps">
+        <div class="step">
+          <span class="badge">Step 1</span>
+          <h4>Call to activate trial</h4>
+          <p>Leave a call on 9447088525. We’ll unlock your free trial instantly.</p>
+        </div>
+        <div class="step">
+          <span class="badge">Step 2</span>
+          <h4>Log in and download</h4>
+          <p>Use Official Login to access the installer and sample data.</p>
+        </div>
+        <div class="step">
+          <span class="badge">Step 3</span>
+          <h4>See AI insights</h4>
+          <p>Open Smart Reports for growth recommendations tailored to your shop.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing" class="section container" aria-label="Pricing">
+      <h2>Simple, honest pricing</h2>
+      <p class="lead">Basic from ₹199 / month — Pro ₹499 / month.</p>
+      <div class="pricing">
+        <div class="card" role="article" aria-label="Basic plan">
+          <h3>Basic</h3>
+          <div class="price">₹199 / month</div>
+          <ul class="features-list">
+            <li><span class="check">
+              <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M20 6L9 17l-5-5" fill="none" stroke="#2dd4bf" stroke-width="2"/></svg>
+            </span> Core invoicing and customers</li>
+            <li><span class="check"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M20 6L9 17l-5-5" fill="none" stroke="#2dd4bf" stroke-width="2"/></svg></span> Smart reports (standard)</li>
+            <li><span class="check"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M20 6L9 17l-5-5" fill="none" stroke="#2dd4bf" stroke-width="2"/></svg></span> GT info sync</li>
+          </ul>
+          <div class="center">
+            <button class="btn primary" data-open="trialModal">Buy / Trial</button>
+            <a class="btn ghost" href="#faq">Questions?</a>
+          </div>
+        </div>
+        <div class="card" role="article" aria-label="Pro plan">
+          <h3>Pro</h3>
+          <div class="price">₹499 / month</div>
+          <ul class="features-list">
+            <li><span class="check"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M20 6L9 17l-5-5" fill="none" stroke="#2dd4bf" stroke-width="2"/></svg></span> All Basic features</li>
+            <li><span class="check"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M20 6L9 17l-5-5" fill="none" stroke="#2dd4bf" stroke-width="2"/></svg></span> AI financial assistant</li>
+            <li><span class="check"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M20 6L9 17l-5-5" fill="none" stroke="#2dd4bf" stroke-width="2"/></svg></span> Priority support</li>
+          </ul>
+          <div class="center">
+            <button class="btn primary" data-open="trialModal">Buy / Trial</button>
+            <button class="btn" id="openLoginFromPricing">Download demo</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section container" aria-label="Social proof">
+      <div class="quote" role="figure" aria-label="Customer testimonial">
+        “Right Manage gave us clear AI guidance. We cut late payments by 32% and grew repeat orders in 6 weeks.”
+        <div style="margin-top:8px; color:#9fb3cc; font-size:14px">— Placeholder Retailer, Kochi</div>
+      </div>
+    </section>
+
+    <section id="faq" class="section container" aria-label="FAQ">
+      <h2>FAQ</h2>
+      <div class="faq">
+        <div class="faq-item">
+          <h4>How do I activate the free trial?</h4>
+          <p>Want to try? Activate your free trial by leaving a call on 9447088525. We verify your number and enable the trial.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Do I need a card to start?</h4>
+          <p>No card required to activate the trial. Just call, then log in to download the installer.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Can I switch plans later?</h4>
+          <p>Yes. Upgrade or downgrade anytime between Basic (₹199 / month) and Pro (₹499 / month).</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer role="contentinfo">
+    <div class="container" style="display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap">
+      <div>© <span id="year"></span> Right Manage. All rights reserved.</div>
+      <div>AI simplifies reporting & finance. Built for Indian retailers.</div>
+    </div>
+  </footer>
+
+  <!-- Trial Activation Modal -->
+  <div class="modal" id="trialModal" role="dialog" aria-modal="true" aria-labelledby="trialTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title" id="trialTitle">Activate Free Trial</div>
+        <button class="close" aria-label="Close" data-close="trialModal">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="callout" role="note">
+          To activate your free trial, please leave a call on 9447088525.
+        </div>
+        <div class="center" style="margin:12px 0 6px">
+          <a class="btn primary" href="tel:9447088525" aria-label="Call 9447088525 to activate">Call 9447088525</a>
+          <span class="help">We’ll confirm and enable your trial right away.</span>
+        </div>
+        <div class="hr"></div>
+        <form class="form" aria-label="Optional contact form" id="trialForm" novalidate>
+          <div>
+            <label for="trialName">Name (optional)</label>
+            <input class="input" id="trialName" name="name" autocomplete="name" placeholder="Your name" />
+          </div>
+          <div>
+            <label for="trialEmail">Email (optional)</label>
+            <input class="input" id="trialEmail" name="email" type="email" autocomplete="email" placeholder="you@example.com" />
+          </div>
+          <div class="help">Calling is required to activate. This form helps us get back to you faster.</div>
+          <div class="center" style="margin-top:6px">
+            <button type="button" class="btn" data-close="trialModal">Done</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Login Modal -->
+  <div class="modal" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+    <div class="modal-card" style="position:relative; overflow:hidden">
+      <div class="login-bg" aria-hidden="true"></div>
+      <div class="modal-header">
+        <div class="modal-title" id="loginTitle">Official Login</div>
+        <button class="close" aria-label="Close" data-close="loginModal">×</button>
+      </div>
+      <div class="modal-body login-body">
+        <form class="form" id="loginForm" aria-label="Login form" novalidate>
+          <div>
+            <label for="username">Username</label>
+            <input class="input" id="username" name="username" autocomplete="username" value="arjun" aria-required="true" />
+          </div>
+          <div>
+            <label for="password">Password</label>
+            <input class="input" id="password" name="password" type="password" autocomplete="current-password" placeholder="••••••" aria-required="true" />
+            <div class="help">Hint: Contact support if you’ve forgotten your credentials.</div>
+          </div>
+          <div class="error" id="loginError" role="alert">Incorrect credentials. Please try again.</div>
+          <div class="success" id="loginSuccess" role="status">Login successful. Your download is ready.</div>
+          <div class="login-actions">
+            <button type="button" class="btn" data-close="loginModal">Cancel</button>
+            <button type="submit" class="btn primary" id="loginBtn">Login</button>
+          </div>
+          <div class="download-area" id="downloadArea" aria-live="polite">
+            <div class="hr"></div>
+            <div class="center">
+              <a class="btn accent" href="./Install Right Manange.exe" download aria-label="Download Install Right Manange.exe">
+                <!-- download icon -->
+                <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 3v10m0 0l4-4m-4 4l-4-4" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M5 21h14" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+                </svg>
+                Download Installer
+              </a>
+              <span class="help">Save and run “Install Right Manange.exe”.</span>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Helper: open/close modals
+    const qs = (s, ctx=document) => ctx.querySelector(s);
+    const qsa = (s, ctx=document) => Array.from(ctx.querySelectorAll(s));
+    function openModal(id){ const m=qs('#'+id); if(!m) return; m.classList.add('show'); trapFocus(m); }
+    function closeModal(id){ const m=qs('#'+id); if(!m) return; m.classList.remove('show'); releaseFocus(); }
+
+    // Focus trap for accessibility
+    let lastFocused = null;
+    function trapFocus(modal){
+      lastFocused = document.activeElement;
+      const focusables = qsa('a[href], button, input, textarea, select, [tabindex]:not([tabindex="-1"])', modal).filter(el=>!el.hasAttribute('disabled'));
+      const first = focusables[0], last = focusables[focusables.length-1];
+      if(first) first.focus();
+      function keyHandler(e){
+        if(e.key === 'Escape'){ e.preventDefault(); modal.classList.remove('show'); releaseFocus(); }
+        if(e.key === 'Tab'){
+          if(focusables.length === 0){ e.preventDefault(); return; }
+          if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+          else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+        }
+      }
+      modal._keyHandler = keyHandler;
+      document.addEventListener('keydown', keyHandler);
+      modal.addEventListener('click', (e)=>{ if(e.target === modal) closeModal(modal.id); });
+    }
+    function releaseFocus(){
+      document.removeEventListener('keydown', qs('#loginModal')._keyHandler || (()=>{}));
+      document.removeEventListener('keydown', qs('#trialModal')._keyHandler || (()=>{}));
+      if(lastFocused) lastFocused.focus();
+    }
+
+    // Header actions
+    qs('#openLogin').addEventListener('click', ()=>openModal('loginModal'));
+    qs('#openLoginFromPricing').addEventListener('click', ()=>openModal('loginModal'));
+    qsa('[data-open]').forEach(btn=>{
+      btn.addEventListener('click', ()=> openModal(btn.getAttribute('data-open')));
+    });
+    qsa('[data-close]').forEach(btn=>{
+      btn.addEventListener('click', ()=> closeModal(btn.getAttribute('data-close')));
+    });
+
+    // Smooth scroll for View Pricing
+    qs('#viewPricing').addEventListener('click', (e)=>{
+      const target = qs('#pricing'); if(target){ e.preventDefault(); target.scrollIntoView({behavior:'smooth', block:'start'}); }
+    });
+    qs('#navPricing').addEventListener('click', (e)=>{
+      const target = qs('#pricing'); if(target){ e.preventDefault(); target.scrollIntoView({behavior:'smooth', block:'start'}); }
+    });
+
+    // Footer year
+    qs('#year').textContent = new Date().getFullYear();
+
+    // Trial form lightweight validation (optional email format only if provided)
+    qs('#trialForm').addEventListener('submit', (e)=>{ e.preventDefault(); });
+    qs('#trialEmail').addEventListener('blur', (e)=>{
+      const v = e.target.value.trim();
+      if(v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)){
+        e.target.setCustomValidity('Please enter a valid email');
+      } else {
+        e.target.setCustomValidity('');
+      }
+    });
+
+    // Login logic
+    const loginForm = qs('#loginForm');
+    const loginError = qs('#loginError');
+    const loginSuccess = qs('#loginSuccess');
+    const downloadArea = qs('#downloadArea');
+    loginForm.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const user = qs('#username').value.trim();
+      const pass = qs('#password').value;
+      // Required behavior: username prefilled 'arjun'; password '88525' unlocks download
+      const ok = (user.toLowerCase() === 'arjun' && pass === '88525');
+      if(ok){
+        loginError.classList.remove('show');
+        loginSuccess.classList.add('show');
+        downloadArea.classList.add('show');
+        // subtle success pulse on button
+        const btn = qs('#loginBtn');
+        btn.classList.add('successPulse');
+        setTimeout(()=>btn.classList.remove('successPulse'), 600);
+      }else{
+        loginSuccess.classList.remove('show');
+        downloadArea.classList.remove('show');
+        loginError.classList.remove('show'); // restart animation
+        void loginError.offsetWidth;
+        loginError.classList.add('show');
+      }
+    });
+
+    // Add subtle pulse animation via JS to avoid extra CSS bloat
+    const style = document.createElement('style');
+    style.textContent = `.successPulse{box-shadow:0 0 0 0 rgba(45,212,191,0.6); animation: pulseRing .6s ease-out}
+      @keyframes pulseRing{to{box-shadow:0 0 0 14px rgba(45,212,191,0)}}`;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>
